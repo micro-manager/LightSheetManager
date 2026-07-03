@@ -141,8 +141,15 @@ public abstract class AcquisitionEngine implements AcquisitionManager, MMAcquist
             } catch (Exception e) {
                 studio_.logs().showError(e);
             } finally {
-                finish(); // cleanup any resources
-                currentAcquisition_ = null;
+                try {
+                    finish(); // cleanup any resources
+                } catch (Exception e) {
+                    studio_.logs().showError(e, "Error during acquisition cleanup");
+                } finally {
+                    // must ALWAYS run: if currentAcquisition_ is left set, every future
+                    // acquisition is rejected until the plugin restarts
+                    currentAcquisition_ = null;
+                }
             }
         });
         return acqFinished;
