@@ -285,9 +285,9 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
 
         JSONObject summaryMetadata = currentAcquisition_.getSummaryMetadata();
         try {
-            summaryMetadata.put("z-um_step", acqSettings_.volume().sliceStepSize());
+            summaryMetadata.put("z-step_um", acqSettings_.volume().sliceStepSize());
         } catch (JSONException e) {
-            studio_.logs().logError("Failed to add z-um_step metadata: " + e.getMessage());
+            studio_.logs().logError("Failed to add z-step_um metadata: " + e.getMessage());
         }
         DefaultSummaryMetadata dsmd = addMMSummaryMetadata(summaryMetadata);
 
