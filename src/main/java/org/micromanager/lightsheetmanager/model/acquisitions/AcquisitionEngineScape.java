@@ -52,7 +52,7 @@ import java.util.ArrayList;
 public class AcquisitionEngineScape extends AcquisitionEngine {
 
     PLogicScape controller_;
-    ArrayList<Double> savedExposures_;
+    ArrayList<Double> savedExposures_ = new ArrayList<>();
     Point2D.Double xyPosUm_;
     private double origSpeedX_;
     private double origAccelX_;
@@ -749,10 +749,12 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
         // TODO: execute any end-acquisition runnables
 
         // set the camera trigger modes back to internal for live mode
-        for (int i = 0; i < cameras.length; i++) {
-            CameraBase camera = cameras[i];
-            camera.setTriggerMode(CameraMode.INTERNAL);
-            camera.setExposure(savedExposures_.get(i));
+        if (savedExposures_.size() == cameras.length) {
+            for (int i = 0; i < cameras.length; i++) {
+                CameraBase camera = cameras[i];
+                camera.setTriggerMode(CameraMode.INTERNAL);
+                camera.setExposure(savedExposures_.get(i));
+            }
         }
 
         if (acqSettings_.isSavingImagesDuringAcquisition()) {
