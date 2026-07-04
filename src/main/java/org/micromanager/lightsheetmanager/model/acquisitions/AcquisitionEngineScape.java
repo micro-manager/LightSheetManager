@@ -246,7 +246,8 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
         }
 
         // write the position list if we are using multiple positions
-        if (model_.acquisitions().settings().isUsingMultiplePositions()) {
+        if (model_.acquisitions().settings().isSavingImagesDuringAcquisition()
+                && model_.acquisitions().settings().isUsingMultiplePositions()) {
             final PositionList positionList = model_.studio().positions().getPositionList();
             if (positionList.getNumberOfPositions() > 0) {
                 try {
