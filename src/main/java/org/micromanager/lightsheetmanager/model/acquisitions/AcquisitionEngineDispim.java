@@ -38,6 +38,9 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
 
     private boolean isPolling_; // true if polling was enabled at the start of an acquisition
 
+    private boolean isShutterOpen_;
+    private boolean autoShutter_;
+
 //    private DefaultAcquisitionSettingsDISPIM.Builder asb_;
    // TODO: remove this when a more generic method is available and get from base class
     private DispimAcquisitionSettings acqSettings_;
@@ -353,19 +356,18 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
 
 
         ///////////// Turn off autoshutter /////////////////
-        final boolean isShutterOpen;
         try {
-            isShutterOpen = core_.getShutterOpen();
+            isShutterOpen_ = core_.getShutterOpen();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
         // TODO: should the shutter be left open for the full duration of acquisition?
         //  because that's what this code currently does
-        boolean autoShutter = core_.getAutoShutter();
-        if (autoShutter) {
+        autoShutter_ = core_.getAutoShutter();
+        if (autoShutter_) {
             core_.setAutoShutter(false);
-            if (!isShutterOpen) {
+            if (!isShutterOpen_) {
                 try {
                     core_.setShutterOpen(true);
                 } catch (Exception e) {
@@ -484,21 +486,6 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
             controller.stopSPIMStateMachines();
         }
 
-        // Restore shutter/autoshutter to original state
-        try {
-            core_.setShutterOpen(isShutterOpen);
-            core_.setAutoShutter(autoShutter);
-        } catch (Exception e) {
-            throw new RuntimeException("Couldn't restore shutter to original state");
-        }
-
-        // Check if acquisition ended due to an exception and show error to user if it did
-        try {
-            currentAcquisition_.checkForExceptions();
-        } catch (Exception e) {
-            studio_.logs().showError(e);
-        }
-
         // TODO: execute any end-acquisition runnables
 
         return true;
@@ -518,6 +505,24 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
             }
         } catch (Exception e) {
             studio_.logs().logError("Could not stop camera sequences: " + e.getMessage());
+        }
+
+        // Restore shutter/autoshutter to original state
+        try {
+            core_.setShutterOpen(isShutterOpen_);
+            core_.setAutoShutter(autoShutter_);
+        } catch (Exception e) {
+            studio_.logs().logError("Couldn't restore shutter to original state");
+        }
+
+        // check if acquisition ended due to an exception and show error
+        // currentAcquisition_ can be null if an error occurred during setup
+        if (currentAcquisition_ != null) {
+            try {
+                currentAcquisition_.checkForExceptions();
+            } catch (Exception e) {
+                studio_.logs().logError(e);
+            }
         }
 
         // start polling for navigation panel
