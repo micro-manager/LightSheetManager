@@ -88,6 +88,17 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
 //            return false;
 //        }
 
+        // Live Mode must be stopped before setting the "Core-Camera" property below,
+        // MMCore throws if a sequence acquisition (Live Mode) is running.
+        final boolean isLiveModeOn = studio_.live().isLiveModeOn();
+        if (isLiveModeOn) {
+            studio_.live().setLiveModeOn(false);
+            // close the live mode window if it exists
+            if (studio_.live().getDisplay() != null) {
+                studio_.live().getDisplay().close();
+            }
+        }
+
         // set the "Core-Camera" property to the first logical camera device
         final String cameraName = model_.devices().firstImagingCamera().getDeviceName();
         try {
@@ -119,18 +130,6 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
 
     @Override
     boolean run() {
-
-        // TODO: delete later, this is the settings before everything is set up in doHardwareCalculations (used to debug)
-        //studio_.logs().logMessage("debug info:\n" + acqSettings_.toPrettyJson());
-
-        final boolean isLiveModeOn = studio_.live().isLiveModeOn();
-        if (isLiveModeOn) {
-            studio_.live().setLiveModeOn(false);
-            // close the live mode window if it exists
-            if (studio_.live().getDisplay() != null) {
-                studio_.live().getDisplay().close();
-            }
-        }
 
         // save current exposure to restore later
         CameraBase[] cameras = model_.devices().imagingCameras();
