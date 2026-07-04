@@ -706,7 +706,7 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
         // want to do this, even with demo cameras, so we can test everything else
         // TODO: figure out if we really want to return piezos to 0 position (maybe center position,
         //   maybe not at all since we move when we switch to setup tab, something else??)
-        if (model_.devices().isUsingPLogic()) {
+        if (model_.devices().isUsingPLogic() && controller_ != null) {
             controller_.cleanUpControllerAfterAcquisition(acqSettings_, true);
             controller_.stopSPIMStateMachines();
         }
