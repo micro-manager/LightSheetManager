@@ -396,10 +396,9 @@ public class DeviceManager {
     public void useDefaultImagingCameraOrder() {
         final List<CameraData> cameras = new ArrayList<>();
         final String[] cameraNames = imagingCameraNames();
-        for (String name : cameraNames) {
-            // Note: there is no ui control to change the active state of the
-            // camera when there is only 1 camera, so make sure it's active.
-            cameras.add(new CameraData(name, cameraNames.length == 1));
+        for (int i = 0; i < cameraNames.length; i++) {
+            // the first camera is always the default primary camera, so make sure it's active
+            cameras.add(new CameraData(cameraNames[i], i == 0));
         }
         // update settings with default camera order
         model_.acquisitions().settingsBuilder()
