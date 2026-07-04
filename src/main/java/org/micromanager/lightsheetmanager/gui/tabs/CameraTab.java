@@ -122,11 +122,17 @@ public class CameraTab extends Panel implements ListeningPanel {
 
         // populate spinner with current roi
         btnCurrentROI_.registerListener(() -> {
-            final Rectangle roi = model_.devices().firstImagingCamera().getROI();
-            spnOffsetX_.setValue(roi.x);
-            spnOffsetY_.setValue(roi.y);
-            spnWidth_.setValue(roi.width);
-            spnHeight_.setValue(roi.height);
+            try {
+                final Rectangle roi = model_.devices().firstImagingCamera().getROI();
+                spnOffsetX_.setValue(roi.x);
+                spnOffsetY_.setValue(roi.y);
+                spnWidth_.setValue(roi.width);
+                spnHeight_.setValue(roi.height);
+            } catch (Exception e) {
+                model_.studio().logs().showError(
+                        "No imaging camera available; check that a camera is assigned in the hardware "
+                        + "configuration and set as Active on the Acquisition tab.");
+            }
         });
     }
 
