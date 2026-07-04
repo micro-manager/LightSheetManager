@@ -507,6 +507,19 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
     @Override
     boolean finish() {
 
+        final CameraBase[] cameras = model_.devices().imagingCameras();
+
+        // Stop all cameras sequences
+        try {
+            for (CameraBase camera : cameras) {
+                if (core_.isSequenceRunning(camera.getDeviceName())) {
+                    core_.stopSequenceAcquisition(camera.getDeviceName());
+                }
+            }
+        } catch (Exception e) {
+            studio_.logs().logError("Could not stop camera sequences: " + e.getMessage());
+        }
+
         // start polling for navigation panel
         if (isPolling_) {
             studio_.logs().logMessage("started position polling after acquisition");
