@@ -526,6 +526,9 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
             }
         }
 
+        // unregister to stop ghost events
+        studio_.events().unregisterForEvents(this);
+
         // start polling for navigation panel
         if (isPolling_) {
             studio_.logs().logMessage("started position polling after acquisition");
