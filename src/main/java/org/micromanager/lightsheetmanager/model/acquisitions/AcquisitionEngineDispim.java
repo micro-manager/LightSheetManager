@@ -38,6 +38,7 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
 
     private boolean isPolling_; // true if polling was enabled at the start of an acquisition
 
+    PLogicDispim controller_;
     private boolean isShutterOpen_;
     private boolean autoShutter_;
 
@@ -79,7 +80,7 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
 
         final boolean isUsingPLC = model_.devices().isUsingPLogic();
 
-        PLogicDispim controller = null;
+        controller_ = null;
 
         // Assume demo mode if default camera is DemoCamera
         boolean demoMode = false;
@@ -93,9 +94,9 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
         if (!demoMode) {
 
             if (isUsingPLC) {
-                controller = new PLogicDispim(model_);
+                controller_ = new PLogicDispim(model_);
 
-                final boolean success = doHardwareCalculations(controller);
+                final boolean success = doHardwareCalculations(controller_);
                 if (!success) {
                     return false; // early exit => could not set up hardware
                 }
@@ -330,7 +331,7 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
 
 
 
-        final PLogicDispim controllerInstance = controller;
+        final PLogicDispim controllerInstance = controller_;
         // TODO This after camera hook is called after the camera has been readied to acquire a
         //  sequence. I assume we want to tell the Tiger to start sending TTLs etc here
         currentAcquisition_.addHook(new AcquisitionHook() {
@@ -477,15 +478,6 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
         studio_.logs().logMessage("diSPIM plugin acquisition " +
                 " took: " + (System.currentTimeMillis() - acqButtonStart) + "ms");
 
-        // clean up controller settings after acquisition
-        // want to do this, even with demo cameras, so we can test everything else
-        // TODO: figure out if we really want to return piezos to 0 position (maybe center position,
-        //   maybe not at all since we move when we switch to setup tab, something else??)
-        if (isUsingPLC && controller != null) {
-            controller.cleanUpControllerAfterAcquisition(acqSettings_, true);
-            controller.stopSPIMStateMachines();
-        }
-
         // TODO: execute any end-acquisition runnables
 
         return true;
@@ -505,6 +497,15 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
             }
         } catch (Exception e) {
             studio_.logs().logError("Could not stop camera sequences: " + e.getMessage());
+        }
+
+        // clean up controller settings after acquisition
+        // want to do this, even with demo cameras, so we can test everything else
+        // TODO: figure out if we really want to return piezos to 0 position (maybe center position,
+        //   maybe not at all since we move when we switch to setup tab, something else??)
+        if (model_.devices().isUsingPLogic() && controller_ != null) {
+            controller_.cleanUpControllerAfterAcquisition(acqSettings_, true);
+            controller_.stopSPIMStateMachines();
         }
 
         // Restore shutter/autoshutter to original state
