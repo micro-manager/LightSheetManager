@@ -39,6 +39,7 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
     private boolean isPolling_; // true if polling was enabled at the start of an acquisition
 
     PLogicDispim controller_;
+    ArrayList<Double> savedExposures_;
     private boolean isShutterOpen_;
     private boolean autoShutter_;
 
@@ -76,6 +77,13 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
             if (studio_.live().getDisplay() != null) {
                 studio_.live().getDisplay().close();
             }
+        }
+
+        // save current exposure to restore later
+        final CameraBase[] cameras = model_.devices().imagingCameras();
+        savedExposures_ = new ArrayList<>();
+        for (CameraBase camera : cameras) {
+            savedExposures_.add(camera.getExposure());
         }
 
         final boolean isUsingPLC = model_.devices().isUsingPLogic();
@@ -524,6 +532,13 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
             } catch (Exception e) {
                 studio_.logs().logError(e);
             }
+        }
+
+        // set the camera trigger modes back to internal for live mode
+        for (int i = 0; i < cameras.length; i++) {
+            CameraBase camera = cameras[i];
+            camera.setTriggerMode(CameraMode.INTERNAL);
+            camera.setExposure(savedExposures_.get(i));
         }
 
         // unregister to stop ghost events
