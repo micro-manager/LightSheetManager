@@ -52,7 +52,7 @@ import java.util.ArrayList;
 public class AcquisitionEngineScape extends AcquisitionEngine {
 
     PLogicScape controller_;
-    ArrayList<Double> savedExposures_;
+    ArrayList<Double> savedExposures_ = new ArrayList<>();
     Point2D.Double xyPosUm_;
     private double origSpeedX_;
     private double origAccelX_;
@@ -706,7 +706,7 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
         // want to do this, even with demo cameras, so we can test everything else
         // TODO: figure out if we really want to return piezos to 0 position (maybe center position,
         //   maybe not at all since we move when we switch to setup tab, something else??)
-        if (model_.devices().isUsingPLogic()) {
+        if (model_.devices().isUsingPLogic() && controller_ != null) {
             controller_.cleanUpControllerAfterAcquisition(acqSettings_, true);
             controller_.stopSPIMStateMachines();
         }
@@ -749,10 +749,12 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
         // TODO: execute any end-acquisition runnables
 
         // set the camera trigger modes back to internal for live mode
-        for (int i = 0; i < cameras.length; i++) {
-            CameraBase camera = cameras[i];
-            camera.setTriggerMode(CameraMode.INTERNAL);
-            camera.setExposure(savedExposures_.get(i));
+        if (savedExposures_.size() == cameras.length) {
+            for (int i = 0; i < cameras.length; i++) {
+                CameraBase camera = cameras[i];
+                camera.setTriggerMode(CameraMode.INTERNAL);
+                camera.setExposure(savedExposures_.get(i));
+            }
         }
 
         if (acqSettings_.isSavingImagesDuringAcquisition()) {
