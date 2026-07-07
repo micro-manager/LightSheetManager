@@ -493,6 +493,15 @@ public class PLogicScape {
             scanner_.setSPIMAlternateDirections(oppositeDirections);
             scanner_.setSPIMScanDuration(
                   settings.timing().sliceDuration() - settings.timing().delayBeforeScan());
+            // program the remaining per-slice timing onto the scanner card; diSPIM 1.4 wrote
+            // these through the advanced-timing GUI spinner bindings, a path lost in the port,
+            // so galvo scans ran on whatever stale timing was left on the card (issue #417)
+            scanner_.setSPIMDelayBeforeScan(settings.timing().delayBeforeScan());
+            scanner_.setSPIMNumScansPerSlice(settings.timing().scansPerSlice());
+            scanner_.setSPIMDelayBeforeLaser(settings.timing().delayBeforeLaser());
+            scanner_.setSPIMLaserDuration(settings.timing().laserTriggerDuration());
+            scanner_.setSPIMDelayBeforeCamera(settings.timing().delayBeforeCamera());
+            scanner_.setSPIMCameraDuration(settings.timing().cameraTriggerDuration());
             scanner_.sa().setAmplitudeY(sliceAmplitude);
             scanner_.sa().setOffsetY(sliceCenter);
             scanner_.setSPIMNumSlices(numSlicesHW);
