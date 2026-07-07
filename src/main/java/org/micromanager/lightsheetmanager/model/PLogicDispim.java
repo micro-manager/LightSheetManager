@@ -673,6 +673,18 @@ public class PLogicDispim {
                 piezo.sa().setOffset(piezoCenter);
 
                 if (!settings.stageScan().enabled()) {
+                    if (settings.acquisitionMode() == AcquisitionMode.SLICE_SCAN_ONLY) {
+                        // the piezo holds the imaging center for the whole galvo scan, but arming
+                        // alone doesn't move it there: the move happens when the state machine
+                        // fires, inside the delay-before-side window, so the first slice can be
+                        // exposed with the piezo still in transit (issue #407); settle it here
+                        // before arming instead
+                        // TODO: consider pre-positioning the other acquisition modes too (piezo
+                        //   stacks start at piezoCenter - piezoAmplitude / 2, so this would only
+                        //   halve the jump)
+                        piezo.setPosition(piezoCenter);
+                        piezo.waitForDevice();
+                    }
                     piezo.setSPIMNumSlices(numSlicesHW);
                     piezo.setSPIMState(ASIPiezo.SPIMState.ARMED);
                 }
