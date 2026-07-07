@@ -418,6 +418,10 @@ public class PLogicScape {
                     settings.stageScan().enabled() ? 0  // minimal delay on micro-mirror card for stage scanning (can't actually be less than 2ms but this will get as small as possible)
                             : settings.volume().delayBeforeView()); // this is the usual behavior
         }
+        // the calibrated imaging plane (piezo microns); the galvo/sheet must sit here in every
+        // acquisition mode so all modes image the same plane (issue #404)
+        final double imagingCenter =
+                model_.acquisitions().settings().sheetCalibration().imagingCenter();
         double piezoCenter;
         if (settings.stageScan().enabled()) {
             // for stage scanning we define the piezo position to be the home position (normally 0)
@@ -430,7 +434,7 @@ public class PLogicScape {
             if (centerAtCurrentZ) {
                 piezoCenter = piezo_.getPosition(); //positions_.getUpdatedPosition(piezoDevice, Joystick.Directions.NONE);
             } else {
-                piezoCenter = model_.acquisitions().settings().sheetCalibration().imagingCenter();
+                piezoCenter = imagingCenter;
             }
         }
 
@@ -477,7 +481,14 @@ public class PLogicScape {
         //final double offset2 = settings.sliceCalibration(2).sliceOffset() + channelOffset;
         double sliceOffset = settings.sliceCalibration().offset() + channelOffset; //(view == 1) ? offset1 : offset2;
         double sliceAmplitude = piezoAmplitude / sliceRate;
-        double sliceCenter = (piezoCenter - sliceOffset) / sliceRate;
+        // The galvo/sheet offset must always land on the true imaging plane. For a stage scan the
+        // piezo convention parks piezoCenter at home (~0); using that here would place the sheet on
+        // the home plane instead of the imaging center, so the acquired volume is offset from the
+        // stage sweep -- the #404 "scan not centered" symptom. diSPIM 1.4 SCOPE never writes the
+        // galvo offset during a stage scan (it holds the value the Setup tab computed from the
+        // imaging center); LSM writes it at acq time, so derive it from the imaging center here.
+        final double galvoCenter = settings.stageScan().enabled() ? imagingCenter : piezoCenter;
+        double sliceCenter = (galvoCenter - sliceOffset) / sliceRate;
 
         // round to nearest 0.0001 degrees, which is approximately the DAC resolution
         sliceAmplitude = NumberUtils.roundToPlace(sliceAmplitude, 4);
@@ -562,10 +573,22 @@ public class PLogicScape {
             // set up stage scan parameters if necessary
             if (settings.stageScan().enabled()) {
                 // TODO update UI to hide image center control for stage scanning
-                // for interleaved stage scanning there will never be "home" pulse and for normal stage scanning
-                //   the first side piezo will never get moved into position either so do both manually (for
-                //   simplicity ignore fact that one of two is unnecessary for two-sided normal stage scan acquisition)
-                piezo_.home();
+                // diSPIM 1.4 homes the imaging piezo here only for the dual-objective (non-SCOPE)
+                // build; for SCOPE it deliberately "leaves the piezo the way it is" (ControllerUtils
+                // line 983). Homing it drives ImagingFocus to 0, off the imaging plane, so the whole
+                // stage scan is defocused (issue #404 symptom 1). Instead put the piezo at the
+                // imaging center; LSM can't assume the Setup tab already positioned it there.
+                // The limit check above validated the home position (piezoCenter), not this target,
+                // so guard imagingCenter explicitly before commanding the move (galvo/no-scan get
+                // this for free since there piezoCenter == imagingCenter).
+                if (NumberUtils.outsideRange(imagingCenter, piezoMin, piezoMax)) {
+                    studio_.logs().showError("The imaging center (" + imagingCenter
+                            + " µm) is outside the imaging piezo limits; "
+                            + "cannot position the piezo for stage scanning.");
+                    return false;
+                }
+                piezo_.setPosition(imagingCenter);
+                piezo_.waitForDevice();
             }
 
             final boolean isInterleaved = settings.stageScan().enabled()
