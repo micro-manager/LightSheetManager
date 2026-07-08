@@ -483,6 +483,17 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
                         if (scanner.getSPIMState().equals(ASIScanner.SPIMState.RUNNING)) {
                             scanner.setSPIMState(ASIScanner.SPIMState.IDLE);
                         }
+                        // Stage scan leaves the scanner ARMED (not RUNNING) after each volume:
+                        // triggerControllerStartAcquisition() sets the scanner to ARMED and lets the
+                        // XY stage card drive it, whereas galvo/no-scan set it to RUNNING. getSPIMState()
+                        // returns the cached last-set value instead of querying the controller, so that
+                        // ARMED state persists into the next timepoint. Without resetting it, the IDLE
+                        // guard below is false on timepoint 2+, the controller is never re-triggered, and
+                        // the camera arms with no incoming TTLs until it times out (multi-timepoint stage
+                        // scan otherwise stalls after the first timepoint).
+                        if (scanner.getSPIMState().equals(ASIScanner.SPIMState.ARMED)) {
+                            scanner.setSPIMState(ASIScanner.SPIMState.IDLE);
+                        }
                     }
 
                     int side = 0;
