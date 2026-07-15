@@ -492,7 +492,7 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
     }
 
     @Override
-    boolean finish() {
+    void finish() {
 
         final CameraBase[] cameras = model_.devices().imagingCameras();
 
@@ -551,7 +551,6 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
             studio_.logs().logMessage("started position polling after acquisition");
             model_.positions().startPolling();
         }
-        return true;
     }
 
     private boolean doHardwareCalculations(PLogicDispim plc) {

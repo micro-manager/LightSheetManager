@@ -77,14 +77,14 @@ public abstract class AcquisitionEngine implements AcquisitionManager, MMAcquist
 
     abstract boolean run();
 
-    abstract boolean finish();
+    abstract void finish();
 
     public abstract void recalculateSliceTiming();
 
     public abstract void updateDurationLabels();
 
     public void setDurationPanel(final DurationPanel panel) {
-        pnlDuration_ = Objects.requireNonNull(panel);;
+        pnlDuration_ = Objects.requireNonNull(panel);
     }
 
     /**
@@ -130,15 +130,21 @@ public abstract class AcquisitionEngine implements AcquisitionManager, MMAcquist
                     } catch (Exception e) {
                         studio_.logs().showError(e);
                     }
-                } else {
-                    studio_.logs().logMessage("Preparing Acquisition: plugin version " + LightSheetManagerPlugin.version);
-                    // run methods implemented by acquisition engine geometry types
+                    return; // early exit => do speed test
+                }
+
+                studio_.logs().logMessage("Preparing Acquisition: plugin version " + LightSheetManagerPlugin.version);
+
+                try {
                     if (!setup()) {
-                        studio_.logs().logError("error during setup!");
+                        studio_.logs().showError("Error during setup!");
                         return; // early exit => stop acquisition
                     }
-                    run(); // run the acquisition and block until complete
+                } catch (Exception e) {
+                    studio_.logs().showError(e, "Error during acquisition setup");
+                    return; // early exit => stop acquisition
                 }
+                run(); // run the acquisition and block until complete
             } catch (Exception e) {
                 studio_.logs().showError(e);
             } finally {
