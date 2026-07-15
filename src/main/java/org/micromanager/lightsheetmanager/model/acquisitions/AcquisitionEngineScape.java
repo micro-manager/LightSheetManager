@@ -45,6 +45,7 @@ import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Manages the acquisition for SCAPE microscopes.
@@ -63,7 +64,7 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
     private boolean isPolling_; // true if polling was enabled at the start of an acquisition
 
     public AcquisitionEngineScape(final LightSheetManager model) {
-        super(model);
+        super(Objects.requireNonNull(model));
     }
 
     @Override
@@ -698,7 +699,7 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
     }
 
     @Override
-    boolean finish() {
+    void finish() {
 
         final CameraBase[] cameras = model_.devices().imagingCameras();
 
@@ -793,7 +794,6 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
             studio_.logs().logMessage("started position polling after acquisition");
             model_.positions().startPolling();
         }
-        return true;
     }
 
     private boolean doHardwareCalculations(PLogicScape plc) {
