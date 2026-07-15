@@ -24,6 +24,7 @@ import org.micromanager.lightsheetmanager.gui.tabs.acquisition.DurationPanel;
 import org.micromanager.lightsheetmanager.model.DataStorage;
 import org.micromanager.lightsheetmanager.model.autofocus.AutofocusAdapter;
 import org.micromanager.lightsheetmanager.model.channels.ChannelSpec;
+import org.micromanager.lightsheetmanager.model.devices.cameras.CameraBase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -193,15 +194,36 @@ public abstract class AcquisitionEngine implements AcquisitionManager, MMAcquist
             //        "Channels" -> {Long@25854} 2
 
             summaryMetadata.put(PropertyKey.CHANNEL_GROUP.key(), acqSettings_.channels().group());
-            JSONArray chNames = new JSONArray();
-            JSONArray chColors = new JSONArray();
+
+            // one name per position on the store's channel axis; with simultaneous cameras the
+            // camera index varies fastest (LightSheetEventAdapter.cameras assigns
+            // channelIndex * numCameras + cameraIndex), so repeat each channel name per camera
+            final List<String> channelNames = new ArrayList<>();
+            final List<String> baseChannelNames = new ArrayList<>();
             if (acqSettings_.channels().enabled() && acqSettings_.channels().count() > 0) {
                 for (ChannelSpec c : acqSettings_.channels().used()) {
-                    chNames.put(c.getName());
-//                chColors.put(c.getRGB());
+                    baseChannelNames.add(c.getName());
                 }
             } else {
-                chNames.put("Default");
+                baseChannelNames.add("Default");
+            }
+            if (model_.devices().adapter().numSimultaneousCameras() > 1) {
+                for (String channelName : baseChannelNames) {
+                    for (CameraBase camera : model_.devices().imagingCameras()) {
+                        channelNames.add(acqSettings_.channels().enabled()
+                                ? channelName + "-" + camera.getDeviceName()
+                                : camera.getDeviceName());
+                    }
+                }
+            } else {
+                channelNames.addAll(baseChannelNames);
+            }
+
+            JSONArray chNames = new JSONArray();
+            JSONArray chColors = new JSONArray();
+            for (String channelName : channelNames) {
+                chNames.put(channelName);
+//                chColors.put(c.getRGB());
             }
             summaryMetadata.put(PropertyKey.CHANNEL_NAMES.key(), chNames);
             summaryMetadata.put(PropertyKey.CHANNEL_COLORS.key(), chColors);
@@ -212,8 +234,7 @@ public abstract class AcquisitionEngine implements AcquisitionManager, MMAcquist
 
             summaryMetadata.put(PropertyKey.SLICES.key(), acqSettings_.volume().slicesPerView());
 
-            summaryMetadata.put(PropertyKey.CHANNELS.key(), acqSettings_.channels().enabled() ?
-                    acqSettings_.channels().count() : 1);
+            summaryMetadata.put(PropertyKey.CHANNELS.key(), channelNames.size());
             summaryMetadata.put(PropertyKey.POSITIONS.key(), acqSettings_.isUsingMultiplePositions() ?
                         studio_.positions().getPositionList().getNumberOfPositions() : 1);
 
@@ -234,16 +255,11 @@ public abstract class AcquisitionEngine implements AcquisitionManager, MMAcquist
             }
             summaryMetadata.put(PropertyKey.AXIS_ORDER.key(), axes);
 
-            // handle multiple cameras
-            int numChannels = acqSettings_.channels().count();
-            if (model_.devices().adapter().numSimultaneousCameras() > 1) {
-                numChannels *= model_.devices().adapter().numSimultaneousCameras();
-            }
-
             final int numPositions = studio_.positions().getPositionList().getNumberOfPositions();
 
+            // channelNames.size() already includes the simultaneous-camera factor
             final Coords dims = studio_.data().coordsBuilder()
-                    .channel(acqSettings_.channels().enabled() ? numChannels : 1)
+                    .channel(channelNames.size())
                     .z(acqSettings_.volume().slicesPerView())
                     .timePoint(acqSettings_.isUsingTimePoints() ? acqSettings_.numTimePoints() : 1)
                     .stagePosition(acqSettings_.isUsingMultiplePositions() ? numPositions : 1)
@@ -260,6 +276,7 @@ public abstract class AcquisitionEngine implements AcquisitionManager, MMAcquist
                     .prefix("")
                     .axisOrder(axisOrder)
                     .channelGroup(model_.acquisitions().settings().channels().group())
+                    .channelNames(channelNames)
                     .imageWidth((int)core_.getImageWidth())
                     .imageHeight((int)core_.getImageHeight())
                     .zStepUm(acqSettings_.volume().sliceStepSize())
