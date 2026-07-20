@@ -171,7 +171,7 @@ public abstract class AcquisitionEngine implements AcquisitionManager, MMAcquist
                     // LSM-ACQ-STOP in the innermost finally: fires on completion, error, abort, throwing finish()
                     if (runId != -1) {
                         final long elapsedMs = (System.nanoTime() - startNs) / 1_000_000L;
-                        studio_.logs().logMessage("LSM-ACQ-STOP " + runId + " " + elapsedMs + "ms");
+                        studio_.logs().logMessage("LSM-ACQ-STOP " + runId + " " + elapsedMs + " ms");
                     }
                 }
             }
