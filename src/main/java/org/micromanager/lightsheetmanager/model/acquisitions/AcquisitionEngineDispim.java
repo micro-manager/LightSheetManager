@@ -245,8 +245,6 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
 //                  AcquisitionAPI.BEFORE_HARDWARE_HOOK);
 //        }
 
-        long acqButtonStart = System.currentTimeMillis();
-
         ////////////  Acquisition hooks ////////////////////
         // These functions will be run on different threads during the acquisition process
         //    Hooks will run on the Acquisition Engine thread--the one that controls all hardware
@@ -482,12 +480,7 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
 
         currentAcquisition_.waitForCompletion();
 
-        // cleanup
-        studio_.logs().logMessage("diSPIM plugin acquisition " +
-                " took: " + (System.currentTimeMillis() - acqButtonStart) + "ms");
-
         // TODO: execute any end-acquisition runnables
-
         return true;
     }
 

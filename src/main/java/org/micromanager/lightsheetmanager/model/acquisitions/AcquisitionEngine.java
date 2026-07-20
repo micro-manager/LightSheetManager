@@ -168,8 +168,7 @@ public abstract class AcquisitionEngine implements AcquisitionManager, MMAcquist
                     // must ALWAYS run: if currentAcquisition_ is left set, every future
                     // acquisition is rejected until the plugin restarts
                     currentAcquisition_ = null;
-                    // LSM-ACQ-START/STOP bracket the acquisition window for CoreLog diffing
-                    // STOP in the innermost finally: fires on completion, error, abort, throwing finish()
+                    // LSM-ACQ-STOP in the innermost finally: fires on completion, error, abort, throwing finish()
                     if (runId != -1) {
                         final long elapsedMs = (System.nanoTime() - startNs) / 1_000_000L;
                         studio_.logs().logMessage("LSM-ACQ-STOP " + runId + " " + elapsedMs + "ms");

@@ -320,8 +320,6 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
 //                  AcquisitionAPI.BEFORE_HARDWARE_HOOK);
 //        }
 
-        long acqButtonStart = System.currentTimeMillis();
-
         ////////////  Acquisition hooks ////////////////////
         // These functions will be run on different threads during the acquisition process
         //    Hooks will run on the Acquisition Engine thread--the one that controls all hardware
@@ -690,10 +688,6 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
         currentAcquisition_.finish();
 
         currentAcquisition_.waitForCompletion();
-
-        // report elapsed time
-        final long elapsedTimeMs = System.currentTimeMillis() - acqButtonStart;
-        studio_.logs().logMessage("SCAPE plugin acquisition took: " + elapsedTimeMs + " milliseconds");
 
         return true;
     }
