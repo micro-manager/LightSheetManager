@@ -16,7 +16,6 @@ import org.micromanager.data.SummaryMetadata;
 import org.micromanager.data.internal.DefaultSummaryMetadata;
 import org.micromanager.data.internal.PropertyKey;
 import org.micromanager.lightsheetmanager.LightSheetManager;
-import org.micromanager.lightsheetmanager.LightSheetManagerPlugin;
 import org.micromanager.lightsheetmanager.api.AcquisitionManager;
 import org.micromanager.lightsheetmanager.api.data.AcquisitionMode;
 import org.micromanager.lightsheetmanager.api.internal.ScapeAcquisitionSettings;
@@ -32,11 +31,14 @@ import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicLong;
 
 public abstract class AcquisitionEngine implements AcquisitionManager, MMAcquistionControlCallbacks {
 
     protected final Studio studio_;
     protected final CMMCore core_;
+
+    private static final AtomicLong runIdCounter_ = new AtomicLong();
 
     protected ScapeAcquisitionSettings.Builder asb_;
     protected ScapeAcquisitionSettings acqSettings_;
@@ -119,6 +121,10 @@ public abstract class AcquisitionEngine implements AcquisitionManager, MMAcquist
                 return;
             }
 
+            // marker data
+            long runId = -1; // set at START; guards STOP so the speed-test path emits no marker
+            long startNs = 0; // set alongside runId at START
+
             try {
                 updateSettings(); // make sure settings are current
 
@@ -133,7 +139,13 @@ public abstract class AcquisitionEngine implements AcquisitionManager, MMAcquist
                     return; // early exit => do speed test
                 }
 
-                studio_.logs().logMessage("Preparing Acquisition: plugin version " + LightSheetManagerPlugin.version);
+                // LSM-ACQ-START/STOP bracket the acquisition window for CoreLog diffing
+                runId = runIdCounter_.incrementAndGet();
+                // nanoTime() = monotonic; a wall-clock (currentTimeMillis) jump
+                // mid-run can't corrupt the elapsed duration
+                startNs = System.nanoTime();
+                studio_.logs().logMessage("LSM-ACQ-START " + runId
+                        + " " + acqSettings_.acquisitionMode());
 
                 try {
                     if (!setup()) {
@@ -156,6 +168,12 @@ public abstract class AcquisitionEngine implements AcquisitionManager, MMAcquist
                     // must ALWAYS run: if currentAcquisition_ is left set, every future
                     // acquisition is rejected until the plugin restarts
                     currentAcquisition_ = null;
+                    // LSM-ACQ-START/STOP bracket the acquisition window for CoreLog diffing
+                    // STOP in the innermost finally: fires on completion, error, abort, throwing finish()
+                    if (runId != -1) {
+                        final long elapsedMs = (System.nanoTime() - startNs) / 1_000_000L;
+                        studio_.logs().logMessage("LSM-ACQ-STOP " + runId + " " + elapsedMs + "ms");
+                    }
                 }
             }
         });
