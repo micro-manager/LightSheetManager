@@ -103,4 +103,18 @@ public abstract class ASITigerBase extends DeviceBase {
         return false;
     }
 
+    public String getPropertyForceRefresh(final String propertyName) {
+        final boolean wasOn = isRefreshPropertyValuesOn();
+        if (!wasOn) {
+            setRefreshPropertyValues(true);
+        }
+        try {
+            return getProperty(propertyName);
+        } finally {
+            if (!wasOn) {
+                setRefreshPropertyValues(false);  // always restore; do not get stuck on "Yes"
+            }
+        }
+    }
+
 }

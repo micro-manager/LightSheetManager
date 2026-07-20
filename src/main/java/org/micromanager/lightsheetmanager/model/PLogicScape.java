@@ -1060,7 +1060,7 @@ public class PLogicScape {
             final long deadline = System.currentTimeMillis() + timeoutStageScanCleanupMs;
             boolean done = false;
             while (!done) {
-                done = xyStage_.getScanState() == ASIXYStage.ScanState.IDLE;
+                done = xyStage_.getScanStateForceRefresh() == ASIXYStage.ScanState.IDLE;
                 if (!done && System.currentTimeMillis() > deadline) {
                     xyStage_.setScanState(ASIXYStage.ScanState.IDLE); // force-set to idle
                     studio_.logs().logError("Force-set XY stage scan to IDLE state with stage speed "

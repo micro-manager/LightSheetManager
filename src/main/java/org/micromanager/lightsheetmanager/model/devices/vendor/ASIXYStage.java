@@ -165,6 +165,10 @@ public class ASIXYStage extends ASITigerBase {
         return ScanState.fromString(getProperty(Properties.SCAN_STATE));
     }
 
+    public ScanState getScanStateForceRefresh() {
+        return ScanState.fromString(getPropertyForceRefresh(Properties.SCAN_STATE));
+    }
+
     public void setScanSettlingTime(final double milliseconds) {
         setPropertyFloat(Properties.SCAN_SETTLING_TIME, milliseconds);
     }
