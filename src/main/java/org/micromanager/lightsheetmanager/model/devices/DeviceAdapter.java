@@ -2,6 +2,7 @@ package org.micromanager.lightsheetmanager.model.devices;
 
 import mmcorej.DeviceType;
 import org.micromanager.Studio;
+import org.micromanager.lightsheetmanager.LightSheetManagerPlugin;
 import org.micromanager.lightsheetmanager.api.data.GeometryType;
 import org.micromanager.lightsheetmanager.api.data.LightSheetType;
 import org.micromanager.lightsheetmanager.model.utils.MathUtils;
@@ -44,6 +45,8 @@ public class DeviceAdapter extends DeviceBase {
 
         // if GeometryType.UNKNOWN then we open the plugin error screen
         geometryType_ = GeometryType.fromString(getProperty("MicroscopeGeometry"));
+        studio_.logs().logMessage("LSM-SESSION plugin-v" + LightSheetManagerPlugin.version
+                + " adapter-v" + version_ + " " + geometryType_);
         if (geometryType_ == GeometryType.UNKNOWN) {
             studio_.logs().logError("LightSheetDeviceManager: Failed to identify microscope geometry! "
                     + "Device adapter returned: " + getProperty("MicroscopeGeometry"));
