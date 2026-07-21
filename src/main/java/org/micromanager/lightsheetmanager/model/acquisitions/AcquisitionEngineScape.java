@@ -910,6 +910,8 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
         // experimentally need ~0.5 sec to set up acquisition, this gives a bit of cushion
         // cannot do this in getCurrentAcquisitionSettings because of mutually recursive
         // call with computeVolumeDuration()
+        // reset the flag every run and recompute below
+        asb_.useHardwareTimePoints(false);
         boolean isUsingHardwareTimePoints = false; // TODO: asb_ not built yet
         if (acqSettings_.isUsingTimePoints()
                 && acqSettings_.numTimePoints() > 1
