@@ -615,6 +615,8 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
         // experimentally need ~0.5 sec to set up acquisition, this gives a bit of cushion
         // cannot do this in getCurrentAcquisitionSettings because of mutually recursive
         // call with computeActualVolumeDuration()
+        // reset the flag every run and recompute below
+        asb_.useHardwareTimePoints(false);
         if (acqSettings_.isUsingTimePoints()
                 && acqSettings_.numTimePoints() > 1
                 && timepointIntervalMs < (timepointDuration + 750)
