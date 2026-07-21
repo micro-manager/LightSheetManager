@@ -43,7 +43,6 @@ import org.micromanager.lightsheetmanager.model.utils.NumberUtils;
 import javax.swing.JLabel;
 import java.awt.geom.Point2D;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -299,14 +298,14 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
         MMAcquisition acq = new MMAcquisition(studio_, dsmd,
                 this, sequenceSettingsBuilder.build());
 
-        curStore_ = acq.getDatastore();
+        datastore_ = acq.getDatastore();
         curPipeline_ = acq.getPipeline();
-        sink.setDatastore(curStore_);
+        sink.setDatastore(datastore_);
         sink.setPipeline(curPipeline_);
 
         studio_.events().registerForEvents(this);
         // commented because this is prob specific to MM MDAs
-//        studio_.events().post(new DefaultAcquisitionStartedEvent(curStore_, this,
+//        studio_.events().post(new DefaultAcquisitionStartedEvent(datastore_, this,
 //              acquisitionSettings));
 
 
@@ -797,7 +796,7 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
                 // convert from DataStorage.SaveMode to Datastore.SaveMode
                 final Datastore.SaveMode saveMode =
                         DataStorage.SaveMode.convert(acqSettings_.saveMode());
-                curStore_.save(saveMode, savePath);
+                datastore_.save(saveMode, savePath);
             } catch (Exception e) {
                 model_.studio().logs().showError("could not save the acquisition data to: \n" + savePath);
             }

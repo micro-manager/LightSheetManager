@@ -50,7 +50,7 @@ public abstract class AcquisitionEngine implements AcquisitionManager, MMAcquist
     private final AutofocusAdapter autofocus_;
 
     private DataStorage data_; // TODO: use this, has enum that needs moved/deleted?
-    protected Datastore curStore_;
+    protected Datastore datastore_;
     protected Pipeline curPipeline_;
     protected long nextWakeTime_ = -1;
 
@@ -375,7 +375,7 @@ public abstract class AcquisitionEngine implements AcquisitionManager, MMAcquist
 
     @Override
     public DataProvider getAcquisitionDatastore() {
-        return curStore_;
+        return datastore_;
     }
 
 }
