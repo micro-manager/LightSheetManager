@@ -116,4 +116,11 @@ public interface AcquisitionSettings {
      * @return the autofocus settings
      */
     DefaultAutofocusSettings autofocus();
+
+    /**
+     * Returns the immutable ChannelSettings instance.
+     *
+     * @return immutable ChannelSettings instance.
+     */
+    ChannelSettings channels();
 }

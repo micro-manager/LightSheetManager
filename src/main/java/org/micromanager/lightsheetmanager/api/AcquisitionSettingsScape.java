@@ -17,13 +17,6 @@ public interface AcquisitionSettingsScape extends AcquisitionSettings {
     Builder copyBuilder();
 
     /**
-     * Returns the immutable ChannelSettings instance.
-     *
-     * @return immutable ChannelSettings instance.
-     */
-    ChannelSettings channels();
-
-    /**
      * Returns the immutable DefaultTimingSettings instance.
      *
      * @return immutable DefaultTimingSettings instance.

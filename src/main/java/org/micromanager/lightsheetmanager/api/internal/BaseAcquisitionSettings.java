@@ -27,6 +27,7 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
         private DataStorage.SaveMode saveMode_ = DataStorage.SaveMode.ND_TIFF;
 
         private DefaultAutofocusSettings.Builder afBuilder_ = DefaultAutofocusSettings.builder();
+        private ChannelSettings.Builder channelBuilder_ = DefaultChannelSettings.builder();
 
         public Builder() {
         }
@@ -38,6 +39,7 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
             demoMode_ = settings.demoMode();
             saveMode_ = settings.saveMode();
             afBuilder_ = settings.autofocus().copyBuilder();
+            channelBuilder_ = settings.channels().copyBuilder();
         }
 
         /**
@@ -100,6 +102,10 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
             return afBuilder_;
         }
 
+        public ChannelSettings.Builder channelBuilder() {
+            return channelBuilder_;
+        }
+
         /**
          * Creates an immutable instance of DefaultAcquisitionSettings
          *
@@ -130,6 +136,7 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
     private final DataStorage.SaveMode saveMode_;
 
     private final DefaultAutofocusSettings autofocus_;
+    private final ChannelSettings channels_;
 
 //    public DefaultAcquisitionSettings() {
 //        saveNamePrefix_ = "";
@@ -144,6 +151,7 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
         demoMode_ = builder.demoMode_;
         saveMode_ = builder.saveMode_;
         autofocus_ = builder.afBuilder_.build();
+        channels_ = builder.channelBuilder_.build();
     }
 
     /**
@@ -204,6 +212,16 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
     @Override
     public DefaultAutofocusSettings autofocus() {
         return autofocus_;
+    }
+
+    /**
+     * Returns the immutable ChannelSettings instance.
+     *
+     * @return immutable ChannelSettings instance.
+     */
+    @Override
+    public ChannelSettings channels() {
+        return channels_;
     }
 
     @Override
