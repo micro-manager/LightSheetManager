@@ -168,6 +168,8 @@ public abstract class AcquisitionEngine implements AcquisitionManager, MMAcquist
                     // must ALWAYS run: if currentAcquisition_ is left set, every future
                     // acquisition is rejected until the plugin restarts
                     currentAcquisition_ = null;
+                    // free the datastore at acq end so a large store isn't kept in memory; matches MM's AcqEngJAdapter.onAcquisitionEnded
+                    datastore_ = null;
                     // LSM-ACQ-STOP in the innermost finally: fires on completion, error, abort, throwing finish()
                     if (runId != -1) {
                         final long elapsedMs = (System.nanoTime() - startNs) / 1_000_000L;
