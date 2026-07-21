@@ -486,8 +486,20 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
 
     @Override
     void finish() {
+        // finish() runs on EVERY path (the requestRun finally), even a setup-abort where the
+        // acquisition never started. That splits its work into two jobs. Keep them grouped:
+        //
+        //   Job A: restore hardware/system state. Must ALWAYS run: setup() can mutate hardware
+        //          before it fails, so each step self-guards on whether its state was changed.
+        //   Job B: end-of-acquisition work. Only valid if the run actually happened, so each step
+        //          self-guards on that (don't, e.g., save a datastore that was never filled).
+        //
+        // Adding a step? Pick its job: Job A runs unconditionally, Job B only when the run happened.
+        // Don't interleave them.
 
         final CameraBase[] cameras = model_.devices().imagingCameras();
+
+        // --- Job A ---
 
         // Stop all cameras sequences
         try {
@@ -517,16 +529,6 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
             studio_.logs().logError("Couldn't restore shutter to original state");
         }
 
-        // check if acquisition ended due to an exception and show error
-        // currentAcquisition_ can be null if an error occurred during setup
-        if (currentAcquisition_ != null) {
-            try {
-                currentAcquisition_.checkForExceptions();
-            } catch (Exception e) {
-                studio_.logs().logError(e);
-            }
-        }
-
         // set the camera trigger modes back to internal for live mode
         if (savedExposures_.size() == cameras.length) {
             for (int i = 0; i < cameras.length; i++) {
@@ -543,6 +545,18 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
         if (isPolling_) {
             studio_.logs().logMessage("started position polling after acquisition");
             model_.positions().startPolling();
+        }
+
+        // --- Job B ---
+
+        // check if acquisition ended due to an exception and show error
+        // currentAcquisition_ can be null if an error occurred during setup
+        if (currentAcquisition_ != null) {
+            try {
+                currentAcquisition_.checkForExceptions();
+            } catch (Exception e) {
+                studio_.logs().logError(e);
+            }
         }
     }
 
