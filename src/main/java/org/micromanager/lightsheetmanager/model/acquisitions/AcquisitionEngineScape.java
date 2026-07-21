@@ -775,7 +775,7 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
                 final Datastore.SaveMode saveMode =
                         DataStorage.SaveMode.convert(acqSettings_.saveMode());
                 curStore_.save(saveMode, savePath);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 model_.studio().logs().showError("could not save the acquisition data to: \n" + savePath);
             }
         }
