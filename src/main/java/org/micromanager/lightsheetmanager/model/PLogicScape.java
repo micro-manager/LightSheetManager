@@ -881,7 +881,10 @@ public class PLogicScape {
         try {
             Configuration configData = core_.getConfigData(channelGroup, channel.getName());
             if (!configData.isPropertyIncluded(plcLaser_.getDeviceName(), "OutputChannel")) {
-                studio_.logs().showError("Must include PLogic \"OutputChannel\" in preset for hardware switching");
+                studio_.logs().showError("Channel preset \"" + channel.getName() + "\" (group \""
+                        + channelGroup + "\") must include the PLogic \"OutputChannel\" property to use "
+                        + "hardware channel switching. Edit the preset in the main Micro-Manager window and "
+                        + "set \"OutputChannel\" to one of \"output 5 only\" through \"output 8 only\".");
                 return 0;
             }
             final String setting = configData.getSetting(plcLaser_.getDeviceName(), "OutputChannel").getPropertyValue();
@@ -894,7 +897,10 @@ public class PLogicScape {
             } else if (setting.equals("output 8 only")) {
                 return 8;
             } else {
-                studio_.logs().showError("Channel preset setting must use PLogic \"OutputChannel\" and be set to one of outputs 5-8 only");
+                studio_.logs().showError("Channel preset \"" + channel.getName() + "\" (group \""
+                        + channelGroup + "\") has PLogic \"OutputChannel\" set to \"" + setting + "\"; it "
+                        + "must be one of \"output 5 only\" through \"output 8 only\" (each channel a "
+                        + "distinct output 5-8). Edit the preset in the main Micro-Manager window.");
                 return 0;
             }
         } catch (Exception e) {
