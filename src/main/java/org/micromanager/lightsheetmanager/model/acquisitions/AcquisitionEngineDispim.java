@@ -21,6 +21,7 @@ import org.micromanager.lightsheetmanager.api.data.ChannelMode;
 import org.micromanager.lightsheetmanager.api.internal.DispimAcquisitionSettings;
 import org.micromanager.lightsheetmanager.api.internal.DefaultTimingSettings;
 import org.micromanager.lightsheetmanager.model.DataStorage;
+import org.micromanager.lightsheetmanager.model.utils.FileUtils;
 import org.micromanager.lightsheetmanager.LightSheetManager;
 import org.micromanager.lightsheetmanager.model.PLogicDispim;
 import org.micromanager.lightsheetmanager.model.devices.NIDAQ;
@@ -521,6 +522,8 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
             controller_.stopSPIMStateMachines();
         }
 
+        // TODO: stage scan work pending (SCAPE finish() restores stage speed/position here)
+
         // Restore shutter/autoshutter to original state
         try {
             core_.setShutterOpen(isShutterOpen_);
@@ -556,6 +559,21 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
                 currentAcquisition_.checkForExceptions();
             } catch (Exception e) {
                 studio_.logs().logError(e);
+            }
+        }
+
+        // TODO: execute any end-acquisition runnables
+
+        if (acqSettings_.isSavingImagesDuringAcquisition()) {
+            final String savePath = FileUtils.createUniquePath(
+                    acqSettings_.saveDirectory(), acqSettings_.saveNamePrefix());
+            try {
+                // convert from DataStorage.SaveMode to Datastore.SaveMode
+                final Datastore.SaveMode saveMode =
+                        DataStorage.SaveMode.convert(acqSettings_.saveMode());
+                curStore_.save(saveMode, savePath);
+            } catch (Exception e) {
+                model_.studio().logs().showError("could not save the acquisition data to: \n" + savePath);
             }
         }
     }
