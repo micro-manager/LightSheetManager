@@ -1,7 +1,6 @@
 package org.micromanager.lightsheetmanager.api.internal;
 
 import org.micromanager.lightsheetmanager.api.AcquisitionSettingsDispim;
-import org.micromanager.lightsheetmanager.api.ChannelSettings;
 import org.micromanager.lightsheetmanager.api.SheetCalibration;
 import org.micromanager.lightsheetmanager.api.SliceCalibration;
 import org.micromanager.lightsheetmanager.api.SliceSettings;
@@ -18,7 +17,6 @@ import java.util.Objects;
 
 public class DispimAcquisitionSettings extends BaseAcquisitionSettings implements AcquisitionSettingsDispim {
 
-    private final ChannelSettings channels_;
     private final TimingSettings timing_;
     private final VolumeSettings volume_;
     private final SliceSettings slice_;
@@ -45,7 +43,6 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
 
     private DispimAcquisitionSettings(Builder builder) {
         super(builder);
-        channels_ = builder.channelBuilder().build();
         timing_ = builder.timingBuilder().build();
         volume_ = builder.volumeBuilder().build();
         slice_ = builder.sliceBuilder().build();
@@ -82,11 +79,6 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
     @Override
     public Builder copyBuilder() {
         return new Builder(this);
-    }
-
-    @Override
-    public ChannelSettings channels() {
-        return channels_;
     }
 
     @Override
@@ -189,7 +181,7 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
             return false;
         }
         DispimAcquisitionSettings other = (DispimAcquisitionSettings) obj;
-        return Objects.equals(channels_, other.channels_) &&
+        return Objects.equals(channels(), other.channels()) &&
                 Objects.equals(timing_, other.timing_) &&
                 Objects.equals(volume_, other.volume_) &&
                 Objects.equals(slice_, other.slice_) &&
@@ -213,7 +205,7 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
     @Override
     public int hashCode() {
         return Objects.hash(
-                channels_,
+                channels(),
                 timing_,
                 volume_,
                 slice_,
@@ -238,14 +230,13 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
     @Override
     public String toString() {
         return String.format("%s[channels=%s, timing=%s, volume=%s, slice=%s, sliceLS=%s, stageScan=%s]",
-                getClass().getSimpleName(), channels_, timing_, volume_, slice_, sliceLS_, stageScan_);
+                getClass().getSimpleName(), channels(), timing_, volume_, slice_, sliceLS_, stageScan_);
     }
 
     public static class Builder
             extends BaseAcquisitionSettings.Builder<Builder>
             implements AcquisitionSettingsDispim.Builder<Builder> {
 
-        private ChannelSettings.Builder channelBuilder_ = DefaultChannelSettings.builder();
         private TimingSettings.Builder timingBuilder_ = DefaultTimingSettings.builder();
         private VolumeSettings.Builder volumeBuilder_ = DefaultVolumeSettings.builder();
         private SliceSettings.Builder sliceBuilder_ = DefaultSliceSettings.builder();
@@ -279,7 +270,6 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
 
         public Builder(final DispimAcquisitionSettings settings) {
             super(settings);
-            channelBuilder_ = settings.channels().copyBuilder();
             timingBuilder_ = settings.timing().copyBuilder();
             volumeBuilder_ = settings.volume().copyBuilder();
             sliceBuilder_ = settings.slice().copyBuilder();
@@ -369,10 +359,6 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
         }
 
         // getters for sub-builders
-        public ChannelSettings.Builder channelBuilder() {
-            return channelBuilder_;
-        }
-
         public TimingSettings.Builder timingBuilder() {
             return timingBuilder_;
         }

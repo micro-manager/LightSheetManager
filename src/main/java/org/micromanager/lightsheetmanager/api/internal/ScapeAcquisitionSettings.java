@@ -1,7 +1,6 @@
 package org.micromanager.lightsheetmanager.api.internal;
 
 import org.micromanager.lightsheetmanager.api.AcquisitionSettingsScape;
-import org.micromanager.lightsheetmanager.api.ChannelSettings;
 import org.micromanager.lightsheetmanager.api.SheetCalibration;
 import org.micromanager.lightsheetmanager.api.SliceCalibration;
 import org.micromanager.lightsheetmanager.api.SliceSettings;
@@ -17,7 +16,6 @@ import java.util.Objects;
 
 public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements AcquisitionSettingsScape {
 
-    private final ChannelSettings channels_;
     private final TimingSettings timing_;
     private final VolumeSettings volume_;
     private final SliceSettings slice_;
@@ -41,7 +39,6 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
 
     private ScapeAcquisitionSettings(Builder builder) {
         super(builder);
-        channels_ = builder.channelBuilder().build();
         timing_ = builder.timingBuilder().build();
         volume_ = builder.volumeBuilder().build();
         slice_ = builder.sliceBuilder().build();
@@ -72,11 +69,6 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
     @Override
     public Builder copyBuilder() {
         return new Builder(this);
-    }
-
-    @Override
-    public ChannelSettings channels() {
-        return channels_;
     }
 
     @Override
@@ -168,7 +160,7 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
             return false;
         }
         ScapeAcquisitionSettings other = (ScapeAcquisitionSettings) obj;
-        return Objects.equals(channels_, other.channels_) &&
+        return Objects.equals(channels(), other.channels()) &&
                 Objects.equals(timing_, other.timing_) &&
                 Objects.equals(volume_, other.volume_) &&
                 Objects.equals(slice_, other.slice_) &&
@@ -190,7 +182,7 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
     @Override
     public int hashCode() {
         return Objects.hash(
-                channels_,
+                channels(),
                 timing_,
                 volume_,
                 slice_,
@@ -214,14 +206,13 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
     @Override
     public String toString() {
         return String.format("%s[channels=%s, timing=%s, volume=%s, slice=%s]",
-                getClass().getSimpleName(), channels_, timing_, volume_, slice_);
+                getClass().getSimpleName(), channels(), timing_, volume_, slice_);
     }
 
     public static class Builder
             extends BaseAcquisitionSettings.Builder<Builder>
             implements AcquisitionSettingsScape.Builder<Builder> {
 
-        private ChannelSettings.Builder channelBuilder_ = DefaultChannelSettings.builder();
         private TimingSettings.Builder timingBuilder_ = DefaultTimingSettings.builder();
         private VolumeSettings.Builder volumeBuilder_ = DefaultVolumeSettings.builder();
         private SliceSettings.Builder sliceBuilder_ = DefaultSliceSettings.builder();
@@ -248,7 +239,6 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
 
         public Builder(final ScapeAcquisitionSettings settings) {
             super(settings);
-            channelBuilder_ = settings.channels().copyBuilder();
             timingBuilder_ = settings.timing().copyBuilder();
             volumeBuilder_ = settings.volume().copyBuilder();
             sliceBuilder_ = settings.slice().copyBuilder();
@@ -332,10 +322,6 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
         }
 
         // getters for sub-builders
-        public ChannelSettings.Builder channelBuilder() {
-            return channelBuilder_;
-        }
-
         public TimingSettings.Builder timingBuilder() {
             return timingBuilder_;
         }

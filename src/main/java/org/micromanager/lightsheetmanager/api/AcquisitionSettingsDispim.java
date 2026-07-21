@@ -17,13 +17,6 @@ public interface AcquisitionSettingsDispim extends AcquisitionSettings {
     Builder copyBuilder();
 
     /**
-     * Returns the immutable DefaultChannelSettings instance.
-     *
-     * @return immutable DefaultChannelSettings instance.
-     */
-    ChannelSettings channels();
-
-    /**
      * Returns the immutable DefaultTimingSettings instance.
      *
      * @return immutable DefaultTimingSettings instance.
