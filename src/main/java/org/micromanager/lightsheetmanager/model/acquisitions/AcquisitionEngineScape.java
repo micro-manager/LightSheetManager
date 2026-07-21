@@ -972,15 +972,22 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
 
         // must use PLogic for channels when using hardware time points
         if (isUsingHardwareTimePoints) {
+            // name the actual threshold so the user knows how much to raise the interval; round up to
+            // 0.1 s so the suggested value clears the threshold (interval < timepointDuration + 750 ms)
+            final double minIntervalSec = Math.ceil((timepointDuration + 750.0) / 100.0) / 10.0;
             if (acqSettings_.channels().enabled() && acqSettings_.channels().mode() == ChannelMode.VOLUME) {
-                studio_.logs().showError("Cannot use hardware time points (small time point interval) " +
-                        "with software channels (need to use PLogic channel switching).");
+                studio_.logs().showError("Time point interval is too short for software (\"Every Volume\") "
+                        + "channels: intervals under about " + minIntervalSec + " s switch to hardware time "
+                        + "points, which require hardware (PLogic) channel switching. Either raise the time "
+                        + "point interval to at least " + minIntervalSec + " s, or set the channel mode to "
+                        + "\"Every Slice (PLogic)\".");
                 return false;
             }
             if (acqSettings_.stageScan().enabled()) {
                 // stage scanning needs to be triggered for each time point
-                studio_.logs().showError("Cannot use hardware time points (small time point interval) "
-                        + "with stage scanning.");
+                studio_.logs().showError("Time point interval is too short: intervals under about "
+                        + minIntervalSec + " s switch to hardware time points, which can't be combined with "
+                        + "stage scanning. Raise the time point interval to at least " + minIntervalSec + " s.");
                 return false;
             }
         }
