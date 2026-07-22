@@ -21,6 +21,7 @@ import org.micromanager.lightsheetmanager.api.data.ChannelMode;
 import org.micromanager.lightsheetmanager.api.internal.DispimAcquisitionSettings;
 import org.micromanager.lightsheetmanager.api.internal.DefaultTimingSettings;
 import org.micromanager.lightsheetmanager.model.DataStorage;
+import org.micromanager.lightsheetmanager.model.utils.FileUtils;
 import org.micromanager.lightsheetmanager.LightSheetManager;
 import org.micromanager.lightsheetmanager.model.PLogicDispim;
 import org.micromanager.lightsheetmanager.model.devices.NIDAQ;
@@ -224,14 +225,14 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
         MMAcquisition acq = new MMAcquisition(studio_, dsmd,
                 this, sequenceSettingsBuilder.build());
 
-        curStore_ = acq.getDatastore();
+        datastore_ = acq.getDatastore();
         curPipeline_ = acq.getPipeline();
-        sink.setDatastore(curStore_);
+        sink.setDatastore(datastore_);
         sink.setPipeline(curPipeline_);
 
         studio_.events().registerForEvents(this);
         // commented because this is prob specific to MM MDAs
-//        studio_.events().post(new DefaultAcquisitionStartedEvent(curStore_, this,
+//        studio_.events().post(new DefaultAcquisitionStartedEvent(datastore_, this,
 //              acquisitionSettings));
 
 
@@ -486,8 +487,20 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
 
     @Override
     void finish() {
+        // finish() runs on EVERY path (the requestRun finally), even a setup-abort where the
+        // acquisition never started. That splits its work into two jobs. Keep them grouped:
+        //
+        //   Job A: restore hardware/system state. Must ALWAYS run: setup() can mutate hardware
+        //          before it fails, so each step self-guards on whether its state was changed.
+        //   Job B: end-of-acquisition work. Only valid if the run actually happened, so each step
+        //          self-guards on that (don't, e.g., save a datastore that was never filled).
+        //
+        // Adding a step? Pick its job: Job A runs unconditionally, Job B only when the run happened.
+        // Don't interleave them.
 
         final CameraBase[] cameras = model_.devices().imagingCameras();
+
+        // --- Job A ---
 
         // Stop all cameras sequences
         try {
@@ -509,22 +522,14 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
             controller_.stopSPIMStateMachines();
         }
 
+        // TODO: stage scan work pending (SCAPE finish() restores stage speed/position here)
+
         // Restore shutter/autoshutter to original state
         try {
             core_.setShutterOpen(isShutterOpen_);
             core_.setAutoShutter(autoShutter_);
         } catch (Exception e) {
             studio_.logs().logError("Couldn't restore shutter to original state");
-        }
-
-        // check if acquisition ended due to an exception and show error
-        // currentAcquisition_ can be null if an error occurred during setup
-        if (currentAcquisition_ != null) {
-            try {
-                currentAcquisition_.checkForExceptions();
-            } catch (Exception e) {
-                studio_.logs().logError(e);
-            }
         }
 
         // set the camera trigger modes back to internal for live mode
@@ -543,6 +548,35 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
         if (isPolling_) {
             studio_.logs().logMessage("started position polling after acquisition");
             model_.positions().startPolling();
+        }
+
+        // --- Job B ---
+
+        // check if acquisition ended due to an exception and show error
+        // currentAcquisition_ can be null if an error occurred during setup
+        if (currentAcquisition_ != null) {
+            try {
+                currentAcquisition_.checkForExceptions();
+            } catch (Exception e) {
+                studio_.logs().logError(e);
+            }
+        }
+
+        // TODO: execute any end-acquisition runnables
+
+        // don't save if the run never started or produced no images
+        if (acquisitionStarted_ && acqSettings_.isSavingImagesDuringAcquisition()
+                && datastore_.getNumImages() > 0) {
+            final String savePath = FileUtils.createUniquePath(
+                    acqSettings_.saveDirectory(), acqSettings_.saveNamePrefix());
+            try {
+                // convert from DataStorage.SaveMode to Datastore.SaveMode
+                final Datastore.SaveMode saveMode =
+                        DataStorage.SaveMode.convert(acqSettings_.saveMode());
+                datastore_.save(saveMode, savePath);
+            } catch (Exception e) {
+                model_.studio().logs().showError("could not save the acquisition data to: \n" + savePath);
+            }
         }
     }
 

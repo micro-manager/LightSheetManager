@@ -43,7 +43,6 @@ import org.micromanager.lightsheetmanager.model.utils.NumberUtils;
 import javax.swing.JLabel;
 import java.awt.geom.Point2D;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -299,14 +298,14 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
         MMAcquisition acq = new MMAcquisition(studio_, dsmd,
                 this, sequenceSettingsBuilder.build());
 
-        curStore_ = acq.getDatastore();
+        datastore_ = acq.getDatastore();
         curPipeline_ = acq.getPipeline();
-        sink.setDatastore(curStore_);
+        sink.setDatastore(datastore_);
         sink.setPipeline(curPipeline_);
 
         studio_.events().registerForEvents(this);
         // commented because this is prob specific to MM MDAs
-//        studio_.events().post(new DefaultAcquisitionStartedEvent(curStore_, this,
+//        studio_.events().post(new DefaultAcquisitionStartedEvent(datastore_, this,
 //              acquisitionSettings));
 
 
@@ -694,8 +693,20 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
 
     @Override
     void finish() {
+        // finish() runs on EVERY path (the requestRun finally), even a setup-abort where the
+        // acquisition never started. That splits its work into two jobs. Keep them grouped:
+        //
+        //   Job A: restore hardware/system state. Must ALWAYS run: setup() can mutate hardware
+        //          before it fails, so each step self-guards on whether its state was changed.
+        //   Job B: end-of-acquisition work. Only valid if the run actually happened, so each step
+        //          self-guards on that (don't, e.g., save a datastore that was never filled).
+        //
+        // Adding a step? Pick its job: Job A runs unconditionally, Job B only when the run happened.
+        // Don't interleave them.
 
         final CameraBase[] cameras = model_.devices().imagingCameras();
+
+        // --- Job A ---
 
         // Stop all cameras sequences
         try {
@@ -746,6 +757,26 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
             studio_.logs().logError("Couldn't restore shutter to original state");
         }
 
+        // set the camera trigger modes back to internal for live mode
+        if (savedExposures_.size() == cameras.length) {
+            for (int i = 0; i < cameras.length; i++) {
+                CameraBase camera = cameras[i];
+                camera.setTriggerMode(CameraMode.INTERNAL);
+                camera.setExposure(savedExposures_.get(i));
+            }
+        }
+
+        // unregister to stop ghost events
+        studio_.events().unregisterForEvents(this);
+
+        // start polling for navigation panel
+        if (isPolling_) {
+            studio_.logs().logMessage("started position polling after acquisition");
+            model_.positions().startPolling();
+        }
+
+        // --- Job B ---
+
         // check if acquisition ended due to an exception and show error
         // currentAcquisition_ can be null if an error occurred during setup
         if (currentAcquisition_ != null) {
@@ -758,35 +789,19 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
 
         // TODO: execute any end-acquisition runnables
 
-        // set the camera trigger modes back to internal for live mode
-        if (savedExposures_.size() == cameras.length) {
-            for (int i = 0; i < cameras.length; i++) {
-                CameraBase camera = cameras[i];
-                camera.setTriggerMode(CameraMode.INTERNAL);
-                camera.setExposure(savedExposures_.get(i));
-            }
-        }
-
-        if (acqSettings_.isSavingImagesDuringAcquisition()) {
+        // don't save if the run never started or produced no images
+        if (acquisitionStarted_ && acqSettings_.isSavingImagesDuringAcquisition()
+                && datastore_.getNumImages() > 0) {
             final String savePath = FileUtils.createUniquePath(
                     acqSettings_.saveDirectory(), acqSettings_.saveNamePrefix());
             try {
                 // convert from DataStorage.SaveMode to Datastore.SaveMode
                 final Datastore.SaveMode saveMode =
                         DataStorage.SaveMode.convert(acqSettings_.saveMode());
-                curStore_.save(saveMode, savePath);
-            } catch (IOException e) {
+                datastore_.save(saveMode, savePath);
+            } catch (Exception e) {
                 model_.studio().logs().showError("could not save the acquisition data to: \n" + savePath);
             }
-        }
-
-        // unregister to stop ghost events
-        studio_.events().unregisterForEvents(this);
-
-        // start polling for navigation panel
-        if (isPolling_) {
-            studio_.logs().logMessage("started position polling after acquisition");
-            model_.positions().startPolling();
         }
     }
 
