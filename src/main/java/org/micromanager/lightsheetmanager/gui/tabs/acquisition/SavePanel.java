@@ -14,7 +14,6 @@ import org.micromanager.lightsheetmanager.gui.components.SettingsListener;
 import org.micromanager.lightsheetmanager.gui.components.TextField;
 import org.micromanager.lightsheetmanager.gui.data.Icons;
 import org.micromanager.lightsheetmanager.gui.utils.DialogUtils;
-import org.micromanager.lightsheetmanager.model.DataStorage;
 import org.micromanager.lightsheetmanager.model.SettingsAdapter;
 import org.micromanager.lightsheetmanager.model.utils.FileUtils;
 
