@@ -46,8 +46,6 @@ public abstract class AcquisitionEngine implements AcquisitionManager, MMAcquist
     private final ExecutorService acquisitionExecutor_ = Executors.newSingleThreadExecutor(
             r -> new Thread(r, "Acquisition Thread"));
     protected volatile Acquisition currentAcquisition_ = null; // TODO: consider making a getter rather than protected?
-    // true once setup() succeeds and run() is about to begin; the end-of-run save only runs when this is true
-    protected boolean acquisitionStarted_ = false;
 
     private final AutofocusAdapter autofocus_;
 
@@ -158,8 +156,6 @@ public abstract class AcquisitionEngine implements AcquisitionManager, MMAcquist
                     studio_.logs().showError(e, "Error during acquisition setup");
                     return; // early exit => stop acquisition
                 }
-                // setup succeeded and we are about to run; end-of-run work (the save) is now valid
-                acquisitionStarted_ = true;
                 run(); // run the acquisition and block until complete
             } catch (Exception e) {
                 studio_.logs().showError(e);
@@ -172,10 +168,9 @@ public abstract class AcquisitionEngine implements AcquisitionManager, MMAcquist
                     // must ALWAYS run: if currentAcquisition_ is left set, every future
                     // acquisition is rejected until the plugin restarts
                     currentAcquisition_ = null;
-                    // free the datastore at acq end so a large store isn't kept in memory; matches MM's AcqEngJAdapter.onAcquisitionEnded
+                    // free the datastore so a large store isn't kept in memory (matches MM's
+                    // AcqEngJAdapter.onAcquisitionEnded); also what the save guard checks to skip aborted/empty runs
                     datastore_ = null;
-                    // reset for the next run; must be here (always runs), not in finish() which can throw
-                    acquisitionStarted_ = false;
                     // LSM-ACQ-STOP in the innermost finally: fires on completion, error, abort, throwing finish()
                     if (runId != -1) {
                         final long elapsedMs = (System.nanoTime() - startNs) / 1_000_000L;
