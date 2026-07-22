@@ -20,7 +20,6 @@ import org.micromanager.lightsheetmanager.api.AcquisitionManager;
 import org.micromanager.lightsheetmanager.api.data.AcquisitionMode;
 import org.micromanager.lightsheetmanager.api.internal.ScapeAcquisitionSettings;
 import org.micromanager.lightsheetmanager.gui.tabs.acquisition.DurationPanel;
-import org.micromanager.lightsheetmanager.model.DataStorage;
 import org.micromanager.lightsheetmanager.model.autofocus.AutofocusAdapter;
 import org.micromanager.lightsheetmanager.model.channels.ChannelSpec;
 import org.micromanager.lightsheetmanager.model.devices.cameras.CameraBase;
@@ -49,7 +48,6 @@ public abstract class AcquisitionEngine implements AcquisitionManager, MMAcquist
 
     private final AutofocusAdapter autofocus_;
 
-    private DataStorage data_; // TODO: use this, has enum that needs moved/deleted?
     protected Datastore datastore_;
     protected Pipeline curPipeline_;
     protected long nextWakeTime_ = -1;
@@ -63,7 +61,6 @@ public abstract class AcquisitionEngine implements AcquisitionManager, MMAcquist
         studio_ = model.studio();
         core_ = model.core();
 
-        data_ = new DataStorage(studio_);
         autofocus_ = new AutofocusAdapter(model_);
 
         // default settings

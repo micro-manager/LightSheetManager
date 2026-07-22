@@ -1,7 +1,6 @@
 package org.micromanager.lightsheetmanager.api.data;
 
 import org.micromanager.data.Datastore;
-import org.micromanager.lightsheetmanager.model.DataStorage;
 
 public enum SaveMode {
     SINGLEPLANE_TIFF_SERIES("Single Plane TIFF"),
@@ -14,7 +13,7 @@ public enum SaveMode {
         text_ = text;
     }
 
-    public static Datastore.SaveMode convert(final DataStorage.SaveMode mode) {
+    public static Datastore.SaveMode convert(final SaveMode mode) {
         switch (mode) {
             case ND_TIFF:
                 return Datastore.SaveMode.ND_TIFF;

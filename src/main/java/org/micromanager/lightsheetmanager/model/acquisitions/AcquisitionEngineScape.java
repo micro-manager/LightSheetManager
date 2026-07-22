@@ -20,10 +20,10 @@ import org.micromanager.lightsheetmanager.api.data.AcquisitionMode;
 import org.micromanager.lightsheetmanager.api.data.CameraLibrary;
 import org.micromanager.lightsheetmanager.api.data.CameraMode;
 import org.micromanager.lightsheetmanager.api.data.ChannelMode;
+import org.micromanager.lightsheetmanager.api.data.SaveMode;
 import org.micromanager.lightsheetmanager.api.internal.DefaultTimingSettings;
 import org.micromanager.lightsheetmanager.api.internal.ScapeAcquisitionSettings;
 import org.micromanager.lightsheetmanager.gui.utils.DialogUtils;
-import org.micromanager.lightsheetmanager.model.DataStorage;
 import org.micromanager.lightsheetmanager.LightSheetManager;
 import org.micromanager.lightsheetmanager.model.PLogicScape;
 import org.micromanager.lightsheetmanager.model.devices.DeviceAdapter;
@@ -261,11 +261,11 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
 
         // This sets the preferred save mode for DefaultDatastore, this value
         // is used in the MMAcquisition constructor to set the Storage object.
-        if (acqSettings_.saveMode() == DataStorage.SaveMode.ND_TIFF) {
+        if (acqSettings_.saveMode() == SaveMode.ND_TIFF) {
             DefaultDatastore.setPreferredSaveMode(studio_, Datastore.SaveMode.ND_TIFF);
-        } else if (acqSettings_.saveMode() == DataStorage.SaveMode.MULTIPAGE_TIFF) {
+        } else if (acqSettings_.saveMode() == SaveMode.MULTIPAGE_TIFF) {
             DefaultDatastore.setPreferredSaveMode(studio_, Datastore.SaveMode.MULTIPAGE_TIFF);
-        } else if (acqSettings_.saveMode() == DataStorage.SaveMode.SINGLEPLANE_TIFF_SERIES) {
+        } else if (acqSettings_.saveMode() == SaveMode.SINGLEPLANE_TIFF_SERIES) {
             DefaultDatastore.setPreferredSaveMode(studio_, Datastore.SaveMode.SINGLEPLANE_TIFF_SERIES);
         } else {
             studio_.logs().showError("Unsupported save mode: " + acqSettings_.saveMode());
@@ -796,8 +796,7 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
                     acqSettings_.saveDirectory(), acqSettings_.saveNamePrefix());
             try {
                 // convert from DataStorage.SaveMode to Datastore.SaveMode
-                final Datastore.SaveMode saveMode =
-                        DataStorage.SaveMode.convert(acqSettings_.saveMode());
+                final Datastore.SaveMode saveMode = SaveMode.convert(acqSettings_.saveMode());
                 datastore_.save(saveMode, savePath);
             } catch (Exception e) {
                 model_.studio().logs().showError("could not save the acquisition data to: \n" + savePath);

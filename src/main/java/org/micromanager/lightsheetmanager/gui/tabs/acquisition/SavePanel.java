@@ -4,6 +4,7 @@ import org.micromanager.internal.utils.FileDialogs;
 import org.micromanager.lightsheetmanager.LightSheetManager;
 import org.micromanager.lightsheetmanager.LightSheetManagerFrame;
 import org.micromanager.lightsheetmanager.api.AcquisitionSettings;
+import org.micromanager.lightsheetmanager.api.data.SaveMode;
 import org.micromanager.lightsheetmanager.api.internal.ScapeAcquisitionSettings;
 import org.micromanager.lightsheetmanager.gui.components.Button;
 import org.micromanager.lightsheetmanager.gui.components.CheckBox;
@@ -13,7 +14,6 @@ import org.micromanager.lightsheetmanager.gui.components.SettingsListener;
 import org.micromanager.lightsheetmanager.gui.components.TextField;
 import org.micromanager.lightsheetmanager.gui.data.Icons;
 import org.micromanager.lightsheetmanager.gui.utils.DialogUtils;
-import org.micromanager.lightsheetmanager.model.DataStorage;
 import org.micromanager.lightsheetmanager.model.SettingsAdapter;
 import org.micromanager.lightsheetmanager.model.utils.FileUtils;
 
@@ -32,7 +32,7 @@ public class SavePanel extends Panel implements SettingsListener {
     private Button btnBrowse_;
     private Button btnOpen_;
 
-    private ComboBox<DataStorage.SaveMode> cbxSaveMode_;
+    private ComboBox<SaveMode> cbxSaveMode_;
     private CheckBox cbxSaveWhileAcquiring_;
 
     private Button btnSaveSettings_;
@@ -108,7 +108,7 @@ public class SavePanel extends Panel implements SettingsListener {
         btnBrowse_ = new Button("...", 26, 20);
         btnOpen_ = new Button(Icons.FOLDER, 26, 20);
 
-        cbxSaveMode_ = new ComboBox<>(DataStorage.SaveMode.values(),
+        cbxSaveMode_ = new ComboBox<>(SaveMode.values(),
                 acqSettings.saveMode(), 110, 20);
 
         cbxSaveWhileAcquiring_ = new CheckBox("Save images during acquisition",

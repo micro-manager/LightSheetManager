@@ -1,7 +1,7 @@
 package org.micromanager.lightsheetmanager.api;
 
+import org.micromanager.lightsheetmanager.api.data.SaveMode;
 import org.micromanager.lightsheetmanager.api.internal.DefaultAutofocusSettings;
-import org.micromanager.lightsheetmanager.model.DataStorage;
 
 /**
  * Base acquisition settings for all microscopes.
@@ -43,7 +43,7 @@ public interface AcquisitionSettings {
          *
          * @param saveMode the save mode
          */
-        T saveMode(final DataStorage.SaveMode saveMode);
+        T saveMode(final SaveMode saveMode);
 
         /**
          * Returns the autofocus settings builder.
@@ -108,7 +108,7 @@ public interface AcquisitionSettings {
      *
      * @return the save mode of the acquisition.
      */
-    DataStorage.SaveMode saveMode();
+    SaveMode saveMode();
 
     /**
      * Returns the autofocus settings.
