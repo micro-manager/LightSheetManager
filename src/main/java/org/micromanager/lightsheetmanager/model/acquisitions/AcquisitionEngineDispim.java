@@ -564,7 +564,9 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
 
         // TODO: execute any end-acquisition runnables
 
-        if (acqSettings_.isSavingImagesDuringAcquisition()) {
+        // don't save if the run never started or produced no images
+        if (acquisitionStarted_ && acqSettings_.isSavingImagesDuringAcquisition()
+                && datastore_.getNumImages() > 0) {
             final String savePath = FileUtils.createUniquePath(
                     acqSettings_.saveDirectory(), acqSettings_.saveNamePrefix());
             try {
