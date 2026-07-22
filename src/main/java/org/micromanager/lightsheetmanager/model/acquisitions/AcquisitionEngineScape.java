@@ -789,9 +789,9 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
 
         // TODO: execute any end-acquisition runnables
 
-        // don't save if the run never started or produced no images
-        if (acquisitionStarted_ && acqSettings_.isSavingImagesDuringAcquisition()
-                && datastore_.getNumImages() > 0) {
+        // save only if this run created a store with images
+        if (acqSettings_.isSavingImagesDuringAcquisition()
+                && datastore_ != null && datastore_.getNumImages() > 0) {
             final String savePath = FileUtils.createUniquePath(
                     acqSettings_.saveDirectory(), acqSettings_.saveNamePrefix());
             try {
