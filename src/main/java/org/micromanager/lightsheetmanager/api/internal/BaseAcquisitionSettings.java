@@ -11,7 +11,7 @@ import org.micromanager.lightsheetmanager.api.SliceSettings;
 import org.micromanager.lightsheetmanager.api.StageScanSettings;
 import org.micromanager.lightsheetmanager.api.TimingSettings;
 import org.micromanager.lightsheetmanager.api.VolumeSettings;
-import org.micromanager.lightsheetmanager.model.DataStorage;
+import org.micromanager.lightsheetmanager.api.data.SaveMode;
 
 /**
  * Base acquisition settings for all microscopes.
@@ -24,7 +24,7 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
         private String saveNamePrefix_ = "Experiment";
         private boolean saveDuringAcq_ = false;
         private boolean demoMode_ = false;
-        private DataStorage.SaveMode saveMode_ = DataStorage.SaveMode.ND_TIFF;
+        private SaveMode saveMode_ = SaveMode.ND_TIFF;
 
         private DefaultAutofocusSettings.Builder afBuilder_ = DefaultAutofocusSettings.builder();
         private ChannelSettings.Builder channelBuilder_ = DefaultChannelSettings.builder();
@@ -92,7 +92,7 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
          * @param saveMode the save mode
          */
         @Override
-        public T saveMode(final DataStorage.SaveMode saveMode) {
+        public T saveMode(final SaveMode saveMode) {
             saveMode_ = saveMode;
             return self();
         }
@@ -133,7 +133,7 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
     private final String saveDirectory_;
     private final boolean saveDuringAcq_;
     private final boolean demoMode_;
-    private final DataStorage.SaveMode saveMode_;
+    private final SaveMode saveMode_;
 
     private final DefaultAutofocusSettings autofocus_;
     private final ChannelSettings channels_;
@@ -200,7 +200,7 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
      * @return the save mode
      */
     @Override
-    public DataStorage.SaveMode saveMode() {
+    public SaveMode saveMode() {
         return saveMode_;
     }
 
