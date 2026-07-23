@@ -31,6 +31,9 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
         private CameraData[] imagingCameraOrder_ = {};
         private boolean useMultiplePositions_ = false;
         private int postMoveDelay_ = 0;
+        private boolean useTimePoints_ = false;
+        private int numTimePoints_ = 1;
+        private double timePointInterval_ = 0.0;
 
         private DefaultAutofocusSettings.Builder afBuilder_ = DefaultAutofocusSettings.builder();
         private ChannelSettings.Builder channelBuilder_ = DefaultChannelSettings.builder();
@@ -48,6 +51,9 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
             imagingCameraOrder_ = settings.imagingCameraOrder();
             useMultiplePositions_ = settings.isUsingMultiplePositions();
             postMoveDelay_ = settings.postMoveDelay();
+            useTimePoints_ = settings.isUsingTimePoints();
+            numTimePoints_ = settings.numTimePoints();
+            timePointInterval_ = settings.timePointInterval();
             afBuilder_ = settings.autofocus().copyBuilder();
             channelBuilder_ = settings.channels().copyBuilder();
         }
@@ -155,6 +161,42 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
             return self();
         }
 
+        /**
+         * Sets the acquisition to use time points.
+         *
+         * @param state true to use time points
+         * @return {@code this} builder
+         */
+        @Override
+        public T useTimePoints(final boolean state) {
+            useTimePoints_ = state;
+            return self();
+        }
+
+        /**
+         * Sets the number of time points.
+         *
+         * @param numTimePoints the number of time points
+         * @return {@code this} builder
+         */
+        @Override
+        public T numTimePoints(final int numTimePoints) {
+            numTimePoints_ = numTimePoints;
+            return self();
+        }
+
+        /**
+         * Sets the time point interval between time points in seconds.
+         *
+         * @param timePointInterval the time point interval in seconds
+         * @return {@code this} builder
+         */
+        @Override
+        public T timePointInterval(final double timePointInterval) {
+            timePointInterval_ = timePointInterval;
+            return self();
+        }
+
         @Override
         public DefaultAutofocusSettings.Builder autofocusBuilder() {
             return afBuilder_;
@@ -196,6 +238,9 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
     private final CameraData[] imagingCameraOrder_;
     private final boolean useMultiplePositions_;
     private final int postMoveDelay_;
+    private final boolean useTimePoints_;
+    private final int numTimePoints_;
+    private final double timePointInterval_;
 
     private final DefaultAutofocusSettings autofocus_;
     private final ChannelSettings channels_;
@@ -216,6 +261,9 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
         imagingCameraOrder_ = builder.imagingCameraOrder_.clone();
         useMultiplePositions_ = builder.useMultiplePositions_;
         postMoveDelay_ = builder.postMoveDelay_;
+        useTimePoints_ = builder.useTimePoints_;
+        numTimePoints_ = builder.numTimePoints_;
+        timePointInterval_ = builder.timePointInterval_;
         autofocus_ = builder.afBuilder_.build();
         channels_ = builder.channelBuilder_.build();
     }
@@ -308,6 +356,36 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
     @Override
     public int postMoveDelay() {
         return postMoveDelay_;
+    }
+
+    /**
+     * Returns true if using time points.
+     *
+     * @return true if using time points.
+     */
+    @Override
+    public boolean isUsingTimePoints() {
+        return useTimePoints_;
+    }
+
+    /**
+     * Returns the number of time points.
+     *
+     * @return the number of time points.
+     */
+    @Override
+    public int numTimePoints() {
+        return numTimePoints_;
+    }
+
+    /**
+     * Returns the time point interval in seconds.
+     *
+     * @return the time point interval in seconds.
+     */
+    @Override
+    public double timePointInterval() {
+        return timePointInterval_;
     }
 
     /**

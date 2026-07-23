@@ -71,13 +71,6 @@ public interface AcquisitionSettingsDispim extends AcquisitionSettings {
     AcquisitionMode acquisitionMode();
 
     /**
-     * Returns true if using time points.
-     *
-     * @return true if using time points.
-     */
-    boolean isUsingTimePoints();
-
-    /**
      * Returns true if using hardware time points.
      *
      * @return true if using hardware time points.
@@ -91,20 +84,6 @@ public interface AcquisitionSettingsDispim extends AcquisitionSettings {
      */
     boolean isUsingAdvancedTiming();
 
-    /**
-     * Returns the number of time points.
-     *
-     * @return the number of time points.
-     */
-    int numTimePoints();
-
-    /**
-     * Returns the time point interval in seconds.
-     *
-     * @return the time point interval in seconds.
-     */
-    double timePointInterval();
-
     double liveScanPeriod();
 
     interface Builder<T extends AcquisitionSettings.Builder<T>> extends AcquisitionSettings.Builder<T> {
@@ -116,14 +95,6 @@ public interface AcquisitionSettingsDispim extends AcquisitionSettings {
          * @return {@code this} builder
          */
         T acquisitionMode(final AcquisitionMode acqMode);
-
-        /**
-         * Sets the acquisition to use time points.
-         *
-         * @param state true to use time points
-         * @return {@code this} builder
-         */
-        T useTimePoints(final boolean state);
 
         /**
          * Sets the acquisition to use hardware time points.
@@ -140,22 +111,6 @@ public interface AcquisitionSettingsDispim extends AcquisitionSettings {
          * @return {@code this} builder
          */
         T useAdvancedTiming(final boolean state);
-
-        /**
-         * Sets the number of time points.
-         *
-         * @param numTimePoints the number of time points
-         * @return {@code this} builder
-         */
-        T numTimePoints(final int numTimePoints);
-
-        /**
-         * Sets the time point interval between time points in seconds.
-         *
-         * @param timePointInterval the time point interval in seconds
-         * @return {@code this} builder
-         */
-        T timePointInterval(final double timePointInterval);
 
         T liveScanPeriod(final double liveScanPeriod);
 

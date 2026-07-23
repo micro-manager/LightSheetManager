@@ -80,6 +80,30 @@ public interface AcquisitionSettings {
         T postMoveDelay(final int postMoveDelay);
 
         /**
+         * Sets the acquisition to use time points.
+         *
+         * @param state true to use time points
+         * @return {@code this} builder
+         */
+        T useTimePoints(final boolean state);
+
+        /**
+         * Sets the number of time points.
+         *
+         * @param numTimePoints the number of time points
+         * @return {@code this} builder
+         */
+        T numTimePoints(final int numTimePoints);
+
+        /**
+         * Sets the time point interval between time points in seconds.
+         *
+         * @param timePointInterval the time point interval in seconds
+         * @return {@code this} builder
+         */
+        T timePointInterval(final double timePointInterval);
+
+        /**
          * Returns the autofocus settings builder.
          *
          * @return the autofocus settings builder
@@ -173,6 +197,27 @@ public interface AcquisitionSettings {
      * @return the post move delay in milliseconds.
      */
     int postMoveDelay();
+
+    /**
+     * Returns true if using time points.
+     *
+     * @return true if using time points.
+     */
+    boolean isUsingTimePoints();
+
+    /**
+     * Returns the number of time points.
+     *
+     * @return the number of time points.
+     */
+    int numTimePoints();
+
+    /**
+     * Returns the time point interval in seconds.
+     *
+     * @return the time point interval in seconds.
+     */
+    double timePointInterval();
 
     /**
      * Returns the autofocus settings.
