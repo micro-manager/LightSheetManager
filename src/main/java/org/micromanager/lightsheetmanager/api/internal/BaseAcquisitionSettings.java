@@ -11,6 +11,7 @@ import org.micromanager.lightsheetmanager.api.SliceSettings;
 import org.micromanager.lightsheetmanager.api.StageScanSettings;
 import org.micromanager.lightsheetmanager.api.TimingSettings;
 import org.micromanager.lightsheetmanager.api.VolumeSettings;
+import org.micromanager.lightsheetmanager.api.data.CameraData;
 import org.micromanager.lightsheetmanager.api.data.CameraMode;
 import org.micromanager.lightsheetmanager.api.data.SaveMode;
 
@@ -27,6 +28,7 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
         private boolean demoMode_ = false;
         private SaveMode saveMode_ = SaveMode.ND_TIFF;
         private CameraMode cameraMode_ = CameraMode.EDGE;
+        private CameraData[] imagingCameraOrder_ = {};
 
         private DefaultAutofocusSettings.Builder afBuilder_ = DefaultAutofocusSettings.builder();
         private ChannelSettings.Builder channelBuilder_ = DefaultChannelSettings.builder();
@@ -41,6 +43,7 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
             demoMode_ = settings.demoMode();
             saveMode_ = settings.saveMode();
             cameraMode_ = settings.cameraMode();
+            imagingCameraOrder_ = settings.imagingCameraOrder();
             afBuilder_ = settings.autofocus().copyBuilder();
             channelBuilder_ = settings.channels().copyBuilder();
         }
@@ -112,6 +115,18 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
             return self();
         }
 
+        /**
+         * Sets the imaging camera order.
+         *
+         * @param order the imaging camera order
+         * @return {@code this} builder
+         */
+        @Override
+        public T imagingCameraOrder(final CameraData[] order) {
+            imagingCameraOrder_ = order;
+            return self();
+        }
+
         @Override
         public DefaultAutofocusSettings.Builder autofocusBuilder() {
             return afBuilder_;
@@ -150,6 +165,7 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
     private final boolean demoMode_;
     private final SaveMode saveMode_;
     private final CameraMode cameraMode_;
+    private final CameraData[] imagingCameraOrder_;
 
     private final DefaultAutofocusSettings autofocus_;
     private final ChannelSettings channels_;
@@ -167,6 +183,7 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
         demoMode_ = builder.demoMode_;
         saveMode_ = builder.saveMode_;
         cameraMode_ = builder.cameraMode_;
+        imagingCameraOrder_ = builder.imagingCameraOrder_.clone();
         autofocus_ = builder.afBuilder_.build();
         channels_ = builder.channelBuilder_.build();
     }
@@ -229,6 +246,16 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
     @Override
     public CameraMode cameraMode() {
         return cameraMode_;
+    }
+
+    /**
+     * Returns the imaging camera order.
+     *
+     * @return the imaging camera order
+     */
+    @Override
+    public CameraData[] imagingCameraOrder() {
+        return imagingCameraOrder_;
     }
 
     /**

@@ -1,5 +1,6 @@
 package org.micromanager.lightsheetmanager.api;
 
+import org.micromanager.lightsheetmanager.api.data.CameraData;
 import org.micromanager.lightsheetmanager.api.data.CameraMode;
 import org.micromanager.lightsheetmanager.api.data.SaveMode;
 import org.micromanager.lightsheetmanager.api.internal.DefaultAutofocusSettings;
@@ -53,6 +54,14 @@ public interface AcquisitionSettings {
          * @return {@code this} builder
          */
         T cameraMode(final CameraMode mode);
+
+        /**
+         * Sets the imaging camera order.
+         *
+         * @param order the imaging camera order
+         * @return {@code this} builder
+         */
+        T imagingCameraOrder(final CameraData[] order);
 
         /**
          * Returns the autofocus settings builder.
@@ -127,6 +136,13 @@ public interface AcquisitionSettings {
      * @return the camera mode.
      */
     CameraMode cameraMode();
+
+    /**
+     * Returns the imaging camera order.
+     *
+     * @return the imaging camera order
+     */
+    CameraData[] imagingCameraOrder();
 
     /**
      * Returns the autofocus settings.

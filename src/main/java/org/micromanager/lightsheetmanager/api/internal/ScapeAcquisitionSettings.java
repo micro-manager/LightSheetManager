@@ -8,7 +8,6 @@ import org.micromanager.lightsheetmanager.api.StageScanSettings;
 import org.micromanager.lightsheetmanager.api.TimingSettings;
 import org.micromanager.lightsheetmanager.api.VolumeSettings;
 import org.micromanager.lightsheetmanager.api.data.AcquisitionMode;
-import org.micromanager.lightsheetmanager.api.data.CameraData;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -23,8 +22,6 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
     private final SliceCalibration sliceCalibration_;
 
     private final AcquisitionMode acquisitionMode_;
-
-    private final CameraData[] imagingCameraOrder_;
 
     private final boolean useTimePoints_;
     private final boolean useMultiplePositions_;
@@ -44,7 +41,6 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
         sheetCalibration_ = builder.sheetCalibrationBuilder().build();
         sliceCalibration_ = builder.sliceCalibrationBuilder().build();
         acquisitionMode_ = builder.acquisitionMode_;
-        imagingCameraOrder_ = builder.imagingCameraOrder_.clone();
         useTimePoints_ = builder.useTimePoints_;
         useMultiplePositions_ = builder.useMultiplePositions_;
         useHardwareTimePoints_ = builder.useHardwareTimePoints_;
@@ -104,11 +100,6 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
     }
 
     @Override
-    public CameraData[] imagingCameraOrder() {
-        return imagingCameraOrder_;
-    }
-
-    @Override
     public boolean isUsingTimePoints() {
         return useTimePoints_;
     }
@@ -161,7 +152,7 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
                 Objects.equals(sliceCalibration_, other.sliceCalibration_) &&
                 acquisitionMode_ == other.acquisitionMode_ &&
                 cameraMode() == other.cameraMode() &&
-                Arrays.equals(imagingCameraOrder_, other.imagingCameraOrder_) &&
+                Arrays.equals(imagingCameraOrder(), other.imagingCameraOrder()) &&
                 useTimePoints_ == other.useTimePoints_ &&
                 useMultiplePositions_ == other.useMultiplePositions_ &&
                 useHardwareTimePoints_ == other.useHardwareTimePoints_ &&
@@ -183,7 +174,7 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
                 sliceCalibration_,
                 acquisitionMode_,
                 cameraMode(),
-                Arrays.hashCode(imagingCameraOrder_),
+                Arrays.hashCode(imagingCameraOrder()),
                 useTimePoints_,
                 useMultiplePositions_,
                 useHardwareTimePoints_,
@@ -214,8 +205,6 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
 
         private AcquisitionMode acquisitionMode_ = AcquisitionMode.NO_SCAN;
 
-        private CameraData[] imagingCameraOrder_ = {};
-
         private boolean useTimePoints_ = false;
         private boolean useMultiplePositions_ = false;
         private boolean useHardwareTimePoints_ = false;
@@ -237,7 +226,6 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
             sheetCalibBuilder_ = settings.sheetCalibration().copyBuilder();
             sliceCalibBuilder_ = settings.sliceCalibration().copyBuilder();
             acquisitionMode_ = settings.acquisitionMode();
-            imagingCameraOrder_ = settings.imagingCameraOrder();
             useTimePoints_ = settings.isUsingTimePoints();
             useMultiplePositions_ = settings.isUsingMultiplePositions();
             useHardwareTimePoints_ = settings.isUsingHardwareTimePoints();
@@ -254,12 +242,6 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
                     || mode == AcquisitionMode.STAGE_SCAN_INTERLEAVED
                     || mode == AcquisitionMode.STAGE_SCAN_UNIDIRECTIONAL);
             stageScanBuilder_.enabled(scanEnabled);
-            return this;
-        }
-
-        @Override
-        public Builder imagingCameraOrder(final CameraData[] order) {
-            imagingCameraOrder_ = order;
             return this;
         }
 
