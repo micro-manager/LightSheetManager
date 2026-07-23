@@ -39,6 +39,7 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
 
         private DefaultAutofocusSettings.Builder afBuilder_ = DefaultAutofocusSettings.builder();
         private ChannelSettings.Builder channelBuilder_ = DefaultChannelSettings.builder();
+        private VolumeSettings.Builder volumeBuilder_ = DefaultVolumeSettings.builder();
 
         public Builder() {
         }
@@ -59,6 +60,7 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
             acquisitionMode_ = settings.acquisitionMode();
             afBuilder_ = settings.autofocus().copyBuilder();
             channelBuilder_ = settings.channels().copyBuilder();
+            volumeBuilder_ = settings.volume().copyBuilder();
         }
 
         /**
@@ -237,6 +239,10 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
             return channelBuilder_;
         }
 
+        public VolumeSettings.Builder volumeBuilder() {
+            return volumeBuilder_;
+        }
+
         /**
          * Creates an immutable instance of DefaultAcquisitionSettings
          *
@@ -276,6 +282,7 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
 
     private final DefaultAutofocusSettings autofocus_;
     private final ChannelSettings channels_;
+    private final VolumeSettings volume_;
 
 //    public DefaultAcquisitionSettings() {
 //        saveNamePrefix_ = "";
@@ -299,6 +306,7 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
         acquisitionMode_ = builder.acquisitionMode_;
         autofocus_ = builder.afBuilder_.build();
         channels_ = builder.channelBuilder_.build();
+        volume_ = builder.volumeBuilder_.build();
     }
 
     /**
@@ -449,6 +457,16 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
     @Override
     public ChannelSettings channels() {
         return channels_;
+    }
+
+    /**
+     * Returns the immutable VolumeSettings instance.
+     *
+     * @return immutable VolumeSettings instance.
+     */
+    @Override
+    public VolumeSettings volume() {
+        return volume_;
     }
 
     @Override

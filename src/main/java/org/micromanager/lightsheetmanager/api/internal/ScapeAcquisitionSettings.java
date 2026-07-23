@@ -6,7 +6,6 @@ import org.micromanager.lightsheetmanager.api.SliceCalibration;
 import org.micromanager.lightsheetmanager.api.SliceSettings;
 import org.micromanager.lightsheetmanager.api.StageScanSettings;
 import org.micromanager.lightsheetmanager.api.TimingSettings;
-import org.micromanager.lightsheetmanager.api.VolumeSettings;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -14,7 +13,6 @@ import java.util.Objects;
 public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements AcquisitionSettingsScape {
 
     private final TimingSettings timing_;
-    private final VolumeSettings volume_;
     private final SliceSettings slice_;
     private final StageScanSettings stageScan_;
     private final SheetCalibration sheetCalibration_;
@@ -26,7 +24,6 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
     private ScapeAcquisitionSettings(Builder builder) {
         super(builder);
         timing_ = builder.timingBuilder().build();
-        volume_ = builder.volumeBuilder().build();
         slice_ = builder.sliceBuilder().build();
         stageScan_ = builder.stageScanBuilder().build();
         sheetCalibration_ = builder.sheetCalibrationBuilder().build();
@@ -52,11 +49,6 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
     @Override
     public TimingSettings timing() {
         return timing_;
-    }
-
-    @Override
-    public VolumeSettings volume() {
-        return volume_;
     }
 
     @Override
@@ -100,7 +92,7 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
         ScapeAcquisitionSettings other = (ScapeAcquisitionSettings) obj;
         return Objects.equals(channels(), other.channels()) &&
                 Objects.equals(timing_, other.timing_) &&
-                Objects.equals(volume_, other.volume_) &&
+                Objects.equals(volume(), other.volume()) &&
                 Objects.equals(slice_, other.slice_) &&
                 Objects.equals(stageScan_, other.stageScan_) &&
                 Objects.equals(sheetCalibration_, other.sheetCalibration_) &&
@@ -122,7 +114,7 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
         return Objects.hash(
                 channels(),
                 timing_,
-                volume_,
+                volume(),
                 slice_,
                 stageScan_,
                 sheetCalibration_,
@@ -144,7 +136,7 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
     @Override
     public String toString() {
         return String.format("%s[channels=%s, timing=%s, volume=%s, slice=%s]",
-                getClass().getSimpleName(), channels(), timing_, volume_, slice_);
+                getClass().getSimpleName(), channels(), timing_, volume(), slice_);
     }
 
     public static class Builder
@@ -152,7 +144,6 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
             implements AcquisitionSettingsScape.Builder<Builder> {
 
         private TimingSettings.Builder timingBuilder_ = DefaultTimingSettings.builder();
-        private VolumeSettings.Builder volumeBuilder_ = DefaultVolumeSettings.builder();
         private SliceSettings.Builder sliceBuilder_ = DefaultSliceSettings.builder();
         private StageScanSettings.Builder stageScanBuilder_ = DefaultStageScanSettings.builder();
         private SheetCalibration.Builder sheetCalibBuilder_ = DefaultSheetCalibration.builder();
@@ -167,7 +158,6 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
         public Builder(final ScapeAcquisitionSettings settings) {
             super(settings);
             timingBuilder_ = settings.timing().copyBuilder();
-            volumeBuilder_ = settings.volume().copyBuilder();
             sliceBuilder_ = settings.slice().copyBuilder();
             stageScanBuilder_ = settings.stageScan().copyBuilder();
             sheetCalibBuilder_ = settings.sheetCalibration().copyBuilder();
@@ -193,10 +183,6 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
             return timingBuilder_;
         }
 
-        public VolumeSettings.Builder volumeBuilder() {
-            return volumeBuilder_;
-        }
-
         public SliceSettings.Builder sliceBuilder() {
             return sliceBuilder_;
         }
@@ -216,10 +202,6 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
 
         public void timingBuilder(DefaultTimingSettings.Builder builder) {
             timingBuilder_ = builder;
-        }
-
-        public void volumeBuilder(DefaultVolumeSettings.Builder builder) {
-            volumeBuilder_ = builder;
         }
 
         @Override
