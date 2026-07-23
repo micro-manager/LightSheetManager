@@ -90,6 +90,9 @@ public interface AcquisitionSettingsDispim extends AcquisitionSettings {
 
         /**
          * Sets the acquisition mode.
+         * <p>
+         * If the mode is a stage scanning mode,
+         * set the stage scanning flag to true.
          *
          * @param acqMode the acquisition mode
          * @return {@code this} builder

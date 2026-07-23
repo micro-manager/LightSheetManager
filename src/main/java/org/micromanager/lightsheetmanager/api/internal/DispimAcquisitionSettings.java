@@ -226,6 +226,10 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
         @Override
         public Builder acquisitionMode(final AcquisitionMode mode) {
             acquisitionMode_ = mode;
+            final boolean scanEnabled = (mode == AcquisitionMode.STAGE_SCAN
+                    || mode == AcquisitionMode.STAGE_SCAN_INTERLEAVED
+                    || mode == AcquisitionMode.STAGE_SCAN_UNIDIRECTIONAL);
+            stageScanBuilder_.enabled(scanEnabled);
             return this;
         }
 
