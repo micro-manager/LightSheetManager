@@ -1,7 +1,5 @@
 package org.micromanager.lightsheetmanager.api;
 
-import org.micromanager.lightsheetmanager.api.data.AcquisitionMode;
-
 /**
  * Acquisition settings for SCAPE microscopes.
  */
@@ -57,13 +55,6 @@ public interface AcquisitionSettingsScape extends AcquisitionSettings {
     SliceCalibration sliceCalibration();
 
     /**
-     * Returns the acquisition mode.
-     *
-     * @return the acquisition mode.
-     */
-    AcquisitionMode acquisitionMode();
-
-    /**
      * Returns true if using hardware time points.
      *
      * @return true if using hardware time points.
@@ -78,17 +69,6 @@ public interface AcquisitionSettingsScape extends AcquisitionSettings {
     boolean isUsingAdvancedTiming();
 
     interface Builder<T extends AcquisitionSettings.Builder<T>> extends AcquisitionSettings.Builder<T> {
-
-        /**
-         * Sets the acquisition mode.
-         * <p>
-         * If the mode is a stage scanning mode,
-         * set the stage scanning flag to true.
-         *
-         * @param mode the acquisition mode
-         * @return {@code this} builder
-         */
-        T acquisitionMode(final AcquisitionMode mode);
 
         /**
          * Sets the acquisition to use hardware time points.

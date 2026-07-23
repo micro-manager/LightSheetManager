@@ -8,7 +8,6 @@ import org.micromanager.lightsheetmanager.api.SliceSettingsLightSheet;
 import org.micromanager.lightsheetmanager.api.StageScanSettings;
 import org.micromanager.lightsheetmanager.api.TimingSettings;
 import org.micromanager.lightsheetmanager.api.VolumeSettings;
-import org.micromanager.lightsheetmanager.api.data.AcquisitionMode;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -22,8 +21,6 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
     private final StageScanSettings stageScan_;
     private final SheetCalibration[] sheetCalibrations_;
     private final SliceCalibration[] sliceCalibrations_;
-
-    private final AcquisitionMode acquisitionMode_;
 
     private final boolean useHardwareTimePoints_;
     private final boolean useAdvancedTiming_;
@@ -43,7 +40,6 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
             sheetCalibrations_[i] = builder.shcb_[i].build();
             sliceCalibrations_[i] = builder.slcb_[i].build();
         }
-        acquisitionMode_ = builder.acquisitionMode_;
         useHardwareTimePoints_ = builder.useHardwareTimePoints_;
         useAdvancedTiming_ = builder.useAdvancedTiming_;
         liveScanPeriod_= builder.liveScanPeriod_;
@@ -99,11 +95,6 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
     }
 
     @Override
-    public AcquisitionMode acquisitionMode() {
-        return acquisitionMode_;
-    }
-
-    @Override
     public boolean isUsingHardwareTimePoints() {
         return useHardwareTimePoints_;
     }
@@ -136,7 +127,7 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
                 Objects.equals(stageScan_, other.stageScan_) &&
                 // Objects.equals(sheetCalibration_, other.sheetCalibration_) &&
                 // Objects.equals(sliceCalibration_, other.sliceCalibration_) &&
-                acquisitionMode_ == other.acquisitionMode_ &&
+                acquisitionMode() == other.acquisitionMode() &&
                 cameraMode() == other.cameraMode() &&
                 Arrays.equals(imagingCameraOrder(), other.imagingCameraOrder()) &&
                 isUsingTimePoints() == other.isUsingTimePoints() &&
@@ -160,7 +151,7 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
                 stageScan_,
                 // sheetCalibration_,
                 // sliceCalibration_,
-                acquisitionMode_,
+                acquisitionMode(),
                 cameraMode(),
                 Arrays.hashCode(imagingCameraOrder()),
                 isUsingTimePoints(),
@@ -192,8 +183,6 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
         private SheetCalibration.Builder[] shcb_ = new DefaultSheetCalibration.Builder[2];
         private SliceCalibration.Builder[] slcb_ = new DefaultSliceCalibration.Builder[2];
 
-        private AcquisitionMode acquisitionMode_ = AcquisitionMode.NO_SCAN;
-
         private boolean useHardwareTimePoints_ = false;
         private boolean useAdvancedTiming_ = false;
 
@@ -217,16 +206,9 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
                 slcb_[i] = settings.sliceCalibrations_[i].copyBuilder();
                 shcb_[i] = settings.sheetCalibrations_[i].copyBuilder();
             }
-            acquisitionMode_ = settings.acquisitionMode();
             useHardwareTimePoints_ = settings.isUsingHardwareTimePoints();
             useAdvancedTiming_ =  settings.isUsingAdvancedTiming();
             liveScanPeriod_ = settings.liveScanPeriod();
-        }
-
-        @Override
-        public Builder acquisitionMode(final AcquisitionMode mode) {
-            acquisitionMode_ = mode;
-            return this;
         }
 
         @Override
@@ -264,6 +246,7 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
             return ssbLS_;
         }
 
+        @Override
         public StageScanSettings.Builder stageScanBuilder() {
             return stageScanBuilder_;
         }
