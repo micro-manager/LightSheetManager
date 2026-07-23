@@ -46,7 +46,7 @@ public interface SheetCalibration {
         /**
          * Sets the width per pixel when isUsingAutoSheetWidth is true.
          *
-         * @param widthPerPixel TODO: units?
+         * @param widthPerPixel the width per pixel
          */
         Builder autoSheetWidthPerPixel(final double widthPerPixel);
 

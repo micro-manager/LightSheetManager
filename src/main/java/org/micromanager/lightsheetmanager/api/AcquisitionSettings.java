@@ -52,10 +52,12 @@ public interface AcquisitionSettings {
          */
         DefaultAutofocusSettings.Builder autofocusBuilder();
 
-        // TODO: document this
         /**
+         * Returns this builder instance, cast to the concrete subtype.
+         * Used internally so that setter calls in the base builder return
+         * the concrete builder type for method chaining.
          *
-         * @return
+         * @return this builder, as {@code T}
          */
         T self();
 

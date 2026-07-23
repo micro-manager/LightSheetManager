@@ -65,9 +65,9 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
         }
 
         /**
-         * Sets the folder name.
+         * Sets the plugin to save images during an acquisition.
          *
-         * @param state the name of the folder
+         * @param state true to save images during an acquisition
          */
         @Override
         public T saveImagesDuringAcquisition(final boolean state) {

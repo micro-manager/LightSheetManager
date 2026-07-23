@@ -16,9 +16,9 @@ public interface AutofocusSettings {
     Builder copyBuilder();
 
     /**
-     * Return true if channels are enabled.
+     * Returns true if autofocus is enabled.
      *
-     * @return true if channels are enabled
+     * @return true if autofocus is enabled
      */
     boolean enabled();
 
@@ -64,9 +64,9 @@ public interface AutofocusSettings {
     interface Builder {
 
         /**
-         * Return true if channels are enabled.
+         * Enable or disable autofocus.
          *
-         * @param state true if channels are enabled
+         * @param state true to enable autofocus
          */
         Builder enabled(final boolean state);
 

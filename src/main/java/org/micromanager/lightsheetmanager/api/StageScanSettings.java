@@ -17,9 +17,9 @@ public interface StageScanSettings {
     Builder copyBuilder();
 
     /**
-     * Returns true if the autofocus settings are enabled.
+     * Returns true if stage scanning is enabled.
      *
-     * @return true if the autofocus settings are enabled
+     * @return true if stage scanning is enabled
      */
     boolean enabled();
 
@@ -75,7 +75,7 @@ public interface StageScanSettings {
     interface Builder {
 
         /**
-         * Enable or disable the autofocus settings.
+         * Enable or disable stage scanning.
          *
          * @param state true to enable stage scanning
          * @return {@code this} builder
@@ -93,7 +93,7 @@ public interface StageScanSettings {
         Builder accelerationFactor(final double factor);
 
         /**
-         * Sets the overshoot distance. // TODO: units
+         * Sets the overshoot distance.
          * <p>
          * The default value is 0.
          *
