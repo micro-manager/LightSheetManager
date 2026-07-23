@@ -29,6 +29,8 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
         private SaveMode saveMode_ = SaveMode.ND_TIFF;
         private CameraMode cameraMode_ = CameraMode.EDGE;
         private CameraData[] imagingCameraOrder_ = {};
+        private boolean useMultiplePositions_ = false;
+        private int postMoveDelay_ = 0;
 
         private DefaultAutofocusSettings.Builder afBuilder_ = DefaultAutofocusSettings.builder();
         private ChannelSettings.Builder channelBuilder_ = DefaultChannelSettings.builder();
@@ -44,6 +46,8 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
             saveMode_ = settings.saveMode();
             cameraMode_ = settings.cameraMode();
             imagingCameraOrder_ = settings.imagingCameraOrder();
+            useMultiplePositions_ = settings.isUsingMultiplePositions();
+            postMoveDelay_ = settings.postMoveDelay();
             afBuilder_ = settings.autofocus().copyBuilder();
             channelBuilder_ = settings.channels().copyBuilder();
         }
@@ -127,6 +131,30 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
             return self();
         }
 
+        /**
+         * Sets the acquisition to use multiple positions.
+         *
+         * @param state true to use multiple positions
+         * @return {@code this} builder
+         */
+        @Override
+        public T useMultiplePositions(final boolean state) {
+            useMultiplePositions_ = state;
+            return self();
+        }
+
+        /**
+         * Sets the delay after a move when using multiple positions.
+         *
+         * @param postMoveDelay the delay in milliseconds
+         * @return {@code this} builder
+         */
+        @Override
+        public T postMoveDelay(final int postMoveDelay) {
+            postMoveDelay_ = postMoveDelay;
+            return self();
+        }
+
         @Override
         public DefaultAutofocusSettings.Builder autofocusBuilder() {
             return afBuilder_;
@@ -166,6 +194,8 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
     private final SaveMode saveMode_;
     private final CameraMode cameraMode_;
     private final CameraData[] imagingCameraOrder_;
+    private final boolean useMultiplePositions_;
+    private final int postMoveDelay_;
 
     private final DefaultAutofocusSettings autofocus_;
     private final ChannelSettings channels_;
@@ -184,6 +214,8 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
         saveMode_ = builder.saveMode_;
         cameraMode_ = builder.cameraMode_;
         imagingCameraOrder_ = builder.imagingCameraOrder_.clone();
+        useMultiplePositions_ = builder.useMultiplePositions_;
+        postMoveDelay_ = builder.postMoveDelay_;
         autofocus_ = builder.afBuilder_.build();
         channels_ = builder.channelBuilder_.build();
     }
@@ -256,6 +288,26 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
     @Override
     public CameraData[] imagingCameraOrder() {
         return imagingCameraOrder_;
+    }
+
+    /**
+     * Returns true if using multiple positions.
+     *
+     * @return true if using multiple positions.
+     */
+    @Override
+    public boolean isUsingMultiplePositions() {
+        return useMultiplePositions_;
+    }
+
+    /**
+     * Returns the post move delay in milliseconds.
+     *
+     * @return the post move delay in milliseconds.
+     */
+    @Override
+    public int postMoveDelay() {
+        return postMoveDelay_;
     }
 
     /**

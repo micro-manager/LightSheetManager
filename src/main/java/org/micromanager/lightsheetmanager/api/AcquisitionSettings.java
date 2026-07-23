@@ -64,6 +64,22 @@ public interface AcquisitionSettings {
         T imagingCameraOrder(final CameraData[] order);
 
         /**
+         * Sets the acquisition to use multiple positions.
+         *
+         * @param state true to use multiple positions
+         * @return {@code this} builder
+         */
+        T useMultiplePositions(final boolean state);
+
+        /**
+         * Sets the delay after a move when using multiple positions.
+         *
+         * @param postMoveDelay the delay in milliseconds
+         * @return {@code this} builder
+         */
+        T postMoveDelay(final int postMoveDelay);
+
+        /**
          * Returns the autofocus settings builder.
          *
          * @return the autofocus settings builder
@@ -143,6 +159,20 @@ public interface AcquisitionSettings {
      * @return the imaging camera order
      */
     CameraData[] imagingCameraOrder();
+
+    /**
+     * Returns true if using multiple positions.
+     *
+     * @return true if using multiple positions.
+     */
+    boolean isUsingMultiplePositions();
+
+    /**
+     * Returns the post move delay in milliseconds.
+     *
+     * @return the post move delay in milliseconds.
+     */
+    int postMoveDelay();
 
     /**
      * Returns the autofocus settings.

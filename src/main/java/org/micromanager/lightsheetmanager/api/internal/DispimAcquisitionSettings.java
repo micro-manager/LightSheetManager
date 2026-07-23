@@ -26,13 +26,11 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
     private final AcquisitionMode acquisitionMode_;
 
     private final boolean useTimePoints_;
-    private final boolean useMultiplePositions_;
     private final boolean useHardwareTimePoints_;
     private final boolean useAdvancedTiming_;
 
     private final int numTimePoints_;
     private final double timePointInterval_;
-    private final int postMoveDelay_;
 
     private final double liveScanPeriod_;
 
@@ -51,12 +49,10 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
         }
         acquisitionMode_ = builder.acquisitionMode_;
         useTimePoints_ = builder.useTimePoints_;
-        useMultiplePositions_ = builder.useMultiplePositions_;
         useHardwareTimePoints_ = builder.useHardwareTimePoints_;
         useAdvancedTiming_ = builder.useAdvancedTiming_;
         numTimePoints_ = builder.numTimePoints_;
         timePointInterval_ = builder.timePointInterval_;
-        postMoveDelay_ = builder.postMoveDelay_;
         liveScanPeriod_= builder.liveScanPeriod_;
     }
 
@@ -120,11 +116,6 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
     }
 
     @Override
-    public boolean isUsingMultiplePositions() {
-        return useMultiplePositions_;
-    }
-
-    @Override
     public boolean isUsingHardwareTimePoints() {
         return useHardwareTimePoints_;
     }
@@ -142,11 +133,6 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
     @Override
     public double timePointInterval() {
         return timePointInterval_;
-    }
-
-    @Override
-    public int postMoveDelay() {
-        return postMoveDelay_;
     }
 
     @Override
@@ -176,12 +162,12 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
                 cameraMode() == other.cameraMode() &&
                 Arrays.equals(imagingCameraOrder(), other.imagingCameraOrder()) &&
                 useTimePoints_ == other.useTimePoints_ &&
-                useMultiplePositions_ == other.useMultiplePositions_ &&
+                isUsingMultiplePositions() == other.isUsingMultiplePositions() &&
                 useHardwareTimePoints_ == other.useHardwareTimePoints_ &&
                 useAdvancedTiming_ == other.useAdvancedTiming_ &&
                 numTimePoints_ == other.numTimePoints_ &&
                 Double.compare(other.timePointInterval_, timePointInterval_) == 0 &&
-                postMoveDelay_ == other.postMoveDelay_;
+                postMoveDelay() == other.postMoveDelay();
     }
 
     // TODO: finish this
@@ -200,12 +186,12 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
                 cameraMode(),
                 Arrays.hashCode(imagingCameraOrder()),
                 useTimePoints_,
-                useMultiplePositions_,
+                isUsingMultiplePositions(),
                 useHardwareTimePoints_,
                 useAdvancedTiming_,
                 numTimePoints_,
                 timePointInterval_,
-                postMoveDelay_
+                postMoveDelay()
         );
     }
 
@@ -231,13 +217,11 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
         private AcquisitionMode acquisitionMode_ = AcquisitionMode.NO_SCAN;
 
         private boolean useTimePoints_ = false;
-        private boolean useMultiplePositions_ = false;
         private boolean useHardwareTimePoints_ = false;
         private boolean useAdvancedTiming_ = false;
 
         private int numTimePoints_ = 1;
         private double timePointInterval_ = 0.0;
-        private int postMoveDelay_ = 0;
 
         private double liveScanPeriod_ = 20.0; // TODO: this could go in user settings since it has to do with the live view
 
@@ -261,12 +245,10 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
             }
             acquisitionMode_ = settings.acquisitionMode();
             useTimePoints_ = settings.isUsingTimePoints();
-            useMultiplePositions_ = settings.isUsingMultiplePositions();
             useHardwareTimePoints_ = settings.isUsingHardwareTimePoints();
             useAdvancedTiming_ =  settings.isUsingAdvancedTiming();
             numTimePoints_ = settings.numTimePoints();
             timePointInterval_ = settings.timePointInterval();
-            postMoveDelay_ = settings.postMoveDelay();
             liveScanPeriod_ = settings.liveScanPeriod();
         }
 
@@ -279,12 +261,6 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
         @Override
         public Builder useTimePoints(final boolean state) {
             useTimePoints_ = state;
-            return this;
-        }
-
-        @Override
-        public Builder useMultiplePositions(final boolean state) {
-            useMultiplePositions_ = state;
             return this;
         }
 
@@ -309,12 +285,6 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
         @Override
         public Builder timePointInterval(final double timePointInterval) {
             timePointInterval_ = timePointInterval;
-            return this;
-        }
-
-        @Override
-        public Builder postMoveDelay(final int postMoveDelay) {
-            postMoveDelay_ = postMoveDelay;
             return this;
         }
 

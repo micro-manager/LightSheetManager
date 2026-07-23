@@ -71,13 +71,6 @@ public interface AcquisitionSettingsScape extends AcquisitionSettings {
     boolean isUsingTimePoints();
 
     /**
-     * Returns true if using multiple positions.
-     *
-     * @return true if using multiple positions.
-     */
-    boolean isUsingMultiplePositions();
-
-    /**
      * Returns true if using hardware time points.
      *
      * @return true if using hardware time points.
@@ -105,13 +98,6 @@ public interface AcquisitionSettingsScape extends AcquisitionSettings {
      */
     double timePointInterval();
 
-    /**
-     * Returns the post move delay in milliseconds.
-     *
-     * @return the post move delay in milliseconds.
-     */
-    int postMoveDelay();
-
     interface Builder<T extends AcquisitionSettings.Builder<T>> extends AcquisitionSettings.Builder<T> {
 
         /**
@@ -132,14 +118,6 @@ public interface AcquisitionSettingsScape extends AcquisitionSettings {
          * @return {@code this} builder
          */
         T useTimePoints(final boolean state);
-
-        /**
-         * Sets the acquisition to use multiple positions.
-         *
-         * @param state true to use multiple positions
-         * @return {@code this} builder
-         */
-        T useMultiplePositions(final boolean state);
 
         /**
          * Sets the acquisition to use hardware time points.
@@ -172,14 +150,6 @@ public interface AcquisitionSettingsScape extends AcquisitionSettings {
          * @return {@code this} builder
          */
         T timePointInterval(final double timePointInterval);
-
-        /**
-         * Sets the delay after a move when using multiple positions.
-         *
-         * @param postMoveDelay the delay in milliseconds
-         * @return {@code this} builder
-         */
-        T postMoveDelay(final int postMoveDelay);
 
         /**
          * Creates a new {@link AcquisitionSettingsScape} instance based on the current configuration.
