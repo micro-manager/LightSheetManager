@@ -7,7 +7,6 @@ import org.micromanager.lightsheetmanager.api.SliceSettings;
 import org.micromanager.lightsheetmanager.api.SliceSettingsLightSheet;
 import org.micromanager.lightsheetmanager.api.StageScanSettings;
 import org.micromanager.lightsheetmanager.api.TimingSettings;
-import org.micromanager.lightsheetmanager.api.VolumeSettings;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -15,7 +14,6 @@ import java.util.Objects;
 public class DispimAcquisitionSettings extends BaseAcquisitionSettings implements AcquisitionSettingsDispim {
 
     private final TimingSettings timing_;
-    private final VolumeSettings volume_;
     private final SliceSettings slice_;
     private final SliceSettingsLightSheet sliceLS_;
     private final StageScanSettings stageScan_;
@@ -30,7 +28,6 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
     private DispimAcquisitionSettings(Builder builder) {
         super(builder);
         timing_ = builder.timingBuilder().build();
-        volume_ = builder.volumeBuilder().build();
         slice_ = builder.sliceBuilder().build();
         sliceLS_ = builder.sliceLSBuilder().build();
         stageScan_ = builder.stageScanBuilder().build();
@@ -62,11 +59,6 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
     @Override
     public TimingSettings timing() {
         return timing_;
-    }
-
-    @Override
-    public VolumeSettings volume() {
-        return volume_;
     }
 
     @Override
@@ -121,7 +113,7 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
         DispimAcquisitionSettings other = (DispimAcquisitionSettings) obj;
         return Objects.equals(channels(), other.channels()) &&
                 Objects.equals(timing_, other.timing_) &&
-                Objects.equals(volume_, other.volume_) &&
+                Objects.equals(volume(), other.volume()) &&
                 Objects.equals(slice_, other.slice_) &&
                 Objects.equals(sliceLS_, other.sliceLS_) &&
                 Objects.equals(stageScan_, other.stageScan_) &&
@@ -145,7 +137,7 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
         return Objects.hash(
                 channels(),
                 timing_,
-                volume_,
+                volume(),
                 slice_,
                 sliceLS_,
                 stageScan_,
@@ -168,7 +160,7 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
     @Override
     public String toString() {
         return String.format("%s[channels=%s, timing=%s, volume=%s, slice=%s, sliceLS=%s, stageScan=%s]",
-                getClass().getSimpleName(), channels(), timing_, volume_, slice_, sliceLS_, stageScan_);
+                getClass().getSimpleName(), channels(), timing_, volume(), slice_, sliceLS_, stageScan_);
     }
 
     public static class Builder
@@ -176,7 +168,6 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
             implements AcquisitionSettingsDispim.Builder<Builder> {
 
         private TimingSettings.Builder timingBuilder_ = DefaultTimingSettings.builder();
-        private VolumeSettings.Builder volumeBuilder_ = DefaultVolumeSettings.builder();
         private SliceSettings.Builder sliceBuilder_ = DefaultSliceSettings.builder();
         private SliceSettingsLightSheet.Builder ssbLS_ = DefaultSliceSettingsLS.builder(); // maybe this should be LightSheetSliceSettings? replace ssb_?
         private StageScanSettings.Builder stageScanBuilder_ = DefaultStageScanSettings.builder();
@@ -198,7 +189,6 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
         public Builder(final DispimAcquisitionSettings settings) {
             super(settings);
             timingBuilder_ = settings.timing().copyBuilder();
-            volumeBuilder_ = settings.volume().copyBuilder();
             sliceBuilder_ = settings.slice().copyBuilder();
             ssbLS_ = settings.sliceLS_.copyBuilder();
             stageScanBuilder_ = settings.stageScan().copyBuilder();
@@ -234,10 +224,6 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
             return timingBuilder_;
         }
 
-        public VolumeSettings.Builder volumeBuilder() {
-            return volumeBuilder_;
-        }
-
         public SliceSettings.Builder sliceBuilder() {
             return sliceBuilder_;
         }
@@ -261,10 +247,6 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
 
         public void timingBuilder(DefaultTimingSettings.Builder builder) {
             timingBuilder_ = builder;
-        }
-
-        public void volumeBuilder(DefaultVolumeSettings.Builder builder) {
-            volumeBuilder_ = builder;
         }
 
         @Override

@@ -20,13 +20,6 @@ public interface AcquisitionSettingsScape extends AcquisitionSettings {
     TimingSettings timing();
 
     /**
-     * Returns the immutable DefaultVolumeSettings instance.
-     *
-     * @return immutable DefaultVolumeSettings instance.
-     */
-    VolumeSettings volume();
-
-    /**
      * Returns the immutable SliceSettings instance.
      *
      * @return immutable SliceSettings instance.

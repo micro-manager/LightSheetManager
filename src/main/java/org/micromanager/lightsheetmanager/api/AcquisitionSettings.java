@@ -251,4 +251,11 @@ public interface AcquisitionSettings {
      * @return immutable ChannelSettings instance.
      */
     ChannelSettings channels();
+
+    /**
+     * Returns the immutable VolumeSettings instance.
+     *
+     * @return immutable VolumeSettings instance.
+     */
+    VolumeSettings volume();
 }
