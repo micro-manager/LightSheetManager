@@ -7,7 +7,6 @@ import org.micromanager.acqj.main.AcqEngMetadata;
 import org.micromanager.acqj.main.AcquisitionEvent;
 import org.micromanager.acqj.util.AcquisitionEventIterator;
 import org.micromanager.lightsheetmanager.api.AcquisitionSettings;
-import org.micromanager.lightsheetmanager.api.internal.ScapeAcquisitionSettings;
 import org.micromanager.lightsheetmanager.model.channels.ChannelSpec;
 
 import java.util.ArrayList;
@@ -39,7 +38,7 @@ public final class LightSheetEventAdapter {
     }
 
     public static Iterator<AcquisitionEvent> createTimelapseMultiChannelVolumeAcqEvents(
-            AcquisitionEvent baseEvent, ScapeAcquisitionSettings settings,
+            AcquisitionEvent baseEvent, AcquisitionSettings settings,
             String[] cameraDeviceNames,
             Function<AcquisitionEvent, AcquisitionEvent> eventMonitor) {
 
@@ -70,7 +69,7 @@ public final class LightSheetEventAdapter {
     }
 
     public static Iterator<AcquisitionEvent> createTimelapseVolumeAcqEvents(
-            AcquisitionEvent baseEvent, ScapeAcquisitionSettings settings,
+            AcquisitionEvent baseEvent, AcquisitionSettings settings,
             String[] cameraDeviceNames,
             Function<AcquisitionEvent, AcquisitionEvent> eventMonitor) {
 
@@ -99,7 +98,7 @@ public final class LightSheetEventAdapter {
      *                    false: do an entire volume in one channel, then the next one
      */
     public static Iterator<AcquisitionEvent> createMultiChannelVolumeAcqEvents(
-            AcquisitionEvent baseEvent, ScapeAcquisitionSettings settings,
+            AcquisitionEvent baseEvent, AcquisitionSettings settings,
             String[] cameraDeviceNames,
             Function<AcquisitionEvent, AcquisitionEvent> eventMonitor, boolean interleaved) {
 
@@ -125,7 +124,7 @@ public final class LightSheetEventAdapter {
     }
 
     public static Iterator<AcquisitionEvent> createVolumeAcqEvents(
-            AcquisitionEvent baseEvent, ScapeAcquisitionSettings settings,
+            AcquisitionEvent baseEvent, AcquisitionSettings settings,
             String[] cameraDeviceNames,
             Function<AcquisitionEvent, AcquisitionEvent> eventMonitor) {
 
@@ -141,7 +140,7 @@ public final class LightSheetEventAdapter {
     }
 
     public static Iterator<AcquisitionEvent> createChannelAcqEvents(
-            AcquisitionEvent baseEvent, ScapeAcquisitionSettings settings,
+            AcquisitionEvent baseEvent, AcquisitionSettings settings,
             String[] cameraDeviceNames,
             Function<AcquisitionEvent, AcquisitionEvent> eventMonitor) {
 
@@ -161,7 +160,7 @@ public final class LightSheetEventAdapter {
     }
 
     public static Iterator<AcquisitionEvent> createAcqEvents(
-            AcquisitionEvent baseEvent, ScapeAcquisitionSettings settings,
+            AcquisitionEvent baseEvent, AcquisitionSettings settings,
             String[] cameraDeviceNames,
             Function<AcquisitionEvent, AcquisitionEvent> eventMonitor) {
 
