@@ -36,7 +36,7 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
     private final boolean useAdvancedTiming_;
 
     private final int numTimePoints_;
-    private final int timePointInterval_;
+    private final double timePointInterval_;
     private final int postMoveDelay_;
 
     private final double liveScanPeriod_;
@@ -157,7 +157,7 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
     }
 
     @Override
-    public int timePointInterval() {
+    public double timePointInterval() {
         return timePointInterval_;
     }
 
@@ -256,7 +256,7 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
         private boolean useAdvancedTiming_ = false;
 
         private int numTimePoints_ = 1;
-        private int timePointInterval_ = 0;
+        private double timePointInterval_ = 0.0;
         private int postMoveDelay_ = 0;
 
         private double liveScanPeriod_ = 20.0; // TODO: this could go in user settings since it has to do with the live view
@@ -341,7 +341,7 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
         }
 
         @Override
-        public Builder timePointInterval(final int timePointInterval) {
+        public Builder timePointInterval(final double timePointInterval) {
             timePointInterval_ = timePointInterval;
             return this;
         }

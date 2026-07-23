@@ -126,7 +126,7 @@ public interface AcquisitionSettingsDispim extends AcquisitionSettings {
      *
      * @return the time point interval in seconds.
      */
-    int timePointInterval();
+    double timePointInterval();
 
     /**
      * Returns the post move delay in milliseconds.
@@ -209,7 +209,7 @@ public interface AcquisitionSettingsDispim extends AcquisitionSettings {
          * @param timePointInterval the time point interval in seconds
          * @return {@code this} builder
          */
-        T timePointInterval(final int timePointInterval);
+        T timePointInterval(final double timePointInterval);
 
         /**
          * Sets the delay after a move when using multiple positions.
