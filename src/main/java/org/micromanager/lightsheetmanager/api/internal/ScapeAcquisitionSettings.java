@@ -7,7 +7,6 @@ import org.micromanager.lightsheetmanager.api.SliceSettings;
 import org.micromanager.lightsheetmanager.api.StageScanSettings;
 import org.micromanager.lightsheetmanager.api.TimingSettings;
 import org.micromanager.lightsheetmanager.api.VolumeSettings;
-import org.micromanager.lightsheetmanager.api.data.AcquisitionMode;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -21,8 +20,6 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
     private final SheetCalibration sheetCalibration_;
     private final SliceCalibration sliceCalibration_;
 
-    private final AcquisitionMode acquisitionMode_;
-
     private final boolean useHardwareTimePoints_;
     private final boolean useAdvancedTiming_;
 
@@ -34,7 +31,6 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
         stageScan_ = builder.stageScanBuilder().build();
         sheetCalibration_ = builder.sheetCalibrationBuilder().build();
         sliceCalibration_ = builder.sliceCalibrationBuilder().build();
-        acquisitionMode_ = builder.acquisitionMode_;
         useHardwareTimePoints_ = builder.useHardwareTimePoints_;
         useAdvancedTiming_ = builder.useAdvancedTiming_;
     }
@@ -84,11 +80,6 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
     }
 
     @Override
-    public AcquisitionMode acquisitionMode() {
-        return acquisitionMode_;
-    }
-
-    @Override
     public boolean isUsingHardwareTimePoints() {
         return useHardwareTimePoints_;
     }
@@ -114,7 +105,7 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
                 Objects.equals(stageScan_, other.stageScan_) &&
                 Objects.equals(sheetCalibration_, other.sheetCalibration_) &&
                 Objects.equals(sliceCalibration_, other.sliceCalibration_) &&
-                acquisitionMode_ == other.acquisitionMode_ &&
+                acquisitionMode() == other.acquisitionMode() &&
                 cameraMode() == other.cameraMode() &&
                 Arrays.equals(imagingCameraOrder(), other.imagingCameraOrder()) &&
                 isUsingTimePoints() == other.isUsingTimePoints() &&
@@ -136,7 +127,7 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
                 stageScan_,
                 sheetCalibration_,
                 sliceCalibration_,
-                acquisitionMode_,
+                acquisitionMode(),
                 cameraMode(),
                 Arrays.hashCode(imagingCameraOrder()),
                 isUsingTimePoints(),
@@ -167,8 +158,6 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
         private SheetCalibration.Builder sheetCalibBuilder_ = DefaultSheetCalibration.builder();
         private SliceCalibration.Builder sliceCalibBuilder_ = DefaultSliceCalibration.builder();
 
-        private AcquisitionMode acquisitionMode_ = AcquisitionMode.NO_SCAN;
-
         private boolean useHardwareTimePoints_ = false;
         private boolean useAdvancedTiming_ = false;
 
@@ -183,19 +172,8 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
             stageScanBuilder_ = settings.stageScan().copyBuilder();
             sheetCalibBuilder_ = settings.sheetCalibration().copyBuilder();
             sliceCalibBuilder_ = settings.sliceCalibration().copyBuilder();
-            acquisitionMode_ = settings.acquisitionMode();
             useHardwareTimePoints_ = settings.isUsingHardwareTimePoints();
             useAdvancedTiming_ =  settings.isUsingAdvancedTiming();
-        }
-
-        @Override
-        public Builder acquisitionMode(final AcquisitionMode mode) {
-            acquisitionMode_ = mode;
-            final boolean scanEnabled = (mode == AcquisitionMode.STAGE_SCAN
-                    || mode == AcquisitionMode.STAGE_SCAN_INTERLEAVED
-                    || mode == AcquisitionMode.STAGE_SCAN_UNIDIRECTIONAL);
-            stageScanBuilder_.enabled(scanEnabled);
-            return this;
         }
 
         @Override
@@ -223,6 +201,7 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
             return sliceBuilder_;
         }
 
+        @Override
         public StageScanSettings.Builder stageScanBuilder() {
             return stageScanBuilder_;
         }

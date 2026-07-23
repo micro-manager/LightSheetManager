@@ -1,7 +1,5 @@
 package org.micromanager.lightsheetmanager.api;
 
-import org.micromanager.lightsheetmanager.api.data.AcquisitionMode;
-
 /**
  * Acquisition settings for diSPIM microscopes.
  */
@@ -64,13 +62,6 @@ public interface AcquisitionSettingsDispim extends AcquisitionSettings {
     SliceCalibration sliceCalibration(final int view);
 
     /**
-     * Returns the acquisition mode.
-     *
-     * @return the acquisition mode.
-     */
-    AcquisitionMode acquisitionMode();
-
-    /**
      * Returns true if using hardware time points.
      *
      * @return true if using hardware time points.
@@ -87,17 +78,6 @@ public interface AcquisitionSettingsDispim extends AcquisitionSettings {
     double liveScanPeriod();
 
     interface Builder<T extends AcquisitionSettings.Builder<T>> extends AcquisitionSettings.Builder<T> {
-
-        /**
-         * Sets the acquisition mode.
-         * <p>
-         * If the mode is a stage scanning mode,
-         * set the stage scanning flag to true.
-         *
-         * @param acqMode the acquisition mode
-         * @return {@code this} builder
-         */
-        T acquisitionMode(final AcquisitionMode acqMode);
 
         /**
          * Sets the acquisition to use hardware time points.

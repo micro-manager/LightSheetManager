@@ -11,6 +11,7 @@ import org.micromanager.lightsheetmanager.api.SliceSettings;
 import org.micromanager.lightsheetmanager.api.StageScanSettings;
 import org.micromanager.lightsheetmanager.api.TimingSettings;
 import org.micromanager.lightsheetmanager.api.VolumeSettings;
+import org.micromanager.lightsheetmanager.api.data.AcquisitionMode;
 import org.micromanager.lightsheetmanager.api.data.CameraData;
 import org.micromanager.lightsheetmanager.api.data.CameraMode;
 import org.micromanager.lightsheetmanager.api.data.SaveMode;
@@ -34,6 +35,7 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
         private boolean useTimePoints_ = false;
         private int numTimePoints_ = 1;
         private double timePointInterval_ = 0.0;
+        private AcquisitionMode acquisitionMode_ = AcquisitionMode.NO_SCAN;
 
         private DefaultAutofocusSettings.Builder afBuilder_ = DefaultAutofocusSettings.builder();
         private ChannelSettings.Builder channelBuilder_ = DefaultChannelSettings.builder();
@@ -54,6 +56,7 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
             useTimePoints_ = settings.isUsingTimePoints();
             numTimePoints_ = settings.numTimePoints();
             timePointInterval_ = settings.timePointInterval();
+            acquisitionMode_ = settings.acquisitionMode();
             afBuilder_ = settings.autofocus().copyBuilder();
             channelBuilder_ = settings.channels().copyBuilder();
         }
@@ -197,6 +200,34 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
             return self();
         }
 
+        /**
+         * Sets the acquisition mode.
+         * <p>
+         * If the mode is a stage scanning mode,
+         * set the stage scanning flag to true.
+         *
+         * @param mode the acquisition mode
+         * @return {@code this} builder
+         */
+        @Override
+        public T acquisitionMode(final AcquisitionMode mode) {
+            acquisitionMode_ = mode;
+            final boolean scanEnabled = (mode == AcquisitionMode.STAGE_SCAN
+                    || mode == AcquisitionMode.STAGE_SCAN_INTERLEAVED
+                    || mode == AcquisitionMode.STAGE_SCAN_UNIDIRECTIONAL);
+            stageScanBuilder().enabled(scanEnabled);
+            return self();
+        }
+
+        /**
+         * Returns the geometry-specific stage-scan sub-builder.
+         * Bridges {@link #acquisitionMode} (base) to each concrete geometry's
+         * own {@code StageScanSettings.Builder}, which is not itself hoisted yet.
+         *
+         * @return the stage-scan sub-builder
+         */
+        protected abstract StageScanSettings.Builder stageScanBuilder();
+
         @Override
         public DefaultAutofocusSettings.Builder autofocusBuilder() {
             return afBuilder_;
@@ -241,6 +272,7 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
     private final boolean useTimePoints_;
     private final int numTimePoints_;
     private final double timePointInterval_;
+    private final AcquisitionMode acquisitionMode_;
 
     private final DefaultAutofocusSettings autofocus_;
     private final ChannelSettings channels_;
@@ -264,6 +296,7 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
         useTimePoints_ = builder.useTimePoints_;
         numTimePoints_ = builder.numTimePoints_;
         timePointInterval_ = builder.timePointInterval_;
+        acquisitionMode_ = builder.acquisitionMode_;
         autofocus_ = builder.afBuilder_.build();
         channels_ = builder.channelBuilder_.build();
     }
@@ -386,6 +419,16 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
     @Override
     public double timePointInterval() {
         return timePointInterval_;
+    }
+
+    /**
+     * Returns the acquisition mode.
+     *
+     * @return the acquisition mode
+     */
+    @Override
+    public AcquisitionMode acquisitionMode() {
+        return acquisitionMode_;
     }
 
     /**

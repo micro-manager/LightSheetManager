@@ -1,5 +1,6 @@
 package org.micromanager.lightsheetmanager.api;
 
+import org.micromanager.lightsheetmanager.api.data.AcquisitionMode;
 import org.micromanager.lightsheetmanager.api.data.CameraData;
 import org.micromanager.lightsheetmanager.api.data.CameraMode;
 import org.micromanager.lightsheetmanager.api.data.SaveMode;
@@ -102,6 +103,17 @@ public interface AcquisitionSettings {
          * @return {@code this} builder
          */
         T timePointInterval(final double timePointInterval);
+
+        /**
+         * Sets the acquisition mode.
+         * <p>
+         * If the mode is a stage scanning mode,
+         * set the stage scanning flag to true.
+         *
+         * @param mode the acquisition mode
+         * @return {@code this} builder
+         */
+        T acquisitionMode(final AcquisitionMode mode);
 
         /**
          * Returns the autofocus settings builder.
@@ -218,6 +230,13 @@ public interface AcquisitionSettings {
      * @return the time point interval in seconds.
      */
     double timePointInterval();
+
+    /**
+     * Returns the acquisition mode.
+     *
+     * @return the acquisition mode.
+     */
+    AcquisitionMode acquisitionMode();
 
     /**
      * Returns the autofocus settings.
