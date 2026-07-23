@@ -6,7 +6,8 @@ public interface AcquisitionManager {
 
     /**
      * Request that an acquisition is run.
-     * Returns a future tha can be gotton when acqusiiton is complete
+     *
+     * @return a future that completes when the acquisition finishes
      */
     Future<?> requestRun(boolean speedTest);
 
