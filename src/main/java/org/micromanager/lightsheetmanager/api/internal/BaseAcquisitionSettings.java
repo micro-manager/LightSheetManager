@@ -11,6 +11,7 @@ import org.micromanager.lightsheetmanager.api.SliceSettings;
 import org.micromanager.lightsheetmanager.api.StageScanSettings;
 import org.micromanager.lightsheetmanager.api.TimingSettings;
 import org.micromanager.lightsheetmanager.api.VolumeSettings;
+import org.micromanager.lightsheetmanager.api.data.CameraMode;
 import org.micromanager.lightsheetmanager.api.data.SaveMode;
 
 /**
@@ -25,6 +26,7 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
         private boolean saveDuringAcq_ = false;
         private boolean demoMode_ = false;
         private SaveMode saveMode_ = SaveMode.ND_TIFF;
+        private CameraMode cameraMode_ = CameraMode.EDGE;
 
         private DefaultAutofocusSettings.Builder afBuilder_ = DefaultAutofocusSettings.builder();
         private ChannelSettings.Builder channelBuilder_ = DefaultChannelSettings.builder();
@@ -38,6 +40,7 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
             saveDuringAcq_ = settings.isSavingImagesDuringAcquisition();
             demoMode_ = settings.demoMode();
             saveMode_ = settings.saveMode();
+            cameraMode_ = settings.cameraMode();
             afBuilder_ = settings.autofocus().copyBuilder();
             channelBuilder_ = settings.channels().copyBuilder();
         }
@@ -97,6 +100,18 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
             return self();
         }
 
+        /**
+         * Sets the camera mode.
+         *
+         * @param mode the camera mode
+         * @return {@code this} builder
+         */
+        @Override
+        public T cameraMode(final CameraMode mode) {
+            cameraMode_ = mode;
+            return self();
+        }
+
         @Override
         public DefaultAutofocusSettings.Builder autofocusBuilder() {
             return afBuilder_;
@@ -134,6 +149,7 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
     private final boolean saveDuringAcq_;
     private final boolean demoMode_;
     private final SaveMode saveMode_;
+    private final CameraMode cameraMode_;
 
     private final DefaultAutofocusSettings autofocus_;
     private final ChannelSettings channels_;
@@ -150,6 +166,7 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
         saveDuringAcq_ = builder.saveDuringAcq_;
         demoMode_ = builder.demoMode_;
         saveMode_ = builder.saveMode_;
+        cameraMode_ = builder.cameraMode_;
         autofocus_ = builder.afBuilder_.build();
         channels_ = builder.channelBuilder_.build();
     }
@@ -202,6 +219,16 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
     @Override
     public SaveMode saveMode() {
         return saveMode_;
+    }
+
+    /**
+     * Returns the camera mode.
+     *
+     * @return the camera mode
+     */
+    @Override
+    public CameraMode cameraMode() {
+        return cameraMode_;
     }
 
     /**

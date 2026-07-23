@@ -9,7 +9,6 @@ import org.micromanager.lightsheetmanager.api.TimingSettings;
 import org.micromanager.lightsheetmanager.api.VolumeSettings;
 import org.micromanager.lightsheetmanager.api.data.AcquisitionMode;
 import org.micromanager.lightsheetmanager.api.data.CameraData;
-import org.micromanager.lightsheetmanager.api.data.CameraMode;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -25,7 +24,6 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
 
     private final AcquisitionMode acquisitionMode_;
 
-    private final CameraMode cameraMode_;
     private final CameraData[] imagingCameraOrder_;
 
     private final boolean useTimePoints_;
@@ -46,7 +44,6 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
         sheetCalibration_ = builder.sheetCalibrationBuilder().build();
         sliceCalibration_ = builder.sliceCalibrationBuilder().build();
         acquisitionMode_ = builder.acquisitionMode_;
-        cameraMode_ = builder.cameraMode_;
         imagingCameraOrder_ = builder.imagingCameraOrder_.clone();
         useTimePoints_ = builder.useTimePoints_;
         useMultiplePositions_ = builder.useMultiplePositions_;
@@ -107,11 +104,6 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
     }
 
     @Override
-    public CameraMode cameraMode() {
-        return cameraMode_;
-    }
-
-    @Override
     public CameraData[] imagingCameraOrder() {
         return imagingCameraOrder_;
     }
@@ -168,7 +160,7 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
                 Objects.equals(sheetCalibration_, other.sheetCalibration_) &&
                 Objects.equals(sliceCalibration_, other.sliceCalibration_) &&
                 acquisitionMode_ == other.acquisitionMode_ &&
-                cameraMode_ == other.cameraMode_ &&
+                cameraMode() == other.cameraMode() &&
                 Arrays.equals(imagingCameraOrder_, other.imagingCameraOrder_) &&
                 useTimePoints_ == other.useTimePoints_ &&
                 useMultiplePositions_ == other.useMultiplePositions_ &&
@@ -190,7 +182,7 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
                 sheetCalibration_,
                 sliceCalibration_,
                 acquisitionMode_,
-                cameraMode_,
+                cameraMode(),
                 Arrays.hashCode(imagingCameraOrder_),
                 useTimePoints_,
                 useMultiplePositions_,
@@ -222,7 +214,6 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
 
         private AcquisitionMode acquisitionMode_ = AcquisitionMode.NO_SCAN;
 
-        private CameraMode cameraMode_ = CameraMode.EDGE;
         private CameraData[] imagingCameraOrder_ = {};
 
         private boolean useTimePoints_ = false;
@@ -246,7 +237,6 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
             sheetCalibBuilder_ = settings.sheetCalibration().copyBuilder();
             sliceCalibBuilder_ = settings.sliceCalibration().copyBuilder();
             acquisitionMode_ = settings.acquisitionMode();
-            cameraMode_ = settings.cameraMode();
             imagingCameraOrder_ = settings.imagingCameraOrder();
             useTimePoints_ = settings.isUsingTimePoints();
             useMultiplePositions_ = settings.isUsingMultiplePositions();
@@ -264,12 +254,6 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
                     || mode == AcquisitionMode.STAGE_SCAN_INTERLEAVED
                     || mode == AcquisitionMode.STAGE_SCAN_UNIDIRECTIONAL);
             stageScanBuilder_.enabled(scanEnabled);
-            return this;
-        }
-
-        @Override
-        public Builder cameraMode(final CameraMode mode) {
-            cameraMode_ = mode;
             return this;
         }
 

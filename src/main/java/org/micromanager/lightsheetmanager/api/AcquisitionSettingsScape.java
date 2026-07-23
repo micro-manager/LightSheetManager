@@ -2,7 +2,6 @@ package org.micromanager.lightsheetmanager.api;
 
 import org.micromanager.lightsheetmanager.api.data.AcquisitionMode;
 import org.micromanager.lightsheetmanager.api.data.CameraData;
-import org.micromanager.lightsheetmanager.api.data.CameraMode;
 
 /**
  * Acquisition settings for SCAPE microscopes.
@@ -64,13 +63,6 @@ public interface AcquisitionSettingsScape extends AcquisitionSettings {
      * @return the acquisition mode.
      */
     AcquisitionMode acquisitionMode();
-
-    /**
-     * Returns the camera mode.
-     *
-     * @return the camera mode.
-     */
-    CameraMode cameraMode();
 
     /**
      * Returns the imaging camera order.
@@ -140,14 +132,6 @@ public interface AcquisitionSettingsScape extends AcquisitionSettings {
          * @return {@code this} builder
          */
         T acquisitionMode(final AcquisitionMode mode);
-
-        /**
-         * Sets the camera mode.
-         *
-         * @param mode the camera mode.
-         * @return {@code this} builder
-         */
-        T cameraMode(final CameraMode mode);
 
         /**
          * Sets the imaging camera order.

@@ -1,5 +1,6 @@
 package org.micromanager.lightsheetmanager.api;
 
+import org.micromanager.lightsheetmanager.api.data.CameraMode;
 import org.micromanager.lightsheetmanager.api.data.SaveMode;
 import org.micromanager.lightsheetmanager.api.internal.DefaultAutofocusSettings;
 
@@ -44,6 +45,14 @@ public interface AcquisitionSettings {
          * @param saveMode the save mode
          */
         T saveMode(final SaveMode saveMode);
+
+        /**
+         * Sets the camera mode.
+         *
+         * @param mode the camera mode
+         * @return {@code this} builder
+         */
+        T cameraMode(final CameraMode mode);
 
         /**
          * Returns the autofocus settings builder.
@@ -111,6 +120,13 @@ public interface AcquisitionSettings {
      * @return the save mode of the acquisition.
      */
     SaveMode saveMode();
+
+    /**
+     * Returns the camera mode.
+     *
+     * @return the camera mode.
+     */
+    CameraMode cameraMode();
 
     /**
      * Returns the autofocus settings.

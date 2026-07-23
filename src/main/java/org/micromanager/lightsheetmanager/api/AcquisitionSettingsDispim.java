@@ -1,7 +1,6 @@
 package org.micromanager.lightsheetmanager.api;
 
 import org.micromanager.lightsheetmanager.api.data.CameraData;
-import org.micromanager.lightsheetmanager.api.data.CameraMode;
 import org.micromanager.lightsheetmanager.api.data.AcquisitionMode;
 
 /**
@@ -73,13 +72,6 @@ public interface AcquisitionSettingsDispim extends AcquisitionSettings {
     AcquisitionMode acquisitionMode();
 
     /**
-     * Returns the camera mode.
-     *
-     * @return the camera mode.
-     */
-    CameraMode cameraMode();
-
-    /**
      * Returns the imaging camera order.
      *
      * @return the imaging camera order
@@ -146,14 +138,6 @@ public interface AcquisitionSettingsDispim extends AcquisitionSettings {
          * @return {@code this} builder
          */
         T acquisitionMode(final AcquisitionMode acqMode);
-
-        /**
-         * Sets the camera mode.
-         *
-         * @param cameraMode the camera mode.
-         * @return {@code this} builder
-         */
-        T cameraMode(final CameraMode cameraMode);
 
         /**
          * Sets the imaging camera order.
