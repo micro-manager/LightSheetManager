@@ -1,5 +1,7 @@
 package org.micromanager.lightsheetmanager.api;
 
+import org.micromanager.lightsheetmanager.api.data.CameraData;
+import org.micromanager.lightsheetmanager.api.data.CameraMode;
 import org.micromanager.lightsheetmanager.api.data.SaveMode;
 import org.micromanager.lightsheetmanager.api.internal.DefaultAutofocusSettings;
 
@@ -44,6 +46,62 @@ public interface AcquisitionSettings {
          * @param saveMode the save mode
          */
         T saveMode(final SaveMode saveMode);
+
+        /**
+         * Sets the camera mode.
+         *
+         * @param mode the camera mode
+         * @return {@code this} builder
+         */
+        T cameraMode(final CameraMode mode);
+
+        /**
+         * Sets the imaging camera order.
+         *
+         * @param order the imaging camera order
+         * @return {@code this} builder
+         */
+        T imagingCameraOrder(final CameraData[] order);
+
+        /**
+         * Sets the acquisition to use multiple positions.
+         *
+         * @param state true to use multiple positions
+         * @return {@code this} builder
+         */
+        T useMultiplePositions(final boolean state);
+
+        /**
+         * Sets the delay after a move when using multiple positions.
+         *
+         * @param postMoveDelay the delay in milliseconds
+         * @return {@code this} builder
+         */
+        T postMoveDelay(final int postMoveDelay);
+
+        /**
+         * Sets the acquisition to use time points.
+         *
+         * @param state true to use time points
+         * @return {@code this} builder
+         */
+        T useTimePoints(final boolean state);
+
+        /**
+         * Sets the number of time points.
+         *
+         * @param numTimePoints the number of time points
+         * @return {@code this} builder
+         */
+        T numTimePoints(final int numTimePoints);
+
+        /**
+         * Sets the time point interval between time points in seconds.
+         *
+         * @param timePointInterval the time point interval in seconds
+         * @return {@code this} builder
+         */
+        T timePointInterval(final double timePointInterval);
 
         /**
          * Returns the autofocus settings builder.
@@ -111,6 +169,55 @@ public interface AcquisitionSettings {
      * @return the save mode of the acquisition.
      */
     SaveMode saveMode();
+
+    /**
+     * Returns the camera mode.
+     *
+     * @return the camera mode.
+     */
+    CameraMode cameraMode();
+
+    /**
+     * Returns the imaging camera order.
+     *
+     * @return the imaging camera order
+     */
+    CameraData[] imagingCameraOrder();
+
+    /**
+     * Returns true if using multiple positions.
+     *
+     * @return true if using multiple positions.
+     */
+    boolean isUsingMultiplePositions();
+
+    /**
+     * Returns the post move delay in milliseconds.
+     *
+     * @return the post move delay in milliseconds.
+     */
+    int postMoveDelay();
+
+    /**
+     * Returns true if using time points.
+     *
+     * @return true if using time points.
+     */
+    boolean isUsingTimePoints();
+
+    /**
+     * Returns the number of time points.
+     *
+     * @return the number of time points.
+     */
+    int numTimePoints();
+
+    /**
+     * Returns the time point interval in seconds.
+     *
+     * @return the time point interval in seconds.
+     */
+    double timePointInterval();
 
     /**
      * Returns the autofocus settings.

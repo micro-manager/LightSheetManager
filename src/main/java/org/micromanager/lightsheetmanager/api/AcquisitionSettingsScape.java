@@ -1,8 +1,6 @@
 package org.micromanager.lightsheetmanager.api;
 
 import org.micromanager.lightsheetmanager.api.data.AcquisitionMode;
-import org.micromanager.lightsheetmanager.api.data.CameraData;
-import org.micromanager.lightsheetmanager.api.data.CameraMode;
 
 /**
  * Acquisition settings for SCAPE microscopes.
@@ -66,34 +64,6 @@ public interface AcquisitionSettingsScape extends AcquisitionSettings {
     AcquisitionMode acquisitionMode();
 
     /**
-     * Returns the camera mode.
-     *
-     * @return the camera mode.
-     */
-    CameraMode cameraMode();
-
-    /**
-     * Returns the imaging camera order.
-     *
-     * @return the imaging camera order
-     */
-    CameraData[] imagingCameraOrder();
-
-    /**
-     * Returns true if using time points.
-     *
-     * @return true if using time points.
-     */
-    boolean isUsingTimePoints();
-
-    /**
-     * Returns true if using multiple positions.
-     *
-     * @return true if using multiple positions.
-     */
-    boolean isUsingMultiplePositions();
-
-    /**
      * Returns true if using hardware time points.
      *
      * @return true if using hardware time points.
@@ -107,27 +77,6 @@ public interface AcquisitionSettingsScape extends AcquisitionSettings {
      */
     boolean isUsingAdvancedTiming();
 
-    /**
-     * Returns the number of time points.
-     *
-     * @return the number of time points.
-     */
-    int numTimePoints();
-
-    /**
-     * Returns the time point interval in seconds.
-     *
-     * @return the time point interval in seconds.
-     */
-    double timePointInterval();
-
-    /**
-     * Returns the post move delay in milliseconds.
-     *
-     * @return the post move delay in milliseconds.
-     */
-    int postMoveDelay();
-
     interface Builder<T extends AcquisitionSettings.Builder<T>> extends AcquisitionSettings.Builder<T> {
 
         /**
@@ -140,38 +89,6 @@ public interface AcquisitionSettingsScape extends AcquisitionSettings {
          * @return {@code this} builder
          */
         T acquisitionMode(final AcquisitionMode mode);
-
-        /**
-         * Sets the camera mode.
-         *
-         * @param mode the camera mode.
-         * @return {@code this} builder
-         */
-        T cameraMode(final CameraMode mode);
-
-        /**
-         * Sets the imaging camera order.
-         *
-         * @param order the imaging camera order
-         * @return {@code this} builder
-         */
-        T imagingCameraOrder(final CameraData[] order);
-
-        /**
-         * Sets the acquisition to use time points.
-         *
-         * @param state true to use time points
-         * @return {@code this} builder
-         */
-        T useTimePoints(final boolean state);
-
-        /**
-         * Sets the acquisition to use multiple positions.
-         *
-         * @param state true to use multiple positions
-         * @return {@code this} builder
-         */
-        T useMultiplePositions(final boolean state);
 
         /**
          * Sets the acquisition to use hardware time points.
@@ -188,30 +105,6 @@ public interface AcquisitionSettingsScape extends AcquisitionSettings {
          * @return {@code this} builder
          */
         T useAdvancedTiming(final boolean state);
-
-        /**
-         * Sets the number of time points.
-         *
-         * @param numTimePoints the number of time points
-         * @return {@code this} builder
-         */
-        T numTimePoints(final int numTimePoints);
-
-        /**
-         * Sets the time point interval between time points in seconds.
-         *
-         * @param timePointInterval the time point interval in seconds
-         * @return {@code this} builder
-         */
-        T timePointInterval(final double timePointInterval);
-
-        /**
-         * Sets the delay after a move when using multiple positions.
-         *
-         * @param postMoveDelay the delay in milliseconds
-         * @return {@code this} builder
-         */
-        T postMoveDelay(final int postMoveDelay);
 
         /**
          * Creates a new {@link AcquisitionSettingsScape} instance based on the current configuration.

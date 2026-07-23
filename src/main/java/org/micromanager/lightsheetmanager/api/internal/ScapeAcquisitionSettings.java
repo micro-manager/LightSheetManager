@@ -8,8 +8,6 @@ import org.micromanager.lightsheetmanager.api.StageScanSettings;
 import org.micromanager.lightsheetmanager.api.TimingSettings;
 import org.micromanager.lightsheetmanager.api.VolumeSettings;
 import org.micromanager.lightsheetmanager.api.data.AcquisitionMode;
-import org.micromanager.lightsheetmanager.api.data.CameraData;
-import org.micromanager.lightsheetmanager.api.data.CameraMode;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -25,17 +23,8 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
 
     private final AcquisitionMode acquisitionMode_;
 
-    private final CameraMode cameraMode_;
-    private final CameraData[] imagingCameraOrder_;
-
-    private final boolean useTimePoints_;
-    private final boolean useMultiplePositions_;
     private final boolean useHardwareTimePoints_;
     private final boolean useAdvancedTiming_;
-
-    private final int numTimePoints_;
-    private final double timePointInterval_;
-    private final int postMoveDelay_;
 
     private ScapeAcquisitionSettings(Builder builder) {
         super(builder);
@@ -46,15 +35,8 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
         sheetCalibration_ = builder.sheetCalibrationBuilder().build();
         sliceCalibration_ = builder.sliceCalibrationBuilder().build();
         acquisitionMode_ = builder.acquisitionMode_;
-        cameraMode_ = builder.cameraMode_;
-        imagingCameraOrder_ = builder.imagingCameraOrder_.clone();
-        useTimePoints_ = builder.useTimePoints_;
-        useMultiplePositions_ = builder.useMultiplePositions_;
         useHardwareTimePoints_ = builder.useHardwareTimePoints_;
         useAdvancedTiming_ = builder.useAdvancedTiming_;
-        numTimePoints_ = builder.numTimePoints_;
-        timePointInterval_ = builder.timePointInterval_;
-        postMoveDelay_ = builder.postMoveDelay_;
     }
 
     public static Builder builder() {
@@ -107,26 +89,6 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
     }
 
     @Override
-    public CameraMode cameraMode() {
-        return cameraMode_;
-    }
-
-    @Override
-    public CameraData[] imagingCameraOrder() {
-        return imagingCameraOrder_;
-    }
-
-    @Override
-    public boolean isUsingTimePoints() {
-        return useTimePoints_;
-    }
-
-    @Override
-    public boolean isUsingMultiplePositions() {
-        return useMultiplePositions_;
-    }
-
-    @Override
     public boolean isUsingHardwareTimePoints() {
         return useHardwareTimePoints_;
     }
@@ -134,21 +96,6 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
     @Override
     public boolean isUsingAdvancedTiming() {
         return useAdvancedTiming_;
-    }
-
-    @Override
-    public int numTimePoints() {
-        return numTimePoints_;
-    }
-
-    @Override
-    public double timePointInterval() {
-        return timePointInterval_;
-    }
-
-    @Override
-    public int postMoveDelay() {
-        return postMoveDelay_;
     }
 
     @Override
@@ -168,15 +115,15 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
                 Objects.equals(sheetCalibration_, other.sheetCalibration_) &&
                 Objects.equals(sliceCalibration_, other.sliceCalibration_) &&
                 acquisitionMode_ == other.acquisitionMode_ &&
-                cameraMode_ == other.cameraMode_ &&
-                Arrays.equals(imagingCameraOrder_, other.imagingCameraOrder_) &&
-                useTimePoints_ == other.useTimePoints_ &&
-                useMultiplePositions_ == other.useMultiplePositions_ &&
+                cameraMode() == other.cameraMode() &&
+                Arrays.equals(imagingCameraOrder(), other.imagingCameraOrder()) &&
+                isUsingTimePoints() == other.isUsingTimePoints() &&
+                isUsingMultiplePositions() == other.isUsingMultiplePositions() &&
                 useHardwareTimePoints_ == other.useHardwareTimePoints_ &&
                 useAdvancedTiming_ == other.useAdvancedTiming_ &&
-                numTimePoints_ == other.numTimePoints_ &&
-                Double.compare(other.timePointInterval_, timePointInterval_) == 0 &&
-                postMoveDelay_ == other.postMoveDelay_;
+                numTimePoints() == other.numTimePoints() &&
+                Double.compare(other.timePointInterval(), timePointInterval()) == 0 &&
+                postMoveDelay() == other.postMoveDelay();
     }
 
     @Override
@@ -190,15 +137,15 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
                 sheetCalibration_,
                 sliceCalibration_,
                 acquisitionMode_,
-                cameraMode_,
-                Arrays.hashCode(imagingCameraOrder_),
-                useTimePoints_,
-                useMultiplePositions_,
+                cameraMode(),
+                Arrays.hashCode(imagingCameraOrder()),
+                isUsingTimePoints(),
+                isUsingMultiplePositions(),
                 useHardwareTimePoints_,
                 useAdvancedTiming_,
-                numTimePoints_,
-                timePointInterval_,
-                postMoveDelay_
+                numTimePoints(),
+                timePointInterval(),
+                postMoveDelay()
         );
     }
 
@@ -222,17 +169,8 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
 
         private AcquisitionMode acquisitionMode_ = AcquisitionMode.NO_SCAN;
 
-        private CameraMode cameraMode_ = CameraMode.EDGE;
-        private CameraData[] imagingCameraOrder_ = {};
-
-        private boolean useTimePoints_ = false;
-        private boolean useMultiplePositions_ = false;
         private boolean useHardwareTimePoints_ = false;
         private boolean useAdvancedTiming_ = false;
-
-        private int numTimePoints_ = 1;
-        private double timePointInterval_ = 0.0;
-        private int postMoveDelay_ = 0;
 
         private Builder() {
         }
@@ -246,15 +184,8 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
             sheetCalibBuilder_ = settings.sheetCalibration().copyBuilder();
             sliceCalibBuilder_ = settings.sliceCalibration().copyBuilder();
             acquisitionMode_ = settings.acquisitionMode();
-            cameraMode_ = settings.cameraMode();
-            imagingCameraOrder_ = settings.imagingCameraOrder();
-            useTimePoints_ = settings.isUsingTimePoints();
-            useMultiplePositions_ = settings.isUsingMultiplePositions();
             useHardwareTimePoints_ = settings.isUsingHardwareTimePoints();
             useAdvancedTiming_ =  settings.isUsingAdvancedTiming();
-            numTimePoints_ = settings.numTimePoints();
-            timePointInterval_ = settings.timePointInterval();
-            postMoveDelay_ = settings.postMoveDelay();
         }
 
         @Override
@@ -268,30 +199,6 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
         }
 
         @Override
-        public Builder cameraMode(final CameraMode mode) {
-            cameraMode_ = mode;
-            return this;
-        }
-
-        @Override
-        public Builder imagingCameraOrder(final CameraData[] order) {
-            imagingCameraOrder_ = order;
-            return this;
-        }
-
-        @Override
-        public Builder useTimePoints(final boolean state) {
-            useTimePoints_ = state;
-            return this;
-        }
-
-        @Override
-        public Builder useMultiplePositions(final boolean state) {
-            useMultiplePositions_ = state;
-            return this;
-        }
-
-        @Override
         public Builder useHardwareTimePoints(final boolean state) {
             useHardwareTimePoints_ = state;
             return this;
@@ -300,24 +207,6 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
         @Override
         public Builder useAdvancedTiming(final boolean state) {
             useAdvancedTiming_ = state;
-            return this;
-        }
-
-        @Override
-        public Builder numTimePoints(final int numTimePoints) {
-            numTimePoints_ = numTimePoints;
-            return this;
-        }
-
-        @Override
-        public Builder timePointInterval(final double timePointInterval) {
-            timePointInterval_ = timePointInterval;
-            return this;
-        }
-
-        @Override
-        public Builder postMoveDelay(final int postMoveDelay) {
-            postMoveDelay_ = postMoveDelay;
             return this;
         }
 
