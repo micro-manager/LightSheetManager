@@ -8,23 +8,10 @@ import java.awt.Dimension;
 
 public class ToggleButton extends JToggleButton {
 
-    private static int defaultWidth = 200;
-    private static int defaultHeight = 30;
-
     private final String onText;
     private final String offText;
     private final ImageIcon onImage;
     private final ImageIcon offImage;
-
-    public ToggleButton(final String offText, final String onText,
-                        final ImageIcon offImage, final ImageIcon onImage) {
-        this.offText = offText;
-        this.onText = onText;
-        this.offImage = offImage;
-        this.onImage = onImage;
-        setSize(defaultWidth, defaultHeight);
-        init();
-    }
 
     public ToggleButton(final String offText, final String onText,
                         final ImageIcon offImage, final ImageIcon onImage,
@@ -35,11 +22,6 @@ public class ToggleButton extends JToggleButton {
         this.onImage = onImage;
         setSize(width, height);
         init();
-    }
-
-    public static void setDefaultSize(final int width, final int height) {
-        defaultWidth = width;
-        defaultHeight = height;
     }
 
     private void init() {

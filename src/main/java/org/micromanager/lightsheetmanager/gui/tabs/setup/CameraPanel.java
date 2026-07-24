@@ -52,19 +52,17 @@ public class CameraPanel extends Panel {
                 "[]5[]"
         );
 
-        Button.setDefaultSize(80, 26);
-        btnImagingPath_ = new Button("Imaging");
-        btnMultiPath_ = new Button("Multi");
-        btnEpiPath_ = new Button("Epi");
+        btnImagingPath_ = new Button("Imaging", 80, 26);
+        btnMultiPath_ = new Button("Multi", 80, 26);
+        btnEpiPath_ = new Button("Epi", 80, 26);
 
-        ToggleButton.setDefaultSize(165, 26);
         btnInvertedPath_ = new ToggleButton(
                 "Preview", "Stop Preview",
-                Icons.CAMERA, Icons.CANCEL
+                Icons.CAMERA, Icons.CANCEL, 165, 26
         );
         btnLiveMode_ = new ToggleButton(
                 "Live", "Stop Live",
-                Icons.CAMERA, Icons.CANCEL
+                Icons.CAMERA, Icons.CANCEL, 165, 26
         );
 
         // populate the combo box if the group exists

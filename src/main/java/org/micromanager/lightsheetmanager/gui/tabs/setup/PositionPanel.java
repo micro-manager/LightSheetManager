@@ -69,9 +69,8 @@ public class PositionPanel extends Panel implements Subscriber, ListeningPanel {
                 "[]5[]"
         );
 
-        Button.setDefaultSize(50, 26);
-        btnImagingCenterGo_ = new Button("Go");
-        btnImagingCenterSet_ = new Button("Set");
+        btnImagingCenterGo_ = new Button("Go", 50, 26);
+        btnImagingCenterSet_ = new Button("Set", 50, 26);
 
         //btnTestAcq_ = new Button("Test Acquisition", 120, 26);
 
@@ -80,15 +79,14 @@ public class PositionPanel extends Panel implements Subscriber, ListeningPanel {
         txtSlicePosition_ = new TextField();
         txtImagingPosition_ = new TextField();
 
-        Button.setDefaultSize(80, 26);
         btnSliceZero_ = new Button("Go to 0", 70, 26);
         btnImagingZero_ = new Button("Go to 0", 70, 26);
 
         final JLabel lblIllumPosition = new JLabel("Illumination Piezo:");
         txtIllumPosition_ = new TextField();
 
-        btnIllumGoHome_ = new Button("Go Home");
-        btnIllumSetHome_ = new Button("Set Home");
+        btnIllumGoHome_ = new Button("Go Home", 80, 26);
+        btnIllumSetHome_ = new Button("Set Home", 80, 26);
 
         lblSlicePositionValue_ = new JLabel("0.000 °");
         lblImagingPositionValue_ = new JLabel("0.000 μm");

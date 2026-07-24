@@ -143,16 +143,15 @@ public class AcquisitionTab extends Panel implements ListeningPanel, SettingsLis
                 ""
         );
 
-        ToggleButton.setDefaultSize(120, 30);
         btnRunAcquisition_ = new ToggleButton(
                 "Start Acquisition", "Stop Acquisition",
-                Icons.ARROW_RIGHT, Icons.CANCEL
+                Icons.ARROW_RIGHT, Icons.CANCEL, 120, 30
         );
         btnRunAcquisition_.setEnabled(true);
 
         btnPauseAcquisition_ = new ToggleButton(
                 "Pause", "Resume",
-                Icons.PAUSE, Icons.PLAY
+                Icons.PAUSE, Icons.PLAY, 120, 30
         );
         btnPauseAcquisition_.setEnabled(false);
 

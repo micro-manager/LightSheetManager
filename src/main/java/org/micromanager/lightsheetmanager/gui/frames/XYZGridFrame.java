@@ -83,10 +83,9 @@ public class XYZGridFrame extends JFrame {
         ));
 
         Spinner.setDefaultSize(7);
-        Button.setDefaultSize(160, 26);
-        btnComputeGrid_ = new Button("Compute Grid");
-        btnEditPositionList_ = new Button("Edit Position List...");
-        btnRunOverviewAcq_ = new Button("Run Overview Acquisition");
+        btnComputeGrid_ = new Button("Compute Grid", 160, 26);
+        btnEditPositionList_ = new Button("Edit Position List...", 160, 26);
+        btnRunOverviewAcq_ = new Button("Run Overview Acquisition", 160, 26);
         btnRunOverviewAcq_.setEnabled(false);
 
         cbxUseX_ = new CheckBox("Slices from stage coordinates", false);
