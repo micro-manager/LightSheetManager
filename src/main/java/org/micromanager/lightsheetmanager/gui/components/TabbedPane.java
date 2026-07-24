@@ -40,15 +40,6 @@ public class TabbedPane extends JTabbedPane {
         setMaximumSize(size);
     }
 
-//    @Override
-//    public void addTab(String title, Component component) throws Exception {
-//        if (component instanceof ListeningPanel) {
-//            super.addTab(title, component);
-//        } else {
-//            throw new Exception("asds");
-//        }
-//    }
-
     /**
      * The tabbed pane will call the selected and unselected methods when switching tabs.
      */

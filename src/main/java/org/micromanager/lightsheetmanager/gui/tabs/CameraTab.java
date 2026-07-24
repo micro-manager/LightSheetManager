@@ -54,10 +54,10 @@ public class CameraTab extends Panel implements ListeningPanel {
         btnCustomROI_ = new Button("Custom", 140, 30);
         btnCurrentROI_ = new Button("Get Current ROI", 140, 30);
 
-        spnOffsetX_ = Spinner.createIntegerSpinner(0, 0, Integer.MAX_VALUE, 1);
-        spnOffsetY_ = Spinner.createIntegerSpinner(0, 0, Integer.MAX_VALUE, 1);
-        spnWidth_ = Spinner.createIntegerSpinner(0, 0, Integer.MAX_VALUE, 1);
-        spnHeight_ = Spinner.createIntegerSpinner(0, 0, Integer.MAX_VALUE, 1);
+        spnOffsetX_ = Spinner.createIntegerSpinner(0, 0, Integer.MAX_VALUE, 1, 6);
+        spnOffsetY_ = Spinner.createIntegerSpinner(0, 0, Integer.MAX_VALUE, 1, 6);
+        spnWidth_ = Spinner.createIntegerSpinner(0, 0, Integer.MAX_VALUE, 1, 6);
+        spnHeight_ = Spinner.createIntegerSpinner(0, 0, Integer.MAX_VALUE, 1, 6);
 
         pnlROI.add(btnUnchangedROI_, "span 2, wrap");
         pnlROI.add(btnFullROI_, "");

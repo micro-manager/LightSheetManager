@@ -36,10 +36,9 @@ public class PositionPanel extends Panel implements SettingsListener {
 
         // post move delay
         lblPostMoveDelay_ = new JLabel("Post-move delay [ms]:");
-        Spinner.setDefaultSize(8);
         spnPostMoveDelay_ = Spinner.createIntegerSpinner(
                 model_.acquisitions().settings().postMoveDelay(),
-                0, Integer.MAX_VALUE, 100);
+                0, Integer.MAX_VALUE, 100, 8);
 
         // XYZ grid
         btnEditPositionList_ = new Button("Edit Position List...", 130, 24);

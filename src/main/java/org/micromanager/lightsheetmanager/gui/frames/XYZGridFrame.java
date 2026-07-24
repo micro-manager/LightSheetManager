@@ -82,11 +82,9 @@ public class XYZGridFrame extends JFrame {
                 "[]10[]"
         ));
 
-        Spinner.setDefaultSize(7);
-        Button.setDefaultSize(160, 26);
-        btnComputeGrid_ = new Button("Compute Grid");
-        btnEditPositionList_ = new Button("Edit Position List...");
-        btnRunOverviewAcq_ = new Button("Run Overview Acquisition");
+        btnComputeGrid_ = new Button("Compute Grid", 160, 26);
+        btnEditPositionList_ = new Button("Edit Position List...", 160, 26);
+        btnRunOverviewAcq_ = new Button("Run Overview Acquisition", 160, 26);
         btnRunOverviewAcq_.setEnabled(false);
 
         cbxUseX_ = new CheckBox("Slices from stage coordinates", false);
@@ -124,9 +122,9 @@ public class XYZGridFrame extends JFrame {
         lblXDelta_ = new JLabel("X delta [µm]:");
         lblXCount_ = new JLabel("Slice count:");
 
-        spnXStart_ = Spinner.createDoubleSpinner(0.0, -Double.MAX_VALUE, Double.MAX_VALUE, 100.0);
-        spnXStop_ = Spinner.createDoubleSpinner(0.0, -Double.MAX_VALUE, Double.MAX_VALUE, 100.0);
-        spnXDelta_ = Spinner.createDoubleSpinner(0.0, -Double.MAX_VALUE, Double.MAX_VALUE, 100.0);
+        spnXStart_ = Spinner.createDoubleSpinner(0.0, -Double.MAX_VALUE, Double.MAX_VALUE, 100.0, 7);
+        spnXStop_ = Spinner.createDoubleSpinner(0.0, -Double.MAX_VALUE, Double.MAX_VALUE, 100.0, 7);
+        spnXDelta_ = Spinner.createDoubleSpinner(0.0, -Double.MAX_VALUE, Double.MAX_VALUE, 100.0, 7);
 
         // Y
         lblYStart_ = new JLabel("Y start [µm]:");
@@ -134,9 +132,9 @@ public class XYZGridFrame extends JFrame {
         lblYDelta_ = new JLabel("Y delta [µm]:");
         lblYCount_ = new JLabel("Y count:");
 
-        spnYStart_ = Spinner.createDoubleSpinner(0.0, -Double.MAX_VALUE, Double.MAX_VALUE, 100.0);
-        spnYStop_ = Spinner.createDoubleSpinner(0.0, -Double.MAX_VALUE, Double.MAX_VALUE, 100.0);
-        spnYDelta_ = Spinner.createDoubleSpinner(0.0, -Double.MAX_VALUE, Double.MAX_VALUE, 100.0);
+        spnYStart_ = Spinner.createDoubleSpinner(0.0, -Double.MAX_VALUE, Double.MAX_VALUE, 100.0, 7);
+        spnYStop_ = Spinner.createDoubleSpinner(0.0, -Double.MAX_VALUE, Double.MAX_VALUE, 100.0, 7);
+        spnYDelta_ = Spinner.createDoubleSpinner(0.0, -Double.MAX_VALUE, Double.MAX_VALUE, 100.0, 7);
 
         // Z
         lblZStart_ = new JLabel("Z start [µm]:");
@@ -144,9 +142,9 @@ public class XYZGridFrame extends JFrame {
         lblZDelta_ = new JLabel("Z delta [µm]:");
         lblZCount_ = new JLabel("Z count:");
 
-        spnZStart_ = Spinner.createDoubleSpinner(0.0, -Double.MAX_VALUE, Double.MAX_VALUE, 100.0);
-        spnZStop_ = Spinner.createDoubleSpinner(0.0, -Double.MAX_VALUE, Double.MAX_VALUE, 100.0);
-        spnZDelta_ = Spinner.createDoubleSpinner(0.0,-Double.MAX_VALUE, Double.MAX_VALUE, 100.0);
+        spnZStart_ = Spinner.createDoubleSpinner(0.0, -Double.MAX_VALUE, Double.MAX_VALUE, 100.0, 7);
+        spnZStop_ = Spinner.createDoubleSpinner(0.0, -Double.MAX_VALUE, Double.MAX_VALUE, 100.0, 7);
+        spnZDelta_ = Spinner.createDoubleSpinner(0.0,-Double.MAX_VALUE, Double.MAX_VALUE, 100.0, 7);
 
         final Panel pnlSettings = new Panel("Grid Settings");
         pnlSettings.setMigLayout(
@@ -156,8 +154,7 @@ public class XYZGridFrame extends JFrame {
         );
 
         final JLabel lblOverlap = new JLabel("Overlap (Y and Z) [%]:");
-        Spinner.setDefaultSize(4);
-        spnOverlapYZ_ = Spinner.createIntegerSpinner(10, 0, 100, 1);
+        spnOverlapYZ_ = Spinner.createIntegerSpinner(10, 0, 100, 1, 4);
         cbxClearPositions_ = new CheckBox("Clear position list if YZ unused", false);
 
         pnlX.add(lblXStart_, "");

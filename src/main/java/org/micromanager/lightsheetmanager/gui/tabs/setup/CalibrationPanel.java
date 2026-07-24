@@ -68,11 +68,10 @@ public class CalibrationPanel extends Panel {
         );
 
         // NOTE: was 80 width on dispim
-        Button.setDefaultSize(100, 26);
-        btnTwoPoint_ = new Button("2-point");
+        btnTwoPoint_ = new Button("2-point", 100, 26);
 
         if (geometryType == GeometryType.DISPIM) {
-            btnUpdate_ = new Button("Update");
+            btnUpdate_ = new Button("Update", 100, 26);
         } else {
             // SCAPE
             btnUpdate_ = new Button("Update Offset", 120, 26);
@@ -95,9 +94,8 @@ public class CalibrationPanel extends Panel {
         lblSlopeValue_.setText(String.format("%.3f μm/°", sliceSlope));
         lblOffsetValue_.setText(String.format("%.3f μm", sliceOffset));
 
-        Button.setDefaultSize(26, 26);
-        btnStepUp_ = new Button(Icons.ARROW_UP);
-        btnStepDown_ = new Button(Icons.ARROW_DOWN);
+        btnStepUp_ = new Button(Icons.ARROW_UP, 26, 26);
+        btnStepDown_ = new Button(Icons.ARROW_DOWN, 26, 26);
 
         btnRunAutofocus_.setEnabled(false);
 

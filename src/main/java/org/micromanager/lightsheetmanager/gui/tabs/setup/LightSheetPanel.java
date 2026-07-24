@@ -91,11 +91,10 @@ public class LightSheetPanel extends Panel {
         txtSheetWidth_ = new TextField();
         btnCenterOffset_ = new Button("Center", 100, 26);
 
-        Button.setDefaultSize(40, 30);
-        btnSheetWidthMinus_ = new Button("-");
-        btnSheetWidthPlus_ = new Button("+");
-        btnSheetOffsetMinus_ = new Button("-");
-        btnSheetOffsetPlus_ = new Button("+");
+        btnSheetWidthMinus_ = new Button("-", 40, 30);
+        btnSheetWidthPlus_ = new Button("+", 40, 30);
+        btnSheetOffsetMinus_ = new Button("-", 40, 30);
+        btnSheetOffsetPlus_ = new Button("+", 40, 30);
 
         // TODO: set the ranges of these sliders to the micro-mirror's min and max deflection
         sldSheetWidth_ = new Slider(0, 8, 1000);
