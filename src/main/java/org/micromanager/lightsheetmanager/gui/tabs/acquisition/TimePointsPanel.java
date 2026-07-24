@@ -38,13 +38,12 @@ public class TimePointsPanel extends Panel implements SettingsListener {
                 "[]5[]"
         );
 
-        Spinner.setDefaultSize(6);
         lblNumTimePoints_ = new JLabel("Number:");
         lblTimePointInterval_ = new JLabel("Interval [s]:");
         spnNumTimePoints_ = Spinner.createIntegerSpinner(
-                acqSettings.numTimePoints(), 1, Integer.MAX_VALUE,1);
+                acqSettings.numTimePoints(), 1, Integer.MAX_VALUE, 1, 6);
         spnTimePointInterval_ = Spinner.createDoubleSpinner(
-                acqSettings.timePointInterval(), 0.1, Double.MAX_VALUE, 0.1);
+                acqSettings.timePointInterval(), 0.1, Double.MAX_VALUE, 0.1, 6);
 
         add(lblNumTimePoints_, "");
         add(spnNumTimePoints_, "wrap");
