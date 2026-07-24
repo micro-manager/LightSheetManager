@@ -1,16 +1,16 @@
 package org.micromanager.lightsheetmanager.gui.tabs.acquisition;
 
+import org.micromanager.lightsheetmanager.LightSheetManager;
 import org.micromanager.lightsheetmanager.api.AcquisitionSettings;
 import org.micromanager.lightsheetmanager.api.SliceSettings;
 import org.micromanager.lightsheetmanager.api.data.CameraMode;
 import org.micromanager.lightsheetmanager.api.internal.ScapeAcquisitionSettings;
 import org.micromanager.lightsheetmanager.gui.components.CheckBox;
-import org.micromanager.lightsheetmanager.gui.components.Label;
 import org.micromanager.lightsheetmanager.gui.components.Panel;
 import org.micromanager.lightsheetmanager.gui.components.SettingsListener;
 import org.micromanager.lightsheetmanager.gui.components.Spinner;
-import org.micromanager.lightsheetmanager.LightSheetManager;
 
+import javax.swing.JLabel;
 import java.util.Objects;
 
 // TODO: make a separate panel for diSPIM?
@@ -18,16 +18,16 @@ public class SlicePanel extends Panel implements SettingsListener {
 
     // regular panel
     private CheckBox cbxMinimizePeriod_;
-    private Label lblSlicePeriod_;
-    private Label lblSampleExposure_;
+    private JLabel lblSlicePeriod_;
+    private JLabel lblSampleExposure_;
     private Spinner spnSlicePeriod_;
     private Spinner spnSampleExposure_;
 
     // virtual slit panel
-    private Label lblScanResetTime_;
-    private Label lblScanSettleTime_;
-    private Label lblShutterWidth_;
-    private Label lblShutterSpeed_;
+    private JLabel lblScanResetTime_;
+    private JLabel lblScanSettleTime_;
+    private JLabel lblShutterWidth_;
+    private JLabel lblShutterSpeed_;
     private Spinner spnScanResetTime_;
     private Spinner spnScanSettleTime_;
     private Spinner spnShutterWidth_;
@@ -54,8 +54,8 @@ public class SlicePanel extends Panel implements SettingsListener {
         final boolean periodMinimized = sliceSettings.periodMinimized();
 
         // regular panel
-        lblSlicePeriod_ = new Label("Slice period [ms]:");
-        lblSampleExposure_ = new Label("Sample exposure [ms]:");
+        lblSlicePeriod_ = new JLabel("Slice period [ms]:");
+        lblSampleExposure_ = new JLabel("Sample exposure [ms]:");
         cbxMinimizePeriod_ = new CheckBox(
                 "Minimize slice period", 12, periodMinimized, CheckBox.RIGHT);
         spnSlicePeriod_ = Spinner.createDoubleSpinner(
@@ -70,10 +70,10 @@ public class SlicePanel extends Panel implements SettingsListener {
 //            final DefaultSliceSettingsLS sliceSettingsLS = model_.acquisitions().settings().sliceLS();
 //
 //            // virtual slit panel
-//            lblScanResetTime_ = new Label("Scan Reset Time [ms]:");
-//            lblScanSettleTime_ = new Label("Scan Settle Time [ms]:");
-//            lblShutterWidth_ = new Label("Shutter Width [µs]:");
-//            lblShutterSpeed_ = new Label("1 / (shutter speed):");
+//            lblScanResetTime_ = new JLabel("Scan Reset Time [ms]:");
+//            lblScanSettleTime_ = new JLabel("Scan Settle Time [ms]:");
+//            lblShutterWidth_ = new JLabel("Shutter Width [µs]:");
+//            lblShutterSpeed_ = new JLabel("1 / (shutter speed):");
 //            spnScanResetTime_ = Spinner.createDoubleSpinner(
 //                    sliceSettingsLS.scanResetTime(), 1.0, 100.0, 0.25);
 //            spnScanSettleTime_ = Spinner.createDoubleSpinner(

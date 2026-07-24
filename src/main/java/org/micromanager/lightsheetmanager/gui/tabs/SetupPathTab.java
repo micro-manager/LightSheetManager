@@ -1,12 +1,12 @@
 package org.micromanager.lightsheetmanager.gui.tabs;
 
+import org.micromanager.lightsheetmanager.LightSheetManager;
 import org.micromanager.lightsheetmanager.api.data.CameraMode;
-import org.micromanager.lightsheetmanager.gui.components.Label;
 import org.micromanager.lightsheetmanager.gui.components.ListeningPanel;
 import org.micromanager.lightsheetmanager.gui.components.Panel;
 import org.micromanager.lightsheetmanager.gui.tabs.setup.SetupPanel;
-import org.micromanager.lightsheetmanager.LightSheetManager;
 
+import javax.swing.JLabel;
 import java.awt.Font;
 import java.util.Objects;
 
@@ -26,7 +26,8 @@ public class SetupPathTab extends Panel implements ListeningPanel {
     private void createUserInterface() {
         final String title = (model_.devices().adapter().numImagingPaths() > 1)
                 ? ("Setup Path " + pathNum_) : "Setup Path";
-        final Label lblTitle = new Label(title, Font.BOLD, 16);
+        final JLabel lblTitle = new JLabel(title);
+        lblTitle.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
 
         setupPanel_ = new SetupPanel(model_, pathNum_);
 

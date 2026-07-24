@@ -1,21 +1,21 @@
 package org.micromanager.lightsheetmanager.gui.tabs.acquisition;
 
+import org.micromanager.lightsheetmanager.LightSheetManager;
 import org.micromanager.lightsheetmanager.api.AcquisitionSettings;
 import org.micromanager.lightsheetmanager.api.internal.ScapeAcquisitionSettings;
 import org.micromanager.lightsheetmanager.gui.components.Button;
 import org.micromanager.lightsheetmanager.gui.components.CheckBox;
-import org.micromanager.lightsheetmanager.gui.components.Label;
 import org.micromanager.lightsheetmanager.gui.components.Panel;
 import org.micromanager.lightsheetmanager.gui.components.SettingsListener;
 import org.micromanager.lightsheetmanager.gui.components.Spinner;
 import org.micromanager.lightsheetmanager.gui.frames.XYZGridFrame;
-import org.micromanager.lightsheetmanager.LightSheetManager;
 
+import javax.swing.JLabel;
 import java.util.Objects;
 
 public class PositionPanel extends Panel implements SettingsListener {
 
-    private Label lblPostMoveDelay_;
+    private JLabel lblPostMoveDelay_;
     private Spinner spnPostMoveDelay_;
     private Button btnOpenXYZGrid_;
     private Button btnEditPositionList_;
@@ -35,7 +35,7 @@ public class PositionPanel extends Panel implements SettingsListener {
     private void createUserInterface() {
 
         // post move delay
-        lblPostMoveDelay_ = new Label("Post-move delay [ms]:");
+        lblPostMoveDelay_ = new JLabel("Post-move delay [ms]:");
         Spinner.setDefaultSize(8);
         spnPostMoveDelay_ = Spinner.createIntegerSpinner(
                 model_.acquisitions().settings().postMoveDelay(),

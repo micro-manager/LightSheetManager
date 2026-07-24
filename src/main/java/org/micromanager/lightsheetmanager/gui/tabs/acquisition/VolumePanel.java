@@ -1,17 +1,17 @@
 package org.micromanager.lightsheetmanager.gui.tabs.acquisition;
 
+import org.micromanager.lightsheetmanager.LightSheetManager;
 import org.micromanager.lightsheetmanager.api.AcquisitionSettings;
 import org.micromanager.lightsheetmanager.api.VolumeSettings;
 import org.micromanager.lightsheetmanager.api.data.GeometryType;
-import org.micromanager.lightsheetmanager.LightSheetManager;
 import org.micromanager.lightsheetmanager.api.internal.DispimAcquisitionSettings;
 import org.micromanager.lightsheetmanager.api.internal.ScapeAcquisitionSettings;
 import org.micromanager.lightsheetmanager.gui.components.ComboBox;
-import org.micromanager.lightsheetmanager.gui.components.Label;
 import org.micromanager.lightsheetmanager.gui.components.Panel;
 import org.micromanager.lightsheetmanager.gui.components.SettingsListener;
 import org.micromanager.lightsheetmanager.gui.components.Spinner;
 
+import javax.swing.JLabel;
 import java.util.Objects;
 
 public class VolumePanel extends Panel implements SettingsListener {
@@ -53,11 +53,11 @@ public class VolumePanel extends Panel implements SettingsListener {
             viewOptions[i] = i + 1;
         }
 
-        final Label lblNumViews = new Label("Number of views:");
-        final Label lblFirstView = new Label("First view:");
-        final Label lblViewDelay = new Label("Delay before view [ms]:");
-        final Label lblSlicesPerView = new Label("Slices per view:");
-        final Label lblSliceStepSize = new Label("Slice step size [µm]:");
+        final JLabel lblNumViews = new JLabel("Number of views:");
+        final JLabel lblFirstView = new JLabel("First view:");
+        final JLabel lblViewDelay = new JLabel("Delay before view [ms]:");
+        final JLabel lblSlicesPerView = new JLabel("Slices per view:");
+        final JLabel lblSliceStepSize = new JLabel("Slice step size [µm]:");
 
         // if the number of sides has changed and the firstView or numViews is larger
         // than the number of sides, default to 1.
@@ -100,7 +100,7 @@ public class VolumePanel extends Panel implements SettingsListener {
             case SCAPE:
                 add(lblViewDelay, "");
                 add(spnViewDelay_, "wrap");
-                add(new Label("Number of slices:"), "");
+                add(new JLabel("Number of slices:"), "");
                 add(spnNumSlices_, "wrap");
                 add(lblSliceStepSize, "");
                 add(spnSliceStepSize_, "");

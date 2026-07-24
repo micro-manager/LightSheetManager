@@ -1,20 +1,20 @@
 package org.micromanager.lightsheetmanager.gui.tabs.acquisition;
 
+import org.micromanager.lightsheetmanager.LightSheetManager;
 import org.micromanager.lightsheetmanager.api.AcquisitionSettings;
 import org.micromanager.lightsheetmanager.api.internal.ScapeAcquisitionSettings;
 import org.micromanager.lightsheetmanager.gui.components.CheckBox;
-import org.micromanager.lightsheetmanager.gui.components.Label;
 import org.micromanager.lightsheetmanager.gui.components.Panel;
 import org.micromanager.lightsheetmanager.gui.components.SettingsListener;
 import org.micromanager.lightsheetmanager.gui.components.Spinner;
-import org.micromanager.lightsheetmanager.LightSheetManager;
 
+import javax.swing.JLabel;
 import java.util.Objects;
 
 public class TimePointsPanel extends Panel implements SettingsListener {
 
-    private Label lblNumTimePoints_;
-    private Label lblTimePointInterval_;
+    private JLabel lblNumTimePoints_;
+    private JLabel lblTimePointInterval_;
     private Spinner spnNumTimePoints_;
     private Spinner spnTimePointInterval_;
 
@@ -39,8 +39,8 @@ public class TimePointsPanel extends Panel implements SettingsListener {
         );
 
         Spinner.setDefaultSize(6);
-        lblNumTimePoints_ = new Label("Number:");
-        lblTimePointInterval_ = new Label("Interval [s]:");
+        lblNumTimePoints_ = new JLabel("Number:");
+        lblTimePointInterval_ = new JLabel("Interval [s]:");
         spnNumTimePoints_ = Spinner.createIntegerSpinner(
                 acqSettings.numTimePoints(), 1, Integer.MAX_VALUE,1);
         spnTimePointInterval_ = Spinner.createDoubleSpinner(
