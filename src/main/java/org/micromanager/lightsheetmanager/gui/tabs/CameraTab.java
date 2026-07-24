@@ -1,13 +1,13 @@
 package org.micromanager.lightsheetmanager.gui.tabs;
 
+import org.micromanager.lightsheetmanager.LightSheetManager;
 import org.micromanager.lightsheetmanager.gui.components.Button;
-import org.micromanager.lightsheetmanager.gui.components.Label;
 import org.micromanager.lightsheetmanager.gui.components.ListeningPanel;
 import org.micromanager.lightsheetmanager.gui.components.Panel;
-import org.micromanager.lightsheetmanager.LightSheetManager;
 import org.micromanager.lightsheetmanager.gui.components.Spinner;
 import org.micromanager.lightsheetmanager.model.devices.cameras.CameraBase;
 
+import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.Rectangle;
 import java.util.Objects;
@@ -36,14 +36,15 @@ public class CameraTab extends Panel implements ListeningPanel {
     }
 
     private void createUserInterface() {
-        final Label lblTitle = new Label("Camera Settings", Font.BOLD, 18);
+        final JLabel lblTitle = new JLabel("Camera Settings");
+        lblTitle.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
 
         final Panel pnlROI = new Panel("Imaging ROI");
 
-        final Label lblOffsetX = new Label("Offset X:");
-        final Label lblOffsetY = new Label("Offset Y:");
-        final Label lblWidth = new Label("Width:");
-        final Label lblHeight = new Label("Height:");
+        final JLabel lblOffsetX = new JLabel("Offset X:");
+        final JLabel lblOffsetY = new JLabel("Offset Y:");
+        final JLabel lblWidth = new JLabel("Width:");
+        final JLabel lblHeight = new JLabel("Height:");
 
         btnUnchangedROI_ = new Button("Unchanged", 140, 30);
         btnFullROI_ = new Button("Full", 70, 30);

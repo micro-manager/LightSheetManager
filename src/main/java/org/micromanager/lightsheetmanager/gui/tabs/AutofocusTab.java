@@ -1,17 +1,17 @@
 package org.micromanager.lightsheetmanager.gui.tabs;
 
+import org.micromanager.lightsheetmanager.LightSheetManager;
 import org.micromanager.lightsheetmanager.api.data.AutofocusMode;
 import org.micromanager.lightsheetmanager.api.data.AutofocusType;
 import org.micromanager.lightsheetmanager.api.internal.ScapeAcquisitionSettings;
-import org.micromanager.lightsheetmanager.LightSheetManager;
 import org.micromanager.lightsheetmanager.gui.components.Button;
 import org.micromanager.lightsheetmanager.gui.components.CheckBox;
 import org.micromanager.lightsheetmanager.gui.components.ComboBox;
-import org.micromanager.lightsheetmanager.gui.components.Label;
 import org.micromanager.lightsheetmanager.gui.components.ListeningPanel;
 import org.micromanager.lightsheetmanager.gui.components.Panel;
 import org.micromanager.lightsheetmanager.gui.components.Spinner;
 
+import javax.swing.JLabel;
 import java.awt.Font;
 import java.util.Objects;
 
@@ -38,8 +38,8 @@ public class AutofocusTab extends Panel implements ListeningPanel {
     private Spinner spnMaxOffset_;
 
     // autofocus options during setup
-    private Label lblMaxOffsetSetup_;
-    private Label lblMaxOffsetSetupUm_;
+    private JLabel lblMaxOffsetSetup_;
+    private JLabel lblMaxOffsetSetupUm_;
     private Spinner spnMaxOffsetSetup_;
     private CheckBox cbxAutoUpdateFocusFound_;
 
@@ -55,7 +55,8 @@ public class AutofocusTab extends Panel implements ListeningPanel {
         final ScapeAcquisitionSettings acqSettings =
                 model_.acquisitions().settings();
 
-        final Label lblTitle = new Label("Autofocus Settings", Font.BOLD, 18);
+        final JLabel lblTitle = new JLabel("Autofocus Settings");
+        lblTitle.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
 
         setMigLayout(
                 "",
@@ -71,11 +72,11 @@ public class AutofocusTab extends Panel implements ListeningPanel {
         final Panel pnlMoveCorrection = new Panel("Movement Correction Options");
 
         // general autofocus options
-        final Label lblNumImages = new Label("Number of Images:");
-        final Label lblStepSizeUm = new Label("Step Size [µm]:");
-        final Label lblMode = new Label("Mode:");
-        final Label lblScoringAlgorithm = new Label("Scoring algorithm:");
-       // final Label lblToleranceUm = new Label("Tolerance [µm]");
+        final JLabel lblNumImages = new JLabel("Number of Images:");
+        final JLabel lblStepSizeUm = new JLabel("Step Size [µm]:");
+        final JLabel lblMode = new JLabel("Mode:");
+        final JLabel lblScoringAlgorithm = new JLabel("Scoring algorithm:");
+       // final JLabel lblToleranceUm = new JLabel("Tolerance [µm]");
 
         cbxShowImages_ = new CheckBox("Show Images", 12,
                 acqSettings.autofocus().showImages(), CheckBox.RIGHT);
@@ -98,10 +99,10 @@ public class AutofocusTab extends Panel implements ListeningPanel {
         btnRunAutofocus_.setEnabled(false); // FIXME: impl autofocus
 
         // autofocus options during acquisition
-        final Label lblTimePoints = new Label("time points");
-        final Label lblMaxOffsetActive = new Label("Max offset change: ");
-        final Label lblAutofocusEveryX = new Label("Autofocus every ");
-        final Label lblAutofocusChannel = new Label("Autofocus channel:");
+        final JLabel lblTimePoints = new JLabel("time points");
+        final JLabel lblMaxOffsetActive = new JLabel("Max offset change: ");
+        final JLabel lblAutofocusEveryX = new JLabel("Autofocus every ");
+        final JLabel lblAutofocusChannel = new JLabel("Autofocus channel:");
 
         cbxAutofocusEveryPass_ = new CheckBox("Autofocus every stage pass", 12, false, CheckBox.RIGHT);
         cbxAutofocusBeforeAcq_ = new CheckBox("Autofocus before starting acquisition", 12, false, CheckBox.RIGHT);
@@ -111,18 +112,18 @@ public class AutofocusTab extends Panel implements ListeningPanel {
         spnMaxOffset_ = Spinner.createIntegerSpinner(3, 0, 10, 1);
 
         // autofocus options during setup
-        lblMaxOffsetSetup_ = new Label("Max offset change: ");
-        lblMaxOffsetSetupUm_ = new Label("µm (±)");
+        lblMaxOffsetSetup_ = new JLabel("Max offset change: ");
+        lblMaxOffsetSetupUm_ = new JLabel("µm (±)");
         cbxAutoUpdateFocusFound_ = new CheckBox("Automatically update offset if focus found", 12, false, CheckBox.RIGHT);
         spnMaxOffsetSetup_ = Spinner.createIntegerSpinner(3, 0, 10, 1);
         setSetupOptionsState(false);
 
         // movement correction options
-        final Label lblTimePoints2 = new Label("time points"); // TODO: share this value?
-        final Label lblCorrectEveryX = new Label("Correct every");
-        final Label lblChannel = new Label("Channel:");
-        final Label lblMaxDistance = new Label("Max distance:");
-        final Label lblMinMovement = new Label("Min movement:");
+        final JLabel lblTimePoints2 = new JLabel("time points"); // TODO: share this value?
+        final JLabel lblCorrectEveryX = new JLabel("Correct every");
+        final JLabel lblChannel = new JLabel("Channel:");
+        final JLabel lblMaxDistance = new JLabel("Max distance:");
+        final JLabel lblMinMovement = new JLabel("Min movement:");
         final Spinner spnCorrectEveryX = Spinner.createIntegerSpinner(100, 0, 1000, 1);
         final Spinner spnMaxDistance = Spinner.createIntegerSpinner(96, 0, 100, 1);
         final Spinner spnMinMovement = Spinner.createDoubleSpinner(1.0, 0.0, 10.0, 0.5);
@@ -156,7 +157,7 @@ public class AutofocusTab extends Panel implements ListeningPanel {
         pnlAcqActiveOptions.add(cmbAutofocusChannel_, "wrap");
         pnlAcqActiveOptions.add(lblMaxOffsetActive, "");
         pnlAcqActiveOptions.add(spnMaxOffset_, "");
-        pnlAcqActiveOptions.add(new Label("µm (±)"), "");
+        pnlAcqActiveOptions.add(new JLabel("µm (±)"), "");
 
         // autofocus options during setup
         pnlAcqSetupOptions.add(cbxAutoUpdateFocusFound_, "span 3, wrap");
@@ -172,10 +173,10 @@ public class AutofocusTab extends Panel implements ListeningPanel {
         pnlMoveCorrection.add(cmbChannel, "wrap");
         pnlMoveCorrection.add(lblMaxDistance, "");
         pnlMoveCorrection.add(spnMaxDistance, "");
-        pnlMoveCorrection.add(new Label("µm (±)"), "wrap");
+        pnlMoveCorrection.add(new JLabel("µm (±)"), "wrap");
         pnlMoveCorrection.add(lblMinMovement, "");
         pnlMoveCorrection.add(spnMinMovement, "");
-        pnlMoveCorrection.add(new Label("µm (±)"), "");
+        pnlMoveCorrection.add(new JLabel("µm (±)"), "");
 
         // add panels to tab
         add(pnlGeneralOptions, "");

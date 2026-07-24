@@ -2,15 +2,15 @@ package org.micromanager.lightsheetmanager;
 
 import net.miginfocom.swing.MigLayout;
 
+import org.micromanager.internal.utils.WindowPositioning;
 import org.micromanager.lightsheetmanager.api.data.GeometryType;
 import org.micromanager.lightsheetmanager.api.data.LightSheetType;
-import org.micromanager.lightsheetmanager.gui.components.Label;
 import org.micromanager.lightsheetmanager.gui.data.Icons;
 import org.micromanager.lightsheetmanager.gui.tabs.TabPanel;
 import org.micromanager.lightsheetmanager.gui.utils.WindowUtils;
-import org.micromanager.internal.utils.WindowPositioning;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import java.awt.Font;
 import java.util.Objects;
 
@@ -85,8 +85,10 @@ public class LightSheetManagerFrame extends JFrame {
                 "[]10[]"
         ));
 
-        final Label lblTitle = new Label(LightSheetManagerPlugin.menuName, Font.BOLD, 16);
-        final Label lblError = new Label(model_.setupErrorMessage(), Font.BOLD, 14);
+        final JLabel lblTitle = new JLabel(LightSheetManagerPlugin.menuName);
+        lblTitle.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
+        final JLabel lblError = new JLabel(model_.setupErrorMessage());
+        lblError.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
 
         add(lblTitle, "wrap");
         add(lblError, "");
@@ -108,7 +110,7 @@ public class LightSheetManagerFrame extends JFrame {
         final int height = 680;
         tabPanel_ = new TabPanel(model_, this, width, height);
 
-        final Label lblTitle = new Label(LightSheetManagerPlugin.menuName, Font.BOLD, 20);
+        final JLabel lblTitle = new JLabel(LightSheetManagerPlugin.menuName);
         lblTitle.setFont(new Font(Font.MONOSPACED, Font.BOLD, 20));
 
         // restore the polling state from settings

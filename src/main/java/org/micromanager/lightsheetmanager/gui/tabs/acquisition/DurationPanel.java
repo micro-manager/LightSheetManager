@@ -1,17 +1,16 @@
 package org.micromanager.lightsheetmanager.gui.tabs.acquisition;
 
-import org.micromanager.lightsheetmanager.gui.components.Label;
-import org.micromanager.lightsheetmanager.gui.components.Panel;
 import org.micromanager.lightsheetmanager.LightSheetManager;
+import org.micromanager.lightsheetmanager.gui.components.Panel;
 
 import javax.swing.JLabel;
 import java.util.Objects;
 
 public class DurationPanel extends Panel {
 
-    private Label lblSliceTimeValue_;
-    private Label lblVolumeTimeValue_;
-    private Label lblTotalTimeValue_;
+    private JLabel lblSliceTimeValue_;
+    private JLabel lblVolumeTimeValue_;
+    private JLabel lblTotalTimeValue_;
 
     public DurationPanel(final LightSheetManager model) {
         super("Durations");
@@ -24,15 +23,15 @@ public class DurationPanel extends Panel {
         // prevent panel from moving when values change
         setAbsoluteSize(120, 95);
 
-        lblSliceTimeValue_ = new Label("0.0 ms");
-        lblVolumeTimeValue_ = new Label("0.0 ms");
-        lblTotalTimeValue_ = new Label("0.0 s");
+        lblSliceTimeValue_ = new JLabel("0.0 ms");
+        lblVolumeTimeValue_ = new JLabel("0.0 ms");
+        lblTotalTimeValue_ = new JLabel("0.0 s");
 
-        add(new Label("Slice:"), "");
+        add(new JLabel("Slice:"), "");
         add(lblSliceTimeValue_, "wrap");
-        add(new Label("Volume:"), "");
+        add(new JLabel("Volume:"), "");
         add(lblVolumeTimeValue_, "wrap");
-        add(new Label("Total:"), "");
+        add(new JLabel("Total:"), "");
         add(lblTotalTimeValue_, "");
     }
 

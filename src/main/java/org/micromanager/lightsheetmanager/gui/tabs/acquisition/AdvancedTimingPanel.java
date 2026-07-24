@@ -1,28 +1,28 @@
 package org.micromanager.lightsheetmanager.gui.tabs.acquisition;
 
+import org.micromanager.lightsheetmanager.LightSheetManager;
 import org.micromanager.lightsheetmanager.api.AcquisitionSettings;
 import org.micromanager.lightsheetmanager.api.TimingSettings;
 import org.micromanager.lightsheetmanager.api.internal.ScapeAcquisitionSettings;
 import org.micromanager.lightsheetmanager.gui.components.CheckBox;
-import org.micromanager.lightsheetmanager.gui.components.Label;
 import org.micromanager.lightsheetmanager.gui.components.Panel;
 import org.micromanager.lightsheetmanager.gui.components.SettingsListener;
 import org.micromanager.lightsheetmanager.gui.components.Spinner;
-import org.micromanager.lightsheetmanager.LightSheetManager;
 import org.micromanager.lightsheetmanager.model.utils.NumberUtils;
 
+import javax.swing.JLabel;
 import java.util.Objects;
 
 public class AdvancedTimingPanel extends Panel implements SettingsListener {
 
-    private Label lblDelayBeforeScan_;
-    private Label lblScansPerSlice_;
-    private Label lblScanDuration_;
-    private Label lblDelayBeforeLaser_;
-    private Label lblDelayBeforeCamera_;
-    private Label lblLaserTriggerDuration_;
-    private Label lblCameraTriggerDuration_;
-    private Label lblCameraExposure_;
+    private JLabel lblDelayBeforeScan_;
+    private JLabel lblScansPerSlice_;
+    private JLabel lblScanDuration_;
+    private JLabel lblDelayBeforeLaser_;
+    private JLabel lblDelayBeforeCamera_;
+    private JLabel lblLaserTriggerDuration_;
+    private JLabel lblCameraTriggerDuration_;
+    private JLabel lblCameraExposure_;
 
     private Spinner spnDelayBeforeScan_;
     private Spinner spnDelayBeforeLaser_;
@@ -52,14 +52,14 @@ public class AdvancedTimingPanel extends Panel implements SettingsListener {
                 "[]5[]"
         );
 
-        lblDelayBeforeScan_ = new Label("Delay Before Scan [ms]: ");
-        lblScansPerSlice_ = new Label("Scans Per Slice: ");
-        lblScanDuration_ = new Label("Scan Duration [ms]: ");
-        lblDelayBeforeLaser_ = new Label("Delay Before Laser [ms]: ");
-        lblDelayBeforeCamera_ = new Label("Delay Before Camera [ms]: ");
-        lblLaserTriggerDuration_ = new Label("Laser Trigger Duration [ms]: ");
-        lblCameraTriggerDuration_ = new Label("Camera Trigger Duration [ms]: ");
-        lblCameraExposure_ = new Label("Camera Exposure [ms]: ");
+        lblDelayBeforeScan_ = new JLabel("Delay Before Scan [ms]: ");
+        lblScansPerSlice_ = new JLabel("Scans Per Slice: ");
+        lblScanDuration_ = new JLabel("Scan Duration [ms]: ");
+        lblDelayBeforeLaser_ = new JLabel("Delay Before Laser [ms]: ");
+        lblDelayBeforeCamera_ = new JLabel("Delay Before Camera [ms]: ");
+        lblLaserTriggerDuration_ = new JLabel("Laser Trigger Duration [ms]: ");
+        lblCameraTriggerDuration_ = new JLabel("Camera Trigger Duration [ms]: ");
+        lblCameraExposure_ = new JLabel("Camera Exposure [ms]: ");
 
         final TimingSettings timingSettings = model_.acquisitions().settings().timing();
 
