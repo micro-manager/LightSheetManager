@@ -77,13 +77,13 @@ public abstract class ASITigerBase extends DeviceBase {
         return 0.0;
     }
 
-    public int getTigerHexAddress() {
+    public String getCardAddress() {
         try {
-            return Integer.parseInt(core_.getProperty(deviceName_, Properties.TIGER_HEX_ADDRESS));
+            return core_.getProperty(deviceName_, Properties.TIGER_HEX_ADDRESS);
         } catch (Exception e) {
-            studio_.logs().logError("could not get the tiger hex address property");
+            studio_.logs().logError("could not get the Tiger hex address property");
         }
-        return -1;
+        return "";
     }
 
     public void setRefreshPropertyValues(final boolean state) {
