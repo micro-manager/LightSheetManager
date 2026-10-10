@@ -111,9 +111,11 @@ public class DeviceManager {
                 continue;
             }
 
-            // skip properties with unknown DeviceType
+            // skip properties with unknown DeviceType, which means the named device is not loaded
             final DeviceType deviceType = getDeviceType(deviceName);
             if (deviceType == DeviceType.UnknownType) {
+                studio_.logs().logError("DeviceManager: " + propertyName + " names " + deviceName
+                        + ", which is not a loaded device, so it is ignored");
                 continue;
             }
 
