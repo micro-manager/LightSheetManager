@@ -1806,7 +1806,9 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
                 delayBeforeScanMs = 0.0;
                 break;
             default:
-                studio_.logs().showError("Invalid camera mode");
+                studio_.logs().showError("The camera trigger mode \"" + cameraMode
+                        + "\" has no stage scan timing.\n\n"
+                        + "Select another mode in the Trigger Mode menu on the Acquisition tab.");
                 break;
         }
 
@@ -1992,7 +1994,9 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
                 }
                 break;
             default:
-                studio_.logs().showError("Invalid camera mode");
+                studio_.logs().showError("The camera trigger mode \"" + cameraMode
+                        + "\" has no slice timing.\n\n"
+                        + "Select another mode in the Trigger Mode menu on the Acquisition tab.");
                 break;
         }
 
