@@ -13,6 +13,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PositionUpdater implements Publisher {
 
+   // each poll reads every stage and galvo over serial, so do not poll faster than this
+   private static final int MIN_POLLING_DELAY_MS = 500;
+
    // polling
    private volatile int pollingDelayMs_;
    private volatile boolean isPolling_;
@@ -91,6 +94,10 @@ public class PositionUpdater implements Publisher {
    }
 
    public void setPollingDelayMs(final int delayMs) {
+      if (delayMs < MIN_POLLING_DELAY_MS) {
+         throw new IllegalArgumentException("polling delay must be at least "
+               + MIN_POLLING_DELAY_MS + " ms, got " + delayMs);
+      }
       pollingDelayMs_ = delayMs;
    }
 
