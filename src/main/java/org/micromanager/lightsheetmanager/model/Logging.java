@@ -17,11 +17,9 @@ import java.util.Objects;
  *       dialogs are also shown.</li>
  * </ul>
  *
- * <p>Dialogs shown from the acquisition thread block it until someone clicks OK, so an
- * unattended run (Playlist, scripting) can hang indefinitely on an error. The 1.4 plugin
- * solved this with {@code MyDialogUtils.showError(..., hideErrors)} and threaded the flag
- * through the call chain; reading the setting at the report site instead also covers
- * stop/pause requests arriving outside a run.
+ * <p>{@code reportError} shows its dialog through MM's {@code showError}, which returns
+ * immediately, so it never holds the acquisition thread; only {@code confirmOrDefault}
+ * waits for an answer, which quiet mode gives in an unattended run (Playlist, scripting).
  *
  * <p>This is deliberately an instance class, not static utilities: the backend it writes
  * through must be swappable per model instance for headless operation.
