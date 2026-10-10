@@ -21,6 +21,36 @@ import org.micromanager.lightsheetmanager.api.data.SaveMode;
  */
 public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
 
+    private static final String ILLEGAL_FILENAME_CHARS = "\\/:*?\"<>|";
+
+    /**
+     * Returns why the save name cannot be used as a Windows file name, or null when it can.
+     *
+     * @param name the save name
+     * @return the problem, or null
+     */
+    public static String saveNamePrefixProblem(final String name) {
+        if (name == null || name.isEmpty()) {
+            return "The save name is empty";
+        }
+        final char last = name.charAt(name.length() - 1);
+        if (last == ' ' || last == '.') {
+            return "The save name \"" + name + "\" ends with a space or a period";
+        }
+        for (int i = 0; i < name.length(); i++) {
+            final char c = name.charAt(i);
+            // c < 32 rejects all ASCII control characters (0x00–0x1F)
+            if (c < 32) {
+                return "The save name contains a control character";
+            }
+            if (ILLEGAL_FILENAME_CHARS.indexOf(c) >= 0) {
+                return "The save name \"" + name + "\" contains \"" + c
+                        + "\", which Windows does not allow in file names";
+            }
+        }
+        return null;
+    }
+
     public abstract static class Builder<T extends Builder<T>> implements AcquisitionSettings.Builder<T> {
 
         private String saveDirectory = System.getProperty("user.home");
@@ -80,9 +110,14 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
          * Sets the folder name.
          *
          * @param name the name of the folder
+         * @throws IllegalArgumentException if the name cannot be used as a Windows file name
          */
         @Override
         public T saveNamePrefix(final String name) {
+            final String problem = saveNamePrefixProblem(name);
+            if (problem != null) {
+                throw new IllegalArgumentException(problem);
+            }
             saveNamePrefix = name;
             return self();
         }
