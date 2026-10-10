@@ -5,10 +5,10 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.Color;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class TextField extends JTextField {
 
-    private static final String ILLEGAL_FILENAME_CHARS = "\\/:*?\"<>|";
     private static final Color ERROR_COLOR = new Color(110, 25, 25);
 
     private final Color defaultColor_;
@@ -35,16 +35,18 @@ public class TextField extends JTextField {
     }
 
     /**
-     * Registers a listener that validates the current text as a Windows
-     * filename whenever the document changes.
+     * Registers a listener that checks the current text whenever the document changes,
+     * and shows the error color while the text has a problem.
      *
-     * @param listener receives {@code true} if the current text is valid
+     * @param problemOf returns why the text is invalid, or null when it is valid
+     * @param listener receives the problem, or null when the current text is valid
      */
-    public void registerFilenameValidationListener(final Consumer<Boolean> listener) {
+    public void registerValidationListener(final Function<String, String> problemOf,
+                                           final Consumer<String> listener) {
         final Runnable validate = () -> {
-            final boolean isValid = isValidWindowsFilename(getText());
-            setBackground(isValid ? defaultColor_ : ERROR_COLOR);
-            listener.accept(isValid);
+            final String problem = problemOf.apply(getText());
+            setBackground(problem == null ? defaultColor_ : ERROR_COLOR);
+            listener.accept(problem);
         };
 
         final DocumentListener docListener = new DocumentListener() {
@@ -76,35 +78,5 @@ public class TextField extends JTextField {
      */
     public void setValid(final boolean isValid) {
         setBackground(isValid ? defaultColor_ : ERROR_COLOR);
-    }
-
-    /**
-     * Returns {@code true} if the filename is valid on Windows.
-     *
-     * @param name the name to check
-     * @return {@code true} if the filename is valid
-     */
-    private static boolean isValidWindowsFilename(final String name) {
-        // empty names are invalid
-        if (name.isEmpty()) {
-            return false;
-        }
-
-        // trailing space or period
-        final char last = name.charAt(name.length() - 1);
-        if (last == ' ' || last == '.') {
-            return false;
-        }
-
-        // check for illegal characters and control characters
-        for (int i = 0; i < name.length(); i++) {
-            final char c = name.charAt(i);
-            // c < 32 rejects all ASCII control characters (0x00–0x1F)
-            if (c < 32 || ILLEGAL_FILENAME_CHARS.indexOf(c) >= 0) {
-                return false;
-            }
-        }
-
-        return true;
     }
 }

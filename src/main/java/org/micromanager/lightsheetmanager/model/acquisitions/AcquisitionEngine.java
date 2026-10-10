@@ -21,6 +21,7 @@ import org.micromanager.lightsheetmanager.api.AcquisitionManager;
 import org.micromanager.lightsheetmanager.api.AcquisitionSettings;
 import org.micromanager.lightsheetmanager.api.TimingSettings;
 import org.micromanager.lightsheetmanager.api.data.AcquisitionMode;
+import org.micromanager.lightsheetmanager.api.internal.BaseAcquisitionSettings;
 import org.micromanager.lightsheetmanager.api.internal.ScapeAcquisitionSettings;
 import org.micromanager.lightsheetmanager.gui.tabs.acquisition.DurationPanel;
 import org.micromanager.lightsheetmanager.model.autofocus.AutofocusAdapter;
@@ -101,14 +102,23 @@ public abstract class AcquisitionEngine implements AcquisitionManager, MMAcquist
         final String saveNamePrefix = acqSettings_.saveNamePrefix();
         if (saveNamePrefix == null || saveNamePrefix.trim().isEmpty()) {
             model_.logging().reportError("The save name prefix is empty.\n\n"
-                    + "Set a name on the Datastore panel, or uncheck \"Save images during acquisition\".");
+                    + "Set a name on the Save Settings panel, or uncheck "
+                    + "\"Save images during acquisition\".");
+            return false;
+        }
+
+        // the builder refuses these names, but loaded settings bypass it
+        final String saveNameProblem = BaseAcquisitionSettings.saveNamePrefixProblem(saveNamePrefix);
+        if (saveNameProblem != null) {
+            model_.logging().reportError(saveNameProblem + ".\n\n"
+                    + "Change the name on the Save Settings panel.");
             return false;
         }
 
         final String saveDirectory = acqSettings_.saveDirectory();
         if (saveDirectory == null || saveDirectory.trim().isEmpty()) {
             model_.logging().reportError("The save directory is not set.\n\n"
-                    + "Set a directory on the Datastore panel, or uncheck "
+                    + "Set a directory on the Save Settings panel, or uncheck "
                     + "\"Save images during acquisition\".");
             return false;
         }
@@ -116,7 +126,7 @@ public abstract class AcquisitionEngine implements AcquisitionManager, MMAcquist
         final File directory = new File(saveDirectory);
         if (!directory.exists()) {
             model_.logging().reportError("The save directory does not exist:\n\n" + saveDirectory
-                    + "\n\nCreate it, or choose another directory on the Datastore panel.");
+                    + "\n\nCreate it, or choose another directory on the Save Settings panel.");
             return false;
         }
         if (!directory.isDirectory()) {

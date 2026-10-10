@@ -5,6 +5,7 @@ import org.micromanager.lightsheetmanager.LightSheetManager;
 import org.micromanager.lightsheetmanager.LightSheetManagerFrame;
 import org.micromanager.lightsheetmanager.api.AcquisitionSettings;
 import org.micromanager.lightsheetmanager.api.data.SaveMode;
+import org.micromanager.lightsheetmanager.api.internal.BaseAcquisitionSettings;
 import org.micromanager.lightsheetmanager.api.internal.ScapeAcquisitionSettings;
 import org.micromanager.lightsheetmanager.gui.components.Button;
 import org.micromanager.lightsheetmanager.gui.components.CheckBox;
@@ -194,12 +195,14 @@ public class SavePanel extends Panel implements SettingsListener {
             }
         });
 
-        txtSaveFileName_.registerFilenameValidationListener(isValid -> {
-            if (isValid) {
-                model_.acquisitions().settingsBuilder()
-                        .saveNamePrefix(txtSaveFileName_.getText());
-            }
-        });
+        txtSaveFileName_.registerValidationListener(BaseAcquisitionSettings::saveNamePrefixProblem,
+                problem -> {
+                    txtSaveFileName_.setToolTipText(problem);
+                    if (problem == null) {
+                        model_.acquisitions().settingsBuilder()
+                                .saveNamePrefix(txtSaveFileName_.getText());
+                    }
+                });
 
         cbxSaveMode_.registerListener(
                 () -> model_.acquisitions().settingsBuilder()
@@ -230,7 +233,13 @@ public class SavePanel extends Panel implements SettingsListener {
             );
             if (file != null) {
                 final String json = FileUtils.readFileToString(file.toString());
-                model_.userSettings().loadFromJson(json, true);
+                try {
+                    model_.userSettings().loadFromJson(json, true);
+                } catch (RuntimeException e) {
+                    model_.studio().logs().showError(e,
+                            "Could not load the acquisition settings from " + file);
+                    return;
+                }
                 model_.studio().logs().logMessage("Acquisition settings loaded from: " + file);
             }
         });

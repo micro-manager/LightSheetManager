@@ -119,6 +119,9 @@ public class UserSettings {
     public void loadFromJson(final String json, final boolean notify) {
         // TODO: switch this based on microscope geometry type
         var settings = ScapeAcquisitionSettings.fromJson(json, ScapeAcquisitionSettings.class);
+        if (settings == null) {
+            throw new IllegalArgumentException("the text holds no acquisition settings");
+        }
         // useHardwareTimePoints is a DERIVED value. It is serialized as part of the acquisition settings,
         // but must never be trusted when reloaded: a stale "true" persisted from an earlier short-interval run
         // would otherwise seed acqSettings_ across a plugin restart and be read before the next run recomputes it.
