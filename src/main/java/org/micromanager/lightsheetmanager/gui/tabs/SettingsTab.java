@@ -145,8 +145,10 @@ public class SettingsTab extends Panel implements ListeningPanel {
             pnlScanSettings.add(cbxScanNegativeDirection_, "span 2, wrap");
             pnlScanSettings.add(cbxReturnToStart_, "span 2, wrap");
         } else {
-            pnlScanSettings.add(new JLabel("Stage scanning not supported by your firmware."),
-                    "span 2");
+            final String reason = model_.devices().hasDevice("SampleXY")
+                    ? "Stage scanning not supported by your firmware."
+                    : "Stage scanning needs SampleXY to be set.";
+            pnlScanSettings.add(new JLabel(reason), "span 2");
         }
 
         // light sheet scanner settings panel
