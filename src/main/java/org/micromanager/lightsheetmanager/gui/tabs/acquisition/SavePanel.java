@@ -43,6 +43,7 @@ public class SavePanel extends Panel implements SettingsListener {
     private final FileDialogs.FileType directorySelect_;
     private final FileDialogs.FileType jsonFileSave_;
     private final FileDialogs.FileType jsonFileLoad_;
+    private final FileDialogs.FileType txtFileConvert_;
 
     private final LightSheetManager model_;
     private final LightSheetManagerFrame frame_;
@@ -74,6 +75,15 @@ public class SavePanel extends Panel implements SettingsListener {
                 "acq_settings.json",
                 false,
                 "json"
+        );
+
+        // the 1.4 plugin writes its acquisition settings as JSON into AcqSettings.txt
+        txtFileConvert_ = new FileDialogs.FileType(
+                "CONVERT_FILE",
+                "Text Files",
+                "AcqSettings.txt",
+                false,
+                "txt"
         );
 
         createUserInterface();
@@ -227,7 +237,7 @@ public class SavePanel extends Panel implements SettingsListener {
 
         btnConvertSettings_.registerListener(() -> {
             final File file = FileDialogs.openFile(frame_,
-                    "Load the acquisition settings from JSON...", jsonFileLoad_
+                    "Convert AcqSettings.txt from the Micro-Manager 1.4 plugin...", txtFileConvert_
             );
             if (file != null) {
                 final String json = FileUtils.readFileToString(file.toString());
