@@ -230,7 +230,13 @@ public class SavePanel extends Panel implements SettingsListener {
             );
             if (file != null) {
                 final String json = FileUtils.readFileToString(file.toString());
-                model_.userSettings().loadFromJson(json, true);
+                try {
+                    model_.userSettings().loadFromJson(json, true);
+                } catch (RuntimeException e) {
+                    model_.studio().logs().showError(e,
+                            "Could not load the acquisition settings from " + file);
+                    return;
+                }
                 model_.studio().logs().logMessage("Acquisition settings loaded from: " + file);
             }
         });
