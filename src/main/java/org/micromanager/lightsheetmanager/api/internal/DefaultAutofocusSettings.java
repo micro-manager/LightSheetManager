@@ -28,6 +28,11 @@ public class DefaultAutofocusSettings implements AutofocusSettings {
         channel = builder.channel;
     }
 
+    // Note: used by GSON library for deserialization
+    private DefaultAutofocusSettings() {
+        this(new Builder());
+    }
+
     public static Builder builder() {
         return new Builder();
     }
