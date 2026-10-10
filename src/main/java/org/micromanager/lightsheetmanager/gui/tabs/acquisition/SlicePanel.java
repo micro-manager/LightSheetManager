@@ -153,7 +153,8 @@ public class SlicePanel extends Panel implements SettingsListener {
      */
     private void switchDisplayPanel(final CameraMode cameraMode) {
         removeAll();
-        if (cameraMode != CameraMode.VIRTUAL_SLIT) {
+        // loaded settings can ask for virtual slit even when its fields were never built
+        if (cameraMode != CameraMode.VIRTUAL_SLIT || spnScanResetTime_ == null) {
             add(cbxMinimizePeriod_, "wrap");
             add(lblSlicePeriod_, "");
             add(spnSlicePeriod_, "wrap");

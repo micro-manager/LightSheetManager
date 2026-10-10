@@ -166,6 +166,15 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
             return false;
         }
 
+        // the builder refuses these modes, but loaded settings bypass it
+        final String cameraModeProblem =
+                ScapeAcquisitionSettings.cameraModeProblem(acqSettings_.cameraMode());
+        if (cameraModeProblem != null) {
+            studio_.logs().showError(cameraModeProblem + ".\n\n"
+                    + "Select a mode in the Trigger Mode menu on the Acquisition tab.");
+            return false;
+        }
+
         // mismatched camera frame sizes kill the JVM once acquisition starts, so refuse to arm
         if (!validateCameraFrameSizes()) {
             return false; // early exit => cameras disagree on frame size

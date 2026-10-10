@@ -6,6 +6,7 @@ import org.micromanager.lightsheetmanager.api.SliceCalibration;
 import org.micromanager.lightsheetmanager.api.SliceSettings;
 import org.micromanager.lightsheetmanager.api.StageScanSettings;
 import org.micromanager.lightsheetmanager.api.TimingSettings;
+import org.micromanager.lightsheetmanager.api.data.CameraMode;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -34,6 +35,19 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
 
     public static Builder builder() {
         return new Builder();
+    }
+
+    /**
+     * Returns why SCAPE cannot use the camera mode, or null when it can.
+     *
+     * @param mode the camera mode
+     * @return the problem, or null
+     */
+    public static String cameraModeProblem(final CameraMode mode) {
+        if (mode == CameraMode.VIRTUAL_SLIT) {
+            return "SCAPE does not support the \"" + CameraMode.VIRTUAL_SLIT + "\" camera trigger mode";
+        }
+        return null;
     }
 
     public static Builder builder(ScapeAcquisitionSettings settings) {
@@ -166,6 +180,22 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
             sliceCalibBuilder = settings.sliceCalibration().copyBuilder();
             useHardwareTimePoints = settings.isUsingHardwareTimePoints();
             useAdvancedTiming =  settings.isUsingAdvancedTiming();
+        }
+
+        /**
+         * Sets the camera mode.
+         *
+         * @param mode the camera mode
+         * @return {@code this} builder
+         * @throws IllegalArgumentException if the mode is virtual slit, which SCAPE does not support
+         */
+        @Override
+        public Builder cameraMode(final CameraMode mode) {
+            final String problem = cameraModeProblem(mode);
+            if (problem != null) {
+                throw new IllegalArgumentException(problem);
+            }
+            return super.cameraMode(mode);
         }
 
         @Override
