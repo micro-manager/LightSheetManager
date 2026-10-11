@@ -17,7 +17,6 @@ import org.micromanager.data.internal.ndtiff.NDTiffAdapter;
 import org.micromanager.internal.MMStudio;
 import org.micromanager.lightsheetmanager.api.data.CameraLibrary;
 import org.micromanager.lightsheetmanager.api.data.CameraMode;
-import org.micromanager.lightsheetmanager.api.data.GeometryType;
 import org.micromanager.lightsheetmanager.api.data.ChannelMode;
 import org.micromanager.lightsheetmanager.api.data.SaveMode;
 import org.micromanager.lightsheetmanager.api.internal.DispimAcquisitionSettings;
@@ -618,6 +617,14 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
 
     private boolean doHardwareCalculations(PLogicDispim plc) {
 
+        // set the camera trigger modes for the acquisition
+        CameraBase[] cameras = model_.devices().imagingCameras();
+        for (CameraBase camera : cameras) {
+            camera.setTriggerMode(acqSettings_.cameraMode());
+            studio_.logs().logMessage("camera \"" + camera.getDeviceName()
+                 + "\" requested mode: " + camera.getTriggerMode());
+        }
+
         // make sure slice timings are up-to-date
         recalculateSliceTiming();
         //System.out.println("after recalculateSliceTiming: " + asb_.timingSettingsBuilder());
@@ -760,13 +767,6 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
     public void recalculateSliceTiming() {
         // don't change timing settings if user is using advanced timing
         if (acqSettings_.isUsingAdvancedTiming()) {
-            // TODO: find a better place to set the camera trigger mode for SCAPE
-            if (model_.devices().adapter().geometry() == GeometryType.SCAPE) {
-                CameraBase camera = model_.devices().device("ImagingCamera");
-                camera.setTriggerMode(acqSettings_.cameraMode());
-                studio_.logs().logDebugMessage(
-                        "camera \"" + camera.getDeviceName() + "\" requested mode: " + camera.getTriggerMode());
-            }
             return;
         }
         DefaultTimingSettings.Builder tsb = getTimingFromPeriodAndLightExposure();
@@ -795,8 +795,6 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
             // just a dummy to test demo mode
             return DefaultTimingSettings.builder();
         }
-        // TODO: do this in ui?
-        camera.setTriggerMode(acqSettings_.cameraMode());
 
         // settings are the source of truth for camera mode
         CameraMode camMode = acqSettings_.cameraMode();
