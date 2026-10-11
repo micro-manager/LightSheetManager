@@ -1424,7 +1424,7 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
 
     private boolean doHardwareCalculations(PLogicScape plc) {
 
-        // TODO: find a better place to set the camera trigger mode for SCAPE
+        // set the camera trigger modes for the acquisition
         CameraBase[] cameras = model_.devices().imagingCameras();
         for (CameraBase camera : cameras) {
             camera.setTriggerMode(acqSettings_.cameraMode());
