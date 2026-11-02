@@ -5,14 +5,12 @@ import org.micromanager.lightsheetmanager.api.SheetCalibration;
 import org.micromanager.lightsheetmanager.api.SliceCalibration;
 import org.micromanager.lightsheetmanager.api.SliceSettings;
 import org.micromanager.lightsheetmanager.api.SliceSettingsLightSheet;
-import org.micromanager.lightsheetmanager.api.TimingSettings;
 
 import java.util.Arrays;
 import java.util.Objects;
 
 public class DispimAcquisitionSettings extends BaseAcquisitionSettings implements AcquisitionSettingsDispim {
 
-    private final TimingSettings timing;
     private final SliceSettings slice;
     private final SliceSettingsLightSheet sliceLS;
     private final SheetCalibration[] sheetCalibrations;
@@ -25,7 +23,6 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
 
     private DispimAcquisitionSettings(Builder builder) {
         super(builder);
-        timing = builder.timingBuilder().build();
         slice = builder.sliceBuilder().build();
         sliceLS = builder.sliceLSBuilder().build();
         sheetCalibrations = new DefaultSheetCalibration[2];
@@ -51,11 +48,6 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
     @Override
     public Builder copyBuilder() {
         return new Builder(this);
-    }
-
-    @Override
-    public TimingSettings timing() {
-        return timing;
     }
 
     @Override
@@ -105,7 +97,7 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
         DispimAcquisitionSettings other = (DispimAcquisitionSettings) obj;
         return Objects.equals(channels(), other.channels()) &&
                 Objects.equals(autofocus(), other.autofocus()) &&
-                Objects.equals(timing, other.timing) &&
+                Objects.equals(timing(), other.timing()) &&
                 Objects.equals(volume(), other.volume()) &&
                 Objects.equals(slice, other.slice) &&
                 Objects.equals(sliceLS, other.sliceLS) &&
@@ -131,7 +123,7 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
         return Objects.hash(
                 channels(),
                 autofocus(),
-                timing,
+                timing(),
                 volume(),
                 slice,
                 sliceLS,
@@ -156,14 +148,13 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
     @Override
     public String toString() {
         return String.format("%s[channels=%s, timing=%s, volume=%s, slice=%s, sliceLS=%s, stageScan=%s]",
-                getClass().getSimpleName(), channels(), timing, volume(), slice, sliceLS, stageScan());
+                getClass().getSimpleName(), channels(), timing(), volume(), slice, sliceLS, stageScan());
     }
 
     public static class Builder
             extends BaseAcquisitionSettings.Builder<Builder>
             implements AcquisitionSettingsDispim.Builder<Builder> {
 
-        private TimingSettings.Builder timingBuilder = DefaultTimingSettings.builder();
         private SliceSettings.Builder sliceBuilder = DefaultSliceSettings.builder();
         private SliceSettingsLightSheet.Builder ssbLS = DefaultSliceSettingsLS.builder(); // maybe this should be LightSheetSliceSettings? replace ssb_?
         private SheetCalibration.Builder[] shcb = new DefaultSheetCalibration.Builder[2];
@@ -183,7 +174,6 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
 
         public Builder(final DispimAcquisitionSettings settings) {
             super(settings);
-            timingBuilder = settings.timing().copyBuilder();
             sliceBuilder = settings.slice().copyBuilder();
             ssbLS = settings.sliceLS.copyBuilder();
             for (int i = 0; i < 2; i++) {
@@ -214,10 +204,6 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
         }
 
         // getters for sub-builders
-        public TimingSettings.Builder timingBuilder() {
-            return timingBuilder;
-        }
-
         public SliceSettings.Builder sliceBuilder() {
             return sliceBuilder;
         }
@@ -234,10 +220,6 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
             return slcb[view-1];
         }
 
-        public void timingBuilder(DefaultTimingSettings.Builder builder) {
-            timingBuilder = builder;
-        }
-
         @Override
         public DispimAcquisitionSettings build() {
             return new DispimAcquisitionSettings(this);
@@ -251,7 +233,7 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
         // TODO: finish toString with rest of properties
         @Override
         public String toString() {
-            return String.format("[timingBuilder_=%s]", timingBuilder);
+            return String.format("[timingBuilder_=%s]", timingBuilder());
         }
 
     }

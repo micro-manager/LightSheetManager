@@ -13,13 +13,6 @@ public interface AcquisitionSettingsScape extends AcquisitionSettings {
     Builder copyBuilder();
 
     /**
-     * Returns the immutable TimingSettings instance.
-     *
-     * @return immutable TimingSettings instance.
-     */
-    TimingSettings timing();
-
-    /**
      * Returns the immutable SliceSettings instance.
      *
      * @return immutable SliceSettings instance.
