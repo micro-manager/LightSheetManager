@@ -13,13 +13,6 @@ public interface AcquisitionSettingsDispim extends AcquisitionSettings {
     Builder copyBuilder();
 
     /**
-     * Returns the immutable TimingSettings instance.
-     *
-     * @return immutable TimingSettings instance.
-     */
-    TimingSettings timing();
-
-    /**
      * Returns the immutable SliceSettings instance.
      *
      * @return immutable SliceSettings instance.
@@ -32,13 +25,6 @@ public interface AcquisitionSettingsDispim extends AcquisitionSettings {
      * @return immutable SliceSettingsLightSheet instance.
      */
     SliceSettingsLightSheet sliceLS();
-
-    /**
-     * Returns the immutable StageScanSettings instance.
-     *
-     * @return immutable StageScanSettings instance.
-     */
-    StageScanSettings stageScan();
 
     /**
      * Returns the immutable SheetCalibration instance.

@@ -1,8 +1,8 @@
 package org.micromanager.lightsheetmanager.model.utils;
 
+import org.micromanager.lightsheetmanager.api.AcquisitionSettings;
 import org.micromanager.lightsheetmanager.api.data.AcquisitionMode;
 import org.micromanager.lightsheetmanager.api.data.ChannelMode;
-import org.micromanager.lightsheetmanager.api.internal.ScapeAcquisitionSettings;
 
 public final class StageScanUtils {
 
@@ -12,7 +12,7 @@ public final class StageScanUtils {
     }
 
     // Compute appropriate motor speed in mm/s for the given stage scanning settings
-    public static double computeScanSpeed(final ScapeAcquisitionSettings settings) {
+    public static double computeScanSpeed(final AcquisitionSettings settings) {
         double sliceDurationMs = settings.timing().sliceDurationMs();
         if (settings.acquisitionMode() == AcquisitionMode.STAGE_SCAN_INTERLEAVED) {
             // pretend like our slice takes twice as long so that we move the correct speed
@@ -27,7 +27,7 @@ public final class StageScanUtils {
 
     // compute how many channels we do in each one-way scan, at least 1 so the speed and the scan
     // line count never divide by 0 when channels are enabled but none is used
-    public static int computeScanChannelsPerPass(final ScapeAcquisitionSettings settings) {
+    public static int computeScanChannelsPerPass(final AcquisitionSettings settings) {
         return settings.channels().mode() == ChannelMode.SLICE_HW
                 ? Math.max(1, settings.channels().count()) : 1;
     }

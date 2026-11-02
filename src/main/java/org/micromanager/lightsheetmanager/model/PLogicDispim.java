@@ -5,7 +5,6 @@ import mmcorej.Configuration;
 import org.micromanager.Studio;
 import org.micromanager.lightsheetmanager.LightSheetManager;
 import org.micromanager.lightsheetmanager.api.AcquisitionSettingsDispim;
-import org.micromanager.lightsheetmanager.api.TimingSettings;
 import org.micromanager.lightsheetmanager.api.data.CameraMode;
 import org.micromanager.lightsheetmanager.api.data.DispimDevice;
 import org.micromanager.lightsheetmanager.api.data.GeometryType;
@@ -21,6 +20,7 @@ import org.micromanager.lightsheetmanager.model.devices.vendor.ASIXYStage;
 import org.micromanager.lightsheetmanager.model.devices.vendor.ASIZStage;
 import org.micromanager.lightsheetmanager.model.devices.vendor.SingleAxis;
 import org.micromanager.lightsheetmanager.model.utils.NumberUtils;
+import org.micromanager.lightsheetmanager.model.utils.StageScanUtils;
 
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
@@ -223,7 +223,7 @@ public class PLogicDispim {
             double actualMotorSpeed;
 
             // figure out the speed we should be going according to slice period, slice spacing, geometry, etc.
-            final double requestedMotorSpeed = computeScanSpeed(settings, scanner1_.getSPIMNumScansPerSlice());  // in mm/sec
+            final double requestedMotorSpeed = StageScanUtils.computeScanSpeed(settings);  // in mm/sec
 
             final boolean isInterleaved = (settings.acquisitionMode() == AcquisitionMode.STAGE_SCAN_INTERLEAVED);
 
@@ -245,14 +245,15 @@ public class PLogicDispim {
             actualMotorSpeed = xyStage_.getSpeedXUm() / 1000;
 
             // set the acceleration to a reasonable value for the (usually very slow) scan speed
-            xyStage_.setAccelerationX(computeScanAcceleration(actualMotorSpeed,
+            xyStage_.setAccelerationX(StageScanUtils.computeScanAcceleration(actualMotorSpeed,
                     xyStage_.getMaxSpeedX(), settings.stageScan().accelerationFactor()));
 
             int numLines = settings.volume().numViews();
             if (isInterleaved) {
                 numLines = 1;  // assure in acquisition code that we can't have single-sided interleaved
             }
-            numLines *= (int)((double) settings.channels().count() / computeScanChannelsPerPass(settings));
+            numLines *= (int)((double) settings.channels().count()
+                    / StageScanUtils.computeScanChannelsPerPass(settings));
             xyStage_.setScanNumLines(numLines);
 
             final boolean isStageScan2Sided = (settings.acquisitionMode() == AcquisitionMode.STAGE_SCAN) && settings.volume().numViews() == 2;
@@ -337,66 +338,6 @@ public class PLogicDispim {
         studio_.logs().logMessage("Finished preparing controller for acquisition with offset " + channelOffset +
                 " with mode " + settings.acquisitionMode() + " and settings:\n" + settings);
         return true;
-    }
-
-    // Compute appropriate motor speed in mm/s for the given stage scanning settings
-    public double computeScanSpeed(DispimAcquisitionSettings settings, final int numScansPerSlice) {
-        //double sliceDurationMs = settings.timingSettings().sliceDurationMs();
-        //double sliceDurationMs = 0.0; // TODO: get from SliceTiming
-        double sliceDurationMs = getSliceDuration(settings.timing(), numScansPerSlice); // TODO: ???
-        if (settings.acquisitionMode() == AcquisitionMode.STAGE_SCAN_INTERLEAVED) {
-            // pretend like our slice takes twice as long so that we move the correct speed
-            // this has the effect of halving the motor speed
-            // but keeping the scan distance the same
-            sliceDurationMs *= 2;
-        }
-        final int channelsPerPass = computeScanChannelsPerPass(settings);
-        //return settings.getStepSize() * du.getStageGeometricSpeedFactor(settings.firstSideIsA) / sliceDurationMs / channelsPerPass;
-        return settings.volume().sliceStepSize() / sliceDurationMs / channelsPerPass; // TODO: add getStageGeometricSpeedFactor
-    }
-
-    // compute how many channels we do in each one-way scan
-    private int computeScanChannelsPerPass(DispimAcquisitionSettings settings) {
-        return settings.channels().mode() == ChannelMode.SLICE_HW ? settings.channels().count() : 1;
-    }
-
-    /**
-     * Compute appropriate acceleration time in ms for the specified motor speed.
-     * Set to be 10ms + 0-100ms depending on relative speed to max, all scaled by factor specified on the settings panel
-     * @param motorSpeed
-     * @return
-     */
-    public double computeScanAcceleration(final double motorSpeed, DispimAcquisitionSettings settings) {
-        return (10 + 100 * (motorSpeed / xyStage_.getMaxSpeedX())) * settings.stageScan().accelerationFactor();
-    }
-
-    // TODO: scanNum was part of SliceSettings (now TimingSettings)
-    // scanNum was populated from numScansPerSlice_ which is the scanner SPIM_NUM_SCANSPERSLICE("SPIMNumScansPerSlice")
-    // labeled "Lines scans per slice:" in advanced timing tab
-    //    * gets the correct value for the slice timing's sliceDurationMs field based on other values of slice timing
-
-    // slice duration is the max out of the scan time, laser time, and camera time
-    public double getSliceDuration(final TimingSettings s, final int scanNum) {
-        return Math.max(Math.max(
-                s.delayBeforeScanMs() + (s.scanDurationMs() * scanNum), // scan time
-                s.delayBeforeLaserMs() + s.laserTriggerDurationMs()     // laser time
-                ),
-                s.delayBeforeCameraMs() + s.cameraTriggerDurationMs()   // camera time
-        );
-    }
-
-    /**
-     * Compute appropriate acceleration time in ms for the specified motor speed.
-     * Set to be 10ms + 0-100ms depending on relative speed to max, all scaled by factor specified on the settings panel
-     *
-     * @param motorSpeed
-     * @return
-     */
-    public double computeScanAcceleration(final double motorSpeed, final double maxMotorSpeed, final double stageScanAccelFactor) {
-//        final double maxMotorSpeed = props_.getPropValueFloat(Devices.Keys.XYSTAGE, Properties.Keys.STAGESCAN_MAX_MOTOR_SPEED_X);
-//        final double accelFactor = props_.getPropValueFloat(Devices.Keys.PLUGIN, Properties.Keys.PLUGIN_STAGESCAN_ACCEL_FACTOR);
-//        return (10 + 100 * (motorSpeed / maxMotorSpeed) ) * accelFactor;
-        return (10 + 100 * (motorSpeed / maxMotorSpeed)) * stageScanAccelFactor;
     }
 
     public boolean prepareStageScanForAcquisition(final double x, final double y, DispimAcquisitionSettings settings) {

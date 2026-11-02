@@ -4,8 +4,6 @@ import org.micromanager.lightsheetmanager.api.AcquisitionSettingsScape;
 import org.micromanager.lightsheetmanager.api.SheetCalibration;
 import org.micromanager.lightsheetmanager.api.SliceCalibration;
 import org.micromanager.lightsheetmanager.api.SliceSettings;
-import org.micromanager.lightsheetmanager.api.StageScanSettings;
-import org.micromanager.lightsheetmanager.api.TimingSettings;
 import org.micromanager.lightsheetmanager.api.data.CameraMode;
 import org.micromanager.lightsheetmanager.api.data.GeometryType;
 
@@ -14,9 +12,7 @@ import java.util.Objects;
 
 public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements AcquisitionSettingsScape {
 
-    private final TimingSettings timing;
     private final SliceSettings slice;
-    private final StageScanSettings stageScan;
     private final SheetCalibration sheetCalibration;
     private final SliceCalibration sliceCalibration;
 
@@ -25,9 +21,7 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
 
     private ScapeAcquisitionSettings(Builder builder) {
         super(builder);
-        timing = builder.timingBuilder().build();
         slice = builder.sliceBuilder().build();
-        stageScan = builder.stageScanBuilder().build();
         sheetCalibration = builder.sheetCalibrationBuilder().build();
         sliceCalibration = builder.sliceCalibrationBuilder().build();
         useHardwareTimePoints = builder.useHardwareTimePoints;
@@ -62,18 +56,8 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
     }
 
     @Override
-    public TimingSettings timing() {
-        return timing;
-    }
-
-    @Override
     public SliceSettings slice() {
         return slice;
-    }
-
-    @Override
-    public StageScanSettings stageScan() {
-        return stageScan;
     }
 
     @Override
@@ -107,10 +91,10 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
         ScapeAcquisitionSettings other = (ScapeAcquisitionSettings) obj;
         return Objects.equals(channels(), other.channels()) &&
                 Objects.equals(autofocus(), other.autofocus()) &&
-                Objects.equals(timing, other.timing) &&
+                Objects.equals(timing(), other.timing()) &&
                 Objects.equals(volume(), other.volume()) &&
                 Objects.equals(slice, other.slice) &&
-                Objects.equals(stageScan, other.stageScan) &&
+                Objects.equals(stageScan(), other.stageScan()) &&
                 Objects.equals(sheetCalibration, other.sheetCalibration) &&
                 Objects.equals(sliceCalibration, other.sliceCalibration) &&
                 acquisitionMode() == other.acquisitionMode() &&
@@ -131,10 +115,10 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
         return Objects.hash(
                 channels(),
                 autofocus(),
-                timing,
+                timing(),
                 volume(),
                 slice,
-                stageScan,
+                stageScan(),
                 sheetCalibration,
                 sliceCalibration,
                 acquisitionMode(),
@@ -155,18 +139,14 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
     @Override
     public String toString() {
         return String.format("%s[channels=%s, timing=%s, volume=%s, slice=%s]",
-                getClass().getSimpleName(), channels(), timing, volume(), slice);
+                getClass().getSimpleName(), channels(), timing(), volume(), slice);
     }
 
     public static class Builder
             extends BaseAcquisitionSettings.Builder<Builder>
             implements AcquisitionSettingsScape.Builder<Builder> {
 
-        private TimingSettings.Builder timingBuilder = DefaultTimingSettings.builder();
         private SliceSettings.Builder sliceBuilder = DefaultSliceSettings.builder();
-        // TODO: a diSPIM profile missing its stage angle loads SCAPE's until profiles load per geometry
-        private StageScanSettings.Builder stageScanBuilder = DefaultStageScanSettings.builder()
-                .firstViewAngle(GeometryType.SCAPE.defaultFirstViewAngle());
         private SheetCalibration.Builder sheetCalibBuilder = DefaultSheetCalibration.builder();
         private SliceCalibration.Builder sliceCalibBuilder = DefaultSliceCalibration.builder();
 
@@ -174,13 +154,13 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
         private boolean useAdvancedTiming = false;
 
         private Builder() {
+            // TODO: a diSPIM profile missing its stage angle loads SCAPE's until profiles load per geometry
+            stageScanBuilder().firstViewAngle(GeometryType.SCAPE.defaultFirstViewAngle());
         }
 
         public Builder(final ScapeAcquisitionSettings settings) {
             super(settings);
-            timingBuilder = settings.timing().copyBuilder();
             sliceBuilder = settings.slice().copyBuilder();
-            stageScanBuilder = settings.stageScan().copyBuilder();
             sheetCalibBuilder = settings.sheetCalibration().copyBuilder();
             sliceCalibBuilder = settings.sliceCalibration().copyBuilder();
             useHardwareTimePoints = settings.isUsingHardwareTimePoints();
@@ -216,17 +196,8 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
         }
 
         // getters for sub-builders
-        public TimingSettings.Builder timingBuilder() {
-            return timingBuilder;
-        }
-
         public SliceSettings.Builder sliceBuilder() {
             return sliceBuilder;
-        }
-
-        @Override
-        public StageScanSettings.Builder stageScanBuilder() {
-            return stageScanBuilder;
         }
 
         public SheetCalibration.Builder sheetCalibrationBuilder() {
@@ -235,10 +206,6 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
 
         public SliceCalibration.Builder sliceCalibrationBuilder() {
             return sliceCalibBuilder;
-        }
-
-        public void timingBuilder(DefaultTimingSettings.Builder builder) {
-            timingBuilder = builder;
         }
 
         @Override
@@ -255,7 +222,7 @@ public class ScapeAcquisitionSettings extends BaseAcquisitionSettings implements
         @Override
         public String toString() {
             return String.format("%s[timingBuilder=%s]",
-                    getClass().getSimpleName(), timingBuilder);
+                    getClass().getSimpleName(), timingBuilder());
         }
 
     }
