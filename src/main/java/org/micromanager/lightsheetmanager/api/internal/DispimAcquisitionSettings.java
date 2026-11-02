@@ -5,7 +5,6 @@ import org.micromanager.lightsheetmanager.api.SheetCalibration;
 import org.micromanager.lightsheetmanager.api.SliceCalibration;
 import org.micromanager.lightsheetmanager.api.SliceSettings;
 import org.micromanager.lightsheetmanager.api.SliceSettingsLightSheet;
-import org.micromanager.lightsheetmanager.api.StageScanSettings;
 import org.micromanager.lightsheetmanager.api.TimingSettings;
 
 import java.util.Arrays;
@@ -16,7 +15,6 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
     private final TimingSettings timing;
     private final SliceSettings slice;
     private final SliceSettingsLightSheet sliceLS;
-    private final StageScanSettings stageScan;
     private final SheetCalibration[] sheetCalibrations;
     private final SliceCalibration[] sliceCalibrations;
 
@@ -30,7 +28,6 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
         timing = builder.timingBuilder().build();
         slice = builder.sliceBuilder().build();
         sliceLS = builder.sliceLSBuilder().build();
-        stageScan = builder.stageScanBuilder().build();
         sheetCalibrations = new DefaultSheetCalibration[2];
         sliceCalibrations = new DefaultSliceCalibration[2]; // TODO: populate with numViews instead of magic number
         for (int i = 0; i < 2; i++) {
@@ -69,11 +66,6 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
     @Override
     public SliceSettingsLightSheet sliceLS() {
         return sliceLS;
-    }
-
-    @Override
-    public StageScanSettings stageScan() {
-        return stageScan;
     }
 
     @Override
@@ -117,7 +109,7 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
                 Objects.equals(volume(), other.volume()) &&
                 Objects.equals(slice, other.slice) &&
                 Objects.equals(sliceLS, other.sliceLS) &&
-                Objects.equals(stageScan, other.stageScan) &&
+                Objects.equals(stageScan(), other.stageScan()) &&
                 Arrays.equals(sheetCalibrations, other.sheetCalibrations) &&
                 Arrays.equals(sliceCalibrations, other.sliceCalibrations) &&
                 acquisitionMode() == other.acquisitionMode() &&
@@ -143,7 +135,7 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
                 volume(),
                 slice,
                 sliceLS,
-                stageScan,
+                stageScan(),
                 Arrays.hashCode(sheetCalibrations),
                 Arrays.hashCode(sliceCalibrations),
                 acquisitionMode(),
@@ -164,7 +156,7 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
     @Override
     public String toString() {
         return String.format("%s[channels=%s, timing=%s, volume=%s, slice=%s, sliceLS=%s, stageScan=%s]",
-                getClass().getSimpleName(), channels(), timing, volume(), slice, sliceLS, stageScan);
+                getClass().getSimpleName(), channels(), timing, volume(), slice, sliceLS, stageScan());
     }
 
     public static class Builder
@@ -174,7 +166,6 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
         private TimingSettings.Builder timingBuilder = DefaultTimingSettings.builder();
         private SliceSettings.Builder sliceBuilder = DefaultSliceSettings.builder();
         private SliceSettingsLightSheet.Builder ssbLS = DefaultSliceSettingsLS.builder(); // maybe this should be LightSheetSliceSettings? replace ssb_?
-        private StageScanSettings.Builder stageScanBuilder = DefaultStageScanSettings.builder();
         private SheetCalibration.Builder[] shcb = new DefaultSheetCalibration.Builder[2];
         private SliceCalibration.Builder[] slcb = new DefaultSliceCalibration.Builder[2];
 
@@ -195,7 +186,6 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
             timingBuilder = settings.timing().copyBuilder();
             sliceBuilder = settings.slice().copyBuilder();
             ssbLS = settings.sliceLS.copyBuilder();
-            stageScanBuilder = settings.stageScan().copyBuilder();
             for (int i = 0; i < 2; i++) {
                 slcb[i] = settings.sliceCalibrations[i].copyBuilder();
                 shcb[i] = settings.sheetCalibrations[i].copyBuilder();
@@ -234,11 +224,6 @@ public class DispimAcquisitionSettings extends BaseAcquisitionSettings implement
 
         public SliceSettingsLightSheet.Builder sliceLSBuilder() {
             return ssbLS;
-        }
-
-        @Override
-        public StageScanSettings.Builder stageScanBuilder() {
-            return stageScanBuilder;
         }
 
         public SheetCalibration.Builder sheetCalibrationBuilder(final int view) {

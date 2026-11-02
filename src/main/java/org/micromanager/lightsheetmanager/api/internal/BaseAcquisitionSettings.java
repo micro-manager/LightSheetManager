@@ -71,6 +71,7 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
         private DefaultAutofocusSettings.Builder afBuilder = DefaultAutofocusSettings.builder();
         private ChannelSettings.Builder channelBuilder = DefaultChannelSettings.builder();
         private VolumeSettings.Builder volumeBuilder_ = DefaultVolumeSettings.builder();
+        private StageScanSettings.Builder stageScanBuilder = DefaultStageScanSettings.builder();
 
         public Builder() {
         }
@@ -93,6 +94,7 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
             afBuilder = settings.autofocus().copyBuilder();
             channelBuilder = settings.channels().copyBuilder();
             volumeBuilder_ = settings.volume().copyBuilder();
+            stageScanBuilder = settings.stageScan().copyBuilder();
         }
 
         /**
@@ -270,15 +272,6 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
             return self();
         }
 
-        /**
-         * Returns the geometry-specific stage-scan sub-builder.
-         * Bridges {@link #acquisitionMode} (base) to each concrete geometry's
-         * own {@code StageScanSettings.Builder}, which is not itself hoisted yet.
-         *
-         * @return the stage-scan sub-builder
-         */
-        protected abstract StageScanSettings.Builder stageScanBuilder();
-
         @Override
         public DefaultAutofocusSettings.Builder autofocusBuilder() {
             return afBuilder;
@@ -290,6 +283,10 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
 
         public VolumeSettings.Builder volumeBuilder() {
             return volumeBuilder_;
+        }
+
+        public StageScanSettings.Builder stageScanBuilder() {
+            return stageScanBuilder;
         }
     }
 
@@ -323,6 +320,7 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
     private final DefaultAutofocusSettings autofocus;
     private final ChannelSettings channels;
     private final VolumeSettings volume;
+    private final StageScanSettings stageScan;
 
     protected BaseAcquisitionSettings(Builder<?> builder) {
         saveDirectory = builder.saveDirectory;
@@ -342,6 +340,7 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
         autofocus = builder.afBuilder.build();
         channels = builder.channelBuilder.build();
         volume = builder.volumeBuilder_.build();
+        stageScan = builder.stageScanBuilder.build();
     }
 
     /**
@@ -516,6 +515,16 @@ public abstract class BaseAcquisitionSettings implements AcquisitionSettings {
     @Override
     public VolumeSettings volume() {
         return volume;
+    }
+
+    /**
+     * Returns the immutable StageScanSettings instance.
+     *
+     * @return immutable StageScanSettings instance.
+     */
+    @Override
+    public StageScanSettings stageScan() {
+        return stageScan;
     }
 
     @Override

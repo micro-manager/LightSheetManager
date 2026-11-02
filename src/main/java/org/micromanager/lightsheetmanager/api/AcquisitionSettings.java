@@ -283,4 +283,11 @@ public interface AcquisitionSettings {
      * @return immutable VolumeSettings instance.
      */
     VolumeSettings volume();
+
+    /**
+     * Returns the immutable StageScanSettings instance.
+     *
+     * @return immutable StageScanSettings instance.
+     */
+    StageScanSettings stageScan();
 }

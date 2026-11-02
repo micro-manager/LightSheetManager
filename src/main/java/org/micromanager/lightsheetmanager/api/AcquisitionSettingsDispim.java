@@ -34,13 +34,6 @@ public interface AcquisitionSettingsDispim extends AcquisitionSettings {
     SliceSettingsLightSheet sliceLS();
 
     /**
-     * Returns the immutable StageScanSettings instance.
-     *
-     * @return immutable StageScanSettings instance.
-     */
-    StageScanSettings stageScan();
-
-    /**
      * Returns the immutable SheetCalibration instance.
      *
      * @return immutable SheetCalibration instance.
