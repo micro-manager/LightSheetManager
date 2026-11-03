@@ -328,6 +328,8 @@ public class CameraTab extends Panel implements ListeningPanel {
         }
 
         final String mismatch = CameraBase.describeFrameSizeMismatch(cameras);
+        // the slice timing depends on the camera ROI
+        model_.acquisitions().updateDurationLabels();
         if (rejected.isEmpty() && mismatch == null) {
             return; // every camera accepted the roi and they all agree
         }
