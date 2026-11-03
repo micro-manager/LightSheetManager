@@ -198,8 +198,9 @@ public class AndorCamera extends CameraBase {
         if (isZyla55()) {
             return getProperty(Properties.PIXEL_READOUT_RATE).startsWith(Values.RATE_200);
         } else {
-            final String pixelReadoutRate = getProperty(Properties.PIXEL_READOUT_RATE).substring(0, 3);
-            return pixelReadoutRate.equals(Values.RATE_200) || pixelReadoutRate.equals(Values.RATE_216);
+            final String pixelReadoutRate = getProperty(Properties.PIXEL_READOUT_RATE);
+            return pixelReadoutRate.startsWith(Values.RATE_200)
+                    || pixelReadoutRate.startsWith(Values.RATE_216);
         }
     }
 
