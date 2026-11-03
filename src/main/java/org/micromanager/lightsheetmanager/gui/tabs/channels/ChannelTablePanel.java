@@ -115,7 +115,7 @@ public class ChannelTablePanel extends Panel implements SettingsListener {
 
         // add channel
         btnAddChannel_.registerListener(() -> {
-            table_.getTableModel().addEmptyChannel();
+            table_.getTableModel().addChannel();
             final ChannelSpec[] channels = table_.getData().getChannels();
             model_.acquisitions().settingsBuilder().channelBuilder().data(channels);
             model_.acquisitions().updateDurationLabels();
