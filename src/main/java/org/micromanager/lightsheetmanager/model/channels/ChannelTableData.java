@@ -53,18 +53,10 @@ public class ChannelTableData {
         channels_.add(new ChannelSpec(channelGroup_));
     }
 
-    public void addChannel(final ChannelSpec channel) {
-        channels_.add(channel);
-    }
-
     public void removeChannel(final int index) {
         if (index >= 0 && index < channels_.size()) {
             channels_.remove(index);
         }
-    }
-
-    public void removeAllChannels() {
-        channels_.clear();
     }
 
     public void setChannelGroup(final String channelGroup) {
