@@ -30,9 +30,9 @@ public class ChannelTableModel extends AbstractTableModel {
         onEdit_ = Objects.requireNonNull(onEdit);
     }
 
-    public void addEmptyChannel() {
+    public void addChannel() {
         final int rowIndex = data_.getNumChannels();
-        data_.addEmptyChannel();
+        data_.addChannel();
         fireTableRowsInserted(rowIndex, rowIndex);
     }
 

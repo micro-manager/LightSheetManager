@@ -49,7 +49,7 @@ public class ChannelTableData {
         return channels_.size();
     }
 
-    public void addEmptyChannel() {
+    public void addChannel() {
         channels_.add(new ChannelSpec(channelGroup_));
     }
 
