@@ -352,7 +352,11 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
                 // never wait on an Acquisition that was not finished: the wait is unbounded
                 return false;
             }
+            tracker_.show(new RunProgress.Source(progressShape(settings, cameraNames), 0, 0L,
+                    tracker_::imagesInDataset, runSchedule(settings, currentAcquisition_)));
             currentAcquisition_.waitForCompletion();
+            // the dataset is complete, so its count is final
+            tracker_.freeze();
             return true;
         }
 
@@ -366,6 +370,31 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
      */
     private static boolean isSeparatingTimePoints(final ScapeAcquisitionSettings settings) {
         return settings.isUsingTimePoints() && settings.isUsingSeparateTimePoints();
+    }
+
+    /**
+     * The size of the run the status line counts against, as the events are built.
+     */
+    private RunProgress.Shape progressShape(final ScapeAcquisitionSettings settings,
+            final String[] cameraNames) {
+        final int numPositions = settings.isUsingMultiplePositions()
+                ? positionList_.getNumberOfPositions() : 1;
+        return new RunProgress.Shape(numTimePointsToAcquire(settings), numPositions,
+                settings.volume().slicesPerView() * settings.channels().count()
+                        * cameraNames.length);
+    }
+
+    /**
+     * When each time point of a run in one dataset is due, on AcqEngJ's schedule. Under hardware
+     * time points the controller paces them and nothing waits.
+     */
+    private static RunProgress.Schedule runSchedule(final ScapeAcquisitionSettings settings,
+            final Acquisition acquisition) {
+        if (settings.isUsingHardwareTimePoints()) {
+            return RunProgress.Schedule.NONE;
+        }
+        return RunProgress.fromAcquisitionStart(acquisition::getStartTimeMs,
+                settings.timePointIntervalSec() * 1000.0, System::currentTimeMillis);
     }
 
     /**
@@ -972,6 +1001,10 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
         }
 
         final long seriesStartNs = System.nanoTime();
+        // the status line: the run's size, on the clock the wait below uses
+        final RunProgressTracker.Series status = tracker_.series(
+                progressShape(settings, cameraNames),
+                RunProgress.fromSeriesStart(seriesStartNs, intervalMs, System::nanoTime));
         // directory names of the completed datasets
         final List<String> datasetNames = new ArrayList<>();
         // the time points that failed, reported together when the series ends
@@ -984,6 +1017,9 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
         int inFlightIndex = -1;
         try {
             for (int timeIndex = 0; timeIndex < numTimePoints; timeIndex++) {
+                if (timeIndex > 0) {
+                    status.awaiting(timeIndex);
+                }
                 if (!awaitTimePointSlot(seriesStartNs, timeIndex, intervalMs)) {
                     break; // stop requested during the wait
                 }
@@ -998,12 +1034,14 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
                         timeIndex)) {
                     break; // nothing started, so nothing to wait for
                 }
+                status.acquiring(timeIndex);
                 if (previousStore != null) {
                     closeDisplaysOnInterfaceThread(previousStore, timeIndex - 1);
                     previousStore = null;
                 }
                 // returns once the store is frozen, so the dataset is complete on disk
                 currentAcquisition_.waitForCompletion();
+                status.datasetComplete();
 
                 final String datasetDir = datastore_.getSavePath();
                 previousStore = datastore_;
@@ -1015,6 +1053,8 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
                 }
             }
         } finally {
+            // where the series stopped, not where the countdown is once the cleanup ends
+            tracker_.freeze();
             // no save path means no directory was created, so there is nothing to mark
             final String inFlightDir = datastore_ == null ? null : datastore_.getSavePath();
             if (inFlightIndex >= 0 && inFlightDir != null) {

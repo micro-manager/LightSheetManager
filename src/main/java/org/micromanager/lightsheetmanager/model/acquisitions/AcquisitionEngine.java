@@ -74,6 +74,8 @@ public abstract class AcquisitionEngine implements AcquisitionManager, MMAcquist
     // true while finish() restores the system after a run, for the stop and abort log lines
     private volatile boolean cleaningUp_ = false;
 
+    final RunProgressTracker tracker_ = new RunProgressTracker(() -> this.datastore_);
+
     private final AutofocusAdapter autofocus_;
 
     // visibility: written on the acquisition thread, read on the edt when a window asks to close
@@ -297,6 +299,13 @@ public abstract class AcquisitionEngine implements AcquisitionManager, MMAcquist
     }
 
     /**
+     * A snapshot of where the run in flight is, or of how the last run ended.
+     */
+    public RunProgress progress() {
+        return tracker_.now();
+    }
+
+    /**
      * Records whether a series is waiting between time points, for the stop and abort log lines.
      *
      * @param awaiting true while waiting for the next time point
@@ -425,6 +434,8 @@ public abstract class AcquisitionEngine implements AcquisitionManager, MMAcquist
                 model_.logging().reportError("Acquisition is already running.");
                 return;
             }
+            // in the task: the executor runs one at a time, so this cannot reach a run in flight
+            tracker_.start();
 
             // marker data
             long runId = -1; // set at START, so STOP is logged only after a START
@@ -477,6 +488,8 @@ public abstract class AcquisitionEngine implements AcquisitionManager, MMAcquist
                     model_.logging().reportError(e, "Error during acquisition cleanup");
                 } finally {
                     cleaningUp_ = false;
+                    // before the acquisition is let go: it says how the run ended
+                    tracker_.end(currentAcquisition_, stopRequested_);
                     // must ALWAYS run: if currentAcquisition_ is left set, every future
                     // acquisition is rejected until the plugin restarts
                     currentAcquisition_ = null;
@@ -488,6 +501,8 @@ public abstract class AcquisitionEngine implements AcquisitionManager, MMAcquist
                     // free the datastore so a large store isn't kept in memory (matches MM's
                     // AcqEngJAdapter.onAcquisitionEnded); also what the save guard checks to skip aborted/empty runs
                     datastore_ = null;
+                    // after the run is let go, so the log cannot hold it
+                    tracker_.logEnd(studio_.logs());
                     // LSM-ACQ-STOP in the innermost finally: fires on completion, error, abort, throwing finish()
                     if (runId != -1) {
                         final long elapsedMs = (System.nanoTime() - startNs) / 1_000_000L;

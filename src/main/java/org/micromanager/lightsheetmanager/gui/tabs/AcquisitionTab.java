@@ -15,6 +15,7 @@ import org.micromanager.lightsheetmanager.gui.tabs.acquisition.CameraPanel;
 import org.micromanager.lightsheetmanager.gui.tabs.acquisition.PositionPanel;
 import org.micromanager.lightsheetmanager.gui.tabs.acquisition.SavePanel;
 import org.micromanager.lightsheetmanager.gui.tabs.acquisition.SlicePanel;
+import org.micromanager.lightsheetmanager.gui.tabs.acquisition.StatusPanel;
 import org.micromanager.lightsheetmanager.gui.tabs.acquisition.TimePointsPanel;
 import org.micromanager.lightsheetmanager.gui.tabs.acquisition.DurationPanel;
 import org.micromanager.lightsheetmanager.gui.tabs.acquisition.VolumePanel;
@@ -48,6 +49,9 @@ public class AcquisitionTab extends Panel implements ListeningPanel, SettingsLis
 
     // durations
     private DurationPanel pnlDurations_;
+
+    // where the run is
+    private StatusPanel pnlStatus_;
 
     // time points
     private TimePointsPanel pnlTimePoints_;
@@ -113,6 +117,7 @@ public class AcquisitionTab extends Panel implements ListeningPanel, SettingsLis
         );
 
         pnlDurations_ = new DurationPanel(model_);
+        pnlStatus_ = new StatusPanel(model_);
         pnlVolumeSettings_ = new VolumePanel(model_);
 
         // switch between these two panels
@@ -219,6 +224,8 @@ public class AcquisitionTab extends Panel implements ListeningPanel, SettingsLis
         pnlCenter.add(pnlChannelTable_, "wrap");
         pnlCenter.add(new JLabel("Acquisition Mode:"), "split 2");
         pnlCenter.add(cmbAcquisitionModes_, "");
+        // as wide as the channel table, so a long message wraps instead of widening the column
+        pnlCenter.add(pnlStatus_, "newline, w 280!");
 
         pnlRight_.add(pnlVolumeSettings_, "growx, wrap");
         pnlRight_.add(pnlSliceSettings_, "growx, wrap");
