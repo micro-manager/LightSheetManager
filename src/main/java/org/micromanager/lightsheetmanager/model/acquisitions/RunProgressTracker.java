@@ -55,6 +55,10 @@ final class RunProgressTracker {
         progress = progress.get();
     }
 
+    Series series(final RunProgress.Shape shape, final RunProgress.Schedule schedule) {
+        return new Series(shape, schedule);
+    }
+
     /**
      * The images the dataset in flight holds so far, or 0 with no dataset open.
      */
@@ -107,6 +111,46 @@ final class RunProgressTracker {
                 break;
             default:
                 break;
+        }
+    }
+
+    /**
+     * Follows a series of separate time points: one dataset per time point, with a countdown
+     * between them and the images of the datasets complete.
+     */
+    final class Series {
+        private final RunProgress.Shape shape;
+        private final RunProgress.Schedule schedule;
+        // the images of the datasets complete so far, whole or not
+        private long imagesComplete;
+
+        private Series(final RunProgress.Shape shape, final RunProgress.Schedule schedule) {
+            this.shape = shape;
+            this.schedule = schedule;
+        }
+
+        /**
+         * The dataset is not open yet, so the line counts down to it.
+         */
+        void awaiting(final int timeIndex) {
+            show(new RunProgress.Source(shape, timeIndex, imagesComplete, () -> 0L, schedule));
+        }
+
+        /**
+         * The dataset is open, so the line follows its count.
+         */
+        void acquiring(final int timeIndex) {
+            show(new RunProgress.Source(shape, timeIndex, imagesComplete,
+                    RunProgressTracker.this::imagesInDataset, schedule));
+        }
+
+        /**
+         * Its count is final, so it joins the total and the line stops reading the store before
+         * it is let go.
+         */
+        void datasetComplete() {
+            imagesComplete += imagesInDataset();
+            freeze();
         }
     }
 

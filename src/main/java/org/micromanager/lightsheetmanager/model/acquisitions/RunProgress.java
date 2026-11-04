@@ -38,6 +38,8 @@ public final class RunProgress implements Supplier<RunProgress> {
     private static final RunProgress NONE = new RunProgress(Status.NONE, null, 0, 0, 0L, 0L);
     private static final RunProgress STARTING =
             new RunProgress(Status.STARTING, null, 0, 0, 0L, 0L);
+    private static final RunProgress FAILED_START =
+            new RunProgress(Status.FAILED, null, 0, 0, 0L, 0L);
 
     private final Status status;
     // null until the run's size is known
@@ -97,11 +99,12 @@ public final class RunProgress implements Supplier<RunProgress> {
     }
 
     /**
-     * How the run ended, from where it was. A run that opened no dataset ended with nothing.
+     * How the run ended, from where it was. A run that opened no dataset ended with nothing,
+     * unless its start failed.
      */
     RunProgress ended(final boolean failed, final boolean stopped) {
         if (shape == null) {
-            return NONE;
+            return failed ? FAILED_START : NONE;
         }
         final Status end;
         if (failed) {
@@ -171,7 +174,7 @@ public final class RunProgress implements Supplier<RunProgress> {
             case STOPPED:
                 return "Stopped" + whereItEnded();
             case FAILED:
-                return "Failed" + whereItEnded();
+                return shape == null ? "Failed to start" : "Failed" + whereItEnded();
             default:
                 return "No acquisition in progress";
         }
@@ -291,8 +294,8 @@ public final class RunProgress implements Supplier<RunProgress> {
             this.schedule = Objects.requireNonNull(schedule);
         }
 
-        // the count first: AcqEngJ sets its start time before the first image is stored, so a
-        // schedule read after a count above zero sees it
+        // the count first: AcqEngJ sets its start time before the first image is stored, and a late
+        // read of it costs one tick
         @Override
         public RunProgress get() {
             return during(shape, firstTimePoint, imagesBefore, inDataset.getAsLong(), schedule);
