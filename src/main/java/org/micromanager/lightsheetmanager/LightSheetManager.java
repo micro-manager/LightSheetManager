@@ -84,7 +84,7 @@ public class LightSheetManager implements LightSheetManagerApi, AutoCloseable {
                 acqEngine_ = new AcquisitionEngineDispim(this);
                 break;
             default:
-                final String message = "AcquisitionEngine not implemented for " + geometryType;
+                final String message = "Microscope geometry type " + geometryType + " is not supported yet.";
                 studio_.logs().logError(message);
                 errorText_ = message;
                 return false; // early exit => show error ui
