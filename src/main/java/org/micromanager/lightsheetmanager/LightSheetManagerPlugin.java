@@ -1,5 +1,7 @@
 package org.micromanager.lightsheetmanager;
 
+import com.google.common.eventbus.Subscribe;
+import org.micromanager.events.ShutdownCommencingEvent;
 import org.micromanager.lightsheetmanager.gui.utils.WindowUtils;
 import org.micromanager.MenuPlugin;
 import org.micromanager.Studio;
@@ -76,6 +78,9 @@ public class LightSheetManagerPlugin implements MenuPlugin, SciJavaPlugin {
             // clear references after the window is fully closed
             // prevent memory leaks from closed plugin instances
             WindowUtils.registerWindowClosedEvent(frame_, event -> {
+                if (isLoaded) {
+                    studio_.events().unregisterForEvents(this);
+                }
                 frame_ = null;
                 model_ = null;
             });
@@ -83,6 +88,11 @@ public class LightSheetManagerPlugin implements MenuPlugin, SciJavaPlugin {
             frame_.pack();
             frame_.setVisible(true);
             frame_.toFront();
+
+            // quitting Micro-Manager does not close this window, so save the settings on exit too
+            if (isLoaded) {
+                studio_.events().registerForEvents(this);
+            }
         } catch (Exception e) {
             // cleanup resources
             frame_ = null;
@@ -90,6 +100,22 @@ public class LightSheetManagerPlugin implements MenuPlugin, SciJavaPlugin {
             if (studio_ != null) {
                 studio_.logs().showError(e, "Error starting Light Sheet Manager");
             }
+        }
+    }
+
+    /**
+     * Saves the settings when Micro-Manager shuts down, before it writes the user profile to disk.
+     */
+    @Subscribe
+    public void onShutdownCommencing(final ShutdownCommencingEvent event) {
+        if (event.isCanceled()) {
+            return; // early exit => the shutdown was canceled
+        }
+        try {
+            model_.userSettings().save();
+            studio_.logs().logMessage("User settings saved because Micro-Manager is shutting down.");
+        } catch (RuntimeException e) {
+            studio_.logs().logError(e, "Failed to save user settings while Micro-Manager was shutting down.");
         }
     }
 
