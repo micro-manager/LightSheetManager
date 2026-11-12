@@ -1,20 +1,29 @@
 package org.micromanager.lightsheetmanager.model.positions;
 
+import com.google.common.eventbus.Subscribe;
 import mmcorej.DeviceType;
+import org.micromanager.events.ShutdownCommencingEvent;
 import org.micromanager.lightsheetmanager.LightSheetManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PositionUpdater implements Publisher {
 
    // each poll reads every stage and galvo over serial, so do not poll faster than this
    private static final int MIN_POLLING_DELAY_MS = 500;
+
+   // the most the exit waits for a poll that is reading the devices, so a stuck poll
+   // cannot hang Micro-Manager's shutdown
+   private static final long EXIT_WAIT_MS = 2000;
 
    // polling
    private volatile int pollingDelayMs_;
@@ -23,6 +32,10 @@ public class PositionUpdater implements Publisher {
    // stopping only set the flag above, so a second polling loop can never exist
    private final ScheduledExecutorService executor_;
    private final AtomicBoolean isTicking_; // true once the task is scheduled
+
+   // stops the polling when Micro-Manager shuts down
+   private final ExitListener exitListener_ = new ExitListener();
+   private final AtomicBoolean isListeningForExit_ = new AtomicBoolean(false);
 
    // data
    private final HashMap<String, Object> positions_;
@@ -73,6 +86,9 @@ public class PositionUpdater implements Publisher {
       // the thread starts on first use: close() is skipped when the plugin fails to load,
       // so a thread started any earlier could never be shut down
       if (isTicking_.compareAndSet(false, true)) {
+         // the thread calls the core, which Micro-Manager deletes when it shuts down
+         model_.studio().events().registerForEvents(exitListener_);
+         isListeningForExit_.set(true);
          executor_.schedule(this::tick, 0, TimeUnit.MILLISECONDS);
       }
    }
@@ -86,11 +102,15 @@ public class PositionUpdater implements Publisher {
    }
 
    /**
-    * Stops polling and ends the polling thread. Call when the plugin closes.
+    * Stops polling, ends the polling thread and stops listening for Micro-Manager's exit.
+    * Call when the plugin closes.
     */
    public void shutdown() {
       isPolling_ = false;
       executor_.shutdown();
+      if (isListeningForExit_.compareAndSet(true, false)) {
+         model_.studio().events().unregisterForEvents(exitListener_);
+      }
    }
 
    public void setPollingDelayMs(final int delayMs) {
@@ -139,6 +159,48 @@ public class PositionUpdater implements Publisher {
       for (String topic : topics_.keySet()) {
          for (Subscriber sub : topics_.get(topic)) {
             sub.update(topic, positions_.get(topic));
+         }
+      }
+   }
+
+   /**
+    * Waits until no poll is reading the devices, for at most {@code EXIT_WAIT_MS}.
+    */
+   private void waitForPollInProgress() {
+      if (!isTicking_.get()) {
+         return; // the thread never started
+      }
+      try {
+         // the polling thread runs this once the poll in progress, if any, has ended
+         executor_.submit(() -> { }).get(EXIT_WAIT_MS, TimeUnit.MILLISECONDS);
+      } catch (TimeoutException e) {
+         model_.studio().logs().logError("Position polling was still reading the devices "
+               + EXIT_WAIT_MS + " ms after Micro-Manager started to shut down.");
+      } catch (InterruptedException e) {
+         Thread.currentThread().interrupt();
+      } catch (ExecutionException | RejectedExecutionException e) {
+         // shutdown() already ran, so the polling is off
+      }
+   }
+
+   /**
+    * Stops the polling before Micro-Manager deletes the core: polling a deleted core crashes
+    * Micro-Manager. If a later subscriber cancels the exit, the polling stays off.
+    */
+   private final class ExitListener {
+
+      @Subscribe
+      public void onShutdownCommencing(final ShutdownCommencingEvent event) {
+         // another subscriber canceled the exit before this one ran, so the core stays
+         if (event.isCanceled()) {
+            return;
+         }
+         final boolean wasPolling = isPolling_;
+         isPolling_ = false;
+         waitForPollInProgress();
+         if (wasPolling) {
+            model_.studio().logs().logMessage(
+                  "Stopped position polling because Micro-Manager is shutting down.");
          }
       }
    }
