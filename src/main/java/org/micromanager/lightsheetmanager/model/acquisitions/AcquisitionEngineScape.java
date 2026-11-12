@@ -1746,8 +1746,8 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
         final double slicePeriodMin = Math.max(laserDuration, cameraTotalTime);
         final double sliceDeadTime = NumberUtils.roundToQuarterMs(slicePeriodMin - laserDuration);
         // extra quarter millisecond to make sure interleaved slices works (otherwise laser signal never goes low)
-        final double sliceLaserInterleaved =
-                (acqSettings_.channels().mode() == ChannelMode.SLICE_HW ? 0.25 : 0.0);
+        final double sliceLaserInterleaved = (acqSettings_.channels().enabled()
+                && acqSettings_.channels().mode() == ChannelMode.SLICE_HW ? 0.25 : 0.0);
 
         // TODO: is this getting the correct value?
         final double actualCameraResetTime =
