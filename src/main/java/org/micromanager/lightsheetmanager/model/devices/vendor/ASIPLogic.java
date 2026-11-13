@@ -48,6 +48,16 @@ public class ASIPLogic extends ASITigerBase {
         return getPropertyInt(Properties.ReadOnly.NUM_LOGIC_CELLS);
     }
 
+    /**
+     * Returns true if the card has preset 60, the mod3 counter that can be reset, which came with
+     * firmware 3.51. A firmware version that cannot be read counts as older.
+     *
+     * @return true if preset 60 is available
+     */
+    public boolean hasPreset60() {
+        return getFirmwareVersion() > 3.501;
+    }
+
     public String getAxisLetter() {
         return getProperty(Properties.ReadOnly.AXIS_LETTER);
     }
