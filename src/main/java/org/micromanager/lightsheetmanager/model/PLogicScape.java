@@ -644,6 +644,10 @@ public class PLogicScape {
                 return false;
         }
 
+        // three channels need preset 60, the mod3 counter that can be reset, from firmware 3.51 on
+        final boolean canResetCounter =
+                settings.channels().count() != 3 || plcLaser_.hasPreset60();
+
         // set up hardware counter
         switch (settings.channels().count()) {
             case 1:
@@ -653,7 +657,7 @@ public class PLogicScape {
                 plcLaser_.setPreset(21); // mod2 counter
                 break;
             case 3:
-                plcLaser_.setPreset(16); // mod3 counter
+                plcLaser_.setPreset(canResetCounter ? 60 : 16); // mod3 counter
                 break;
             case 4:
                 plcLaser_.setPreset(15); // mod4 counter
@@ -670,9 +674,7 @@ public class PLogicScape {
         }
 
         // make sure the counters get reset on the acquisition start flag
-        // turns out we can only do this for 2-counter and 4-counter implemented with D-flops
-        // TODO: figure out alternative for 3-position counter
-        if (settings.channels().count() != 3) {
+        if (canResetCounter) {
             plcLaser_.setPointerPosition(counterLSBAddr);
             plcLaser_.setCellInput(3, acquisitionFlagAddr + ASIPLogic.addrEdge);
             plcLaser_.setPointerPosition(counterMSBAddr);
