@@ -44,7 +44,7 @@ public interface SheetCalibration {
         Builder autoSheetWidthEnabled(final boolean state);
 
         /**
-         * Sets the width per pixel when isUsingAutoSheetWidth is true.
+         * Sets the width per pixel used when {@code autoSheetWidthEnabled} is true.
          *
          * @param widthPerPixel the width per pixel
          */

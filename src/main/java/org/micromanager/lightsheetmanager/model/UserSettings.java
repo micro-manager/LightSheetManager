@@ -174,12 +174,10 @@ public class UserSettings {
 
     // TODO: this can add new keys but doesn't delete renamed keys
     /**
-     * Returns the {@code JSONObject} after checking if it matches the schema of the
-     * default acquisition settings object. If it does not, then any new settings
-     * found will be merged into the loaded settings as the default value.
+     * Returns the loaded settings, with any missing keys added using their default values.
      *
      * @param loadedSettings the settings loaded as a JSON String
-     * @return the settings object or null if an error occurred
+     * @return the settings object, or empty if the text is not a JSON object
      */
     private Optional<JSONObject> validateUserSettings(final String loadedSettings) {
         // create default settings from builder

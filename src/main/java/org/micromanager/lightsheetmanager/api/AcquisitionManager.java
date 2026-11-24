@@ -9,9 +9,8 @@ public interface AcquisitionManager {
     /**
      * Return the acquisition currently being set up or running.
      *
-     * @return the current acquisition, or null. Null before setup constructs it and again
-     *         once the run finishes. Callers needing it after the run, for example to call
-     *         checkForExceptions(), must retain their own reference.
+     * @return the current acquisition, or null. Null until the run constructs it, after
+     *         setup has finished, and again once the run finishes.
      */
     Acquisition current();
 
