@@ -96,11 +96,9 @@ public abstract class AcquisitionEngine implements AcquisitionManager, MMAcquist
     /**
      * Validates that the acquisition can actually be written to disk, before anything is acquired.
      * <p>
-     * The images are written by {@code finish()}, i.e. only AFTER the run completes, so without this
-     * check an unusable save location is discovered at the very end and the data is lost.
+     * Without this check an unusable save location is only discovered when the images are written.
      * <p>
-     * Called from both geometry engines' {@code setup()} before any hardware is touched, so a failure
-     * costs nothing and leaves the microscope untouched.
+     * Called from both geometry engines' {@code setup()} before any hardware is touched.
      *
      * @return true if saving is off, or the save location is usable; false to abort setup
      */
@@ -164,8 +162,7 @@ public abstract class AcquisitionEngine implements AcquisitionManager, MMAcquist
      * them: {@code EXCEPTION_ACCESS_VIOLATION} inside {@code popNextImageMD}, no Java exception, no
      * recovery, no data. Refusing to arm is the only place this can be stopped from inside LSM.
      *
-     * <p>Called from both geometry engines' {@code setup()} before any hardware is touched, so a
-     * failure costs nothing and leaves the microscope untouched.
+     * <p>Called from both geometry engines' {@code setup()} before any hardware is touched.
      *
      * @return true if the cameras agree, or there is only one; false to abort setup
      */
@@ -194,9 +191,9 @@ public abstract class AcquisitionEngine implements AcquisitionManager, MMAcquist
      * <p>Deliberately conservative: only the two values that are meaningless at or below zero are
      * required to be positive. Delays and the remaining durations are allowed to be zero.
      *
-     * <p>Note "minimize slice period" does not rescue this: it is only consulted on the galvo path
-     * ({@code getTimingFromPeriodAndLightExposure}), while the stage-scan path derives the exposure
-     * as sample exposure minus the camera's reset plus readout regardless.
+     * <p>Note "minimize slice period" does not rescue this: a requested slice period only adds
+     * delays, and the stage-scan path derives the exposure as sample exposure minus the camera's
+     * reset plus readout either way.
      *
      * <p>Called from both geometry engines' {@code setup()} before any hardware is touched.
      *

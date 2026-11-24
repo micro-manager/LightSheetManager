@@ -51,7 +51,7 @@ public final class DialogUtils {
      * @param frame the parent frame
      * @param title the title string
      * @param message the message to display
-     * @return an int indicating the option selected by the user.
+     * @return true if the user selected "Yes"
      */
     public static boolean showYesNoDialog(final Component frame, final String title, final String message) {
         return JOptionPane.showConfirmDialog(frame, message, title, JOptionPane.YES_NO_OPTION) == 0;

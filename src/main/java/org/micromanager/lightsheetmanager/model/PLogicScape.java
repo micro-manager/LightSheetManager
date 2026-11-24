@@ -473,7 +473,7 @@ public class PLogicScape {
         // further down cannot stand in for it: GALVO_SCAN zeroes piezoAmplitude first, so that
         // check degenerates to validating a center with no sweep around it, and galvo scan is the
         // mode most runs use. A failed property read returns zero for both limits, so an
-        // unreadable scanner refuses the sweep rather than passing it through.
+        // unreadable scanner refuses any sweep that moves the galvo off zero.
         final double halfSweep = Math.abs(sliceAmplitude) / 2;
         if (sliceCenter + halfSweep > scanner_.getMaxDeflectionY()) {
             model_.logging().reportError("Scanner will exceed allowed range in positive direction.");
@@ -591,7 +591,7 @@ public class PLogicScape {
             // set interleaved sides flag low unless we are doing interleaved stage scan
             scanner_.setSPIMInterleaveSides(isInterleaved);
 
-            // SCAPE leaves the galvo's x axis alone, so no sheet width or offset is sent
+            // SCAPE sends no sheet width or offset to the galvo's x axis
         }
         return true;
     }
@@ -604,15 +604,14 @@ public class PLogicScape {
         // make sure SPIM state machine is stopped
         scanner_.setSPIMState(ASIScanner.SPIMState.IDLE);
 
-        // NB: no sheet width/offset to restore here; SCAPE never writes the galvo x-axis
-        // (see prepareControllerForAcquisitionSide), so nothing can have clobbered it.
+        // NB: no sheet width/offset to restore here; SCAPE never writes the galvo's x amplitude or
+        // offset (see prepareControllerForAcquisitionSide), so nothing can have clobbered them.
 
         // move piezo back to desired position
         if (movePiezo) {
             piezo_.setPosition(piezoPosition);
         }
 
-        // make sure we stop SPIM and SCAN state machines every time we trigger controller (in AcquisitionPanel code)
         return true;
     }
 

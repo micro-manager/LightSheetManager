@@ -549,7 +549,7 @@ public class PLogicDispim {
             // Refuse a sweep that would drive the galvo past its travel limits, mirroring the
             // check in the SCAPE controller. It runs after the rounding and before either branch
             // below writes to the card, and a failed property read returns zero for both limits,
-            // so an unreadable scanner refuses the sweep rather than passing it through.
+            // so an unreadable scanner refuses any sweep that moves the galvo off zero.
             final double halfSweep = Math.abs(sliceAmplitude) / 2;
             if (sliceCenter + halfSweep > scanner.getMaxDeflectionY()) {
                 model_.logging().reportError("Scanner will exceed allowed range in positive direction.");
@@ -712,7 +712,6 @@ public class PLogicDispim {
                 piezo.setPosition(piezoPosition);
             }
         }
-        // make sure we stop SPIM and SCAN state machines every time we trigger controller (in AcquisitionPanel code)
         return true;
     }
 

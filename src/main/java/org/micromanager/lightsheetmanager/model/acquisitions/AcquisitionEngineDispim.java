@@ -61,8 +61,8 @@ public class AcquisitionEngineDispim extends AcquisitionEngine {
         // make settings current
         updateSettings();
 
-        // fail before touching any hardware: the datastore is written by finish(), so an unusable
-        // save location would otherwise cost a full acquisition before it is discovered
+        // fail before touching any hardware: an unusable save location would otherwise only be
+        // found when the dataset is created, after the controller is armed
         if (!validateSaveLocation()) {
             return false; // early exit => save location unusable
         }

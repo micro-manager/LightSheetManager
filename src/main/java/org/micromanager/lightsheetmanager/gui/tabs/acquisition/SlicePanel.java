@@ -189,10 +189,10 @@ public class SlicePanel extends Panel implements SettingsListener {
     }
 
     /**
-     * Sets the enabled status of the label and spinner.
-     * Used when the user clicks "Minimize Slice Period"
+     * Sets the enabled status of the slice period label and spinner, which are disabled while
+     * the slice period is minimized.
      *
-     * @param state true to disable the spinner
+     * @param state true to enable them
      */
     private void setSpinnerEnabled(final boolean state) {
         lblSlicePeriod_.setEnabled(state);

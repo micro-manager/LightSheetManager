@@ -43,7 +43,7 @@ public class LightSheetManagerFrame extends JFrame {
                     break;
                 case SCAPE:
                     if (model_.devices().adapter().numImagingPaths() > 1) {
-                        model_.setupErrorMessage("SCAPE geometry does not support multiple imaging paths. "
+                        model_.setupErrorMessage("SCAPE geometry does not support multiple imaging paths."
                                 + " Use the \"SimultaneousCameras\" property to support multiple cameras.");
                         createErrorUserInterface();
                         return;

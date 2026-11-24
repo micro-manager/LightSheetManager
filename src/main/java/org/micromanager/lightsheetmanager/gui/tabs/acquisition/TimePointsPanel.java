@@ -54,7 +54,6 @@ public class TimePointsPanel extends Panel implements SettingsListener {
         add(spnTimePointInterval_, "");
     }
 
-    // TODO: update duration labels
     private void createEventHandlers() {
 
         spnNumTimePoints_.registerListener(() -> {

@@ -18,7 +18,7 @@ public final class FileUtils {
     /**
      * Reads a text file with UTF-8 encoding into a String.
      *
-     * @param filePath - the location to write the text file
+     * @param filePath the location of the text file
      * @return a String with the contents of the text file
      */
     public static String readFileToString(final String filePath) {
@@ -35,8 +35,8 @@ public final class FileUtils {
     /**
      * Writes contents to the text file using UTF-8 encoding.
      *
-     * @param filePath - the location to write the text file
-     * @param contents - the String to write to the file
+     * @param filePath the location to write the text file
+     * @param contents the String to write to the file
      */
     public static void writeStringToFile(final String filePath, final String contents) {
         try {

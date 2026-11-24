@@ -57,9 +57,10 @@ public class DefaultChannelSettings implements ChannelSettings {
     }
 
     /**
-     * Returns the number of used channels in the channel group.
+     * Returns the number of channels a run acquires: the used channels in the channel group
+     * when channels are enabled, otherwise 1.
      *
-     * @return the number of used channels in the channel group
+     * @return the number of channels a run acquires
      */
     @Override
     public int count() {
