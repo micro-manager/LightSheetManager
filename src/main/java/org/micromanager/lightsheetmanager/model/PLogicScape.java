@@ -603,6 +603,7 @@ public class PLogicScape {
 
         // make sure SPIM state machine is stopped
         scanner_.setSPIMState(ASIScanner.SPIMState.IDLE);
+        piezo_.setSPIMState(ASIPiezo.SPIMState.IDLE);
 
         // NB: no sheet width/offset to restore here; SCAPE never writes the galvo's x amplitude or
         // offset (see prepareControllerForAcquisitionSide), so nothing can have clobbered them.
