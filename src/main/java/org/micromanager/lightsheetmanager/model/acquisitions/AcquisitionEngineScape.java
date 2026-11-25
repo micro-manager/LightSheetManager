@@ -84,6 +84,9 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
     // this run never captured them
     private String originalCoreCamera_;
     private String originalChannelPreset_;
+    // true when IllumSlice's beam was on before prepareControllerForAcquisition turned it off;
+    // finish() turns it back on, so the sheet is where it was and matches the Sheet box
+    private boolean restoreBeamOn_;
 
     // Vetoes closing the running acquisition's window unless the user confirms an abort. Otherwise
     // the display manager closes the store under the running acquisition and every later image
@@ -120,6 +123,7 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
         stageScanState_ = null;
         originalCoreCamera_ = null;
         originalChannelPreset_ = null;
+        restoreBeamOn_ = false;
 
         // fail before touching any hardware: an unusable save location would otherwise only be
         // found when the dataset is created, after the controller is armed
@@ -294,6 +298,11 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
 
             if (isUsingPLC) {
                 controller_ = new PLogicScape(model_);
+
+                // doHardwareCalculations turns the beam off, which parks the galvo at its
+                // upper limits; remember whether it was on so finish() can put it back
+                final ASIScanner illumSlice = model_.devices().device("IllumSlice");
+                restoreBeamOn_ = illumSlice != null && illumSlice.isBeamOn();
 
                 final boolean success = doHardwareCalculations(controller_);
                 if (!success) {
@@ -1351,6 +1360,16 @@ public class AcquisitionEngineScape extends AcquisitionEngine {
             // defocuses the live view and re-introduces the first-frame jump on the next run.
             controller_.cleanUpControllerAfterAcquisition(acqSettings_, false);
             controller_.stopSPIMStateMachines();
+        }
+
+        // turn the beam back on if the run turned it off; after the state machines are idle, so
+        // the adapter moves the galvo back to the position it saved when the beam went off
+        if (restoreBeamOn_) {
+            final ASIScanner illumSlice = model_.devices().device("IllumSlice");
+            if (illumSlice != null && !illumSlice.isBeamOn()) {
+                illumSlice.setBeamOn(true);
+            }
+            restoreBeamOn_ = false;
         }
 
         // if we did stage scanning restore the original position and speed
